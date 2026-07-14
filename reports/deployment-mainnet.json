@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-07-03T08:50:36.944Z",
+  "collectionPath": "data/top-collections.ethereum.curated.json",
+  "constructorArgs": {
+    "topCollectionsRoot": "0xcfd388334a04e188055199c93b09e9b65ff5e742380b7aecbd5d46c05e51358f",
+    "royaltyReceiver": "0x7Eb7C0d2Fe5B3C35b34cD4c512b119C2167BB749",
+    "rendererAddress": "deploy EternalRenderer first, then pass its address"
+  },
+  "collectionSummary": {
+    "entries": 100,
+    "tiers": {
+      "1": 30,
+      "2": 20,
+      "3": 20,
+      "4": 20,
+      "5": 10
+    },
+    "cryptoPunksAdapter": true,
+    "removedLegacyReviewItems": {
+      "cryptoKitties": true,
+      "autoglyphs": true,
+      "knownOrigin": true
+    }
+  },
+  "bytecode": {
+    "EternalBeings": {
+      "creationBytes": 24039,
+      "runtimeBytes": 21676
+    },
+    "EternalOre": {
+      "creationBytes": 1879,
+      "runtimeBytes": 1745
+    },
+    "EternalRenderer": {
+      "creationBytes": 23326,
+      "runtimeBytes": 23300
+    },
+    "eip170RuntimeLimitBytes": 24576
+  },
+  "deploymentGasEstimate": {
+    "rendererGasUsed": "5091462",
+    "gameGasUsed": "5158837",
+    "totalGasUsed": "10250299",
+    "rendererAddress": "0x942633D6f9C436DB2556Ac30A30825Ab9675d7A8",
+    "measuredWithReceiver": "0x7Eb7C0d2Fe5B3C35b34cD4c512b119C2167BB749"
+  }
+}

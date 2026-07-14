@@ -1,0 +1,40 @@
+# Dependencies / build output
+node_modules/
+artifacts/
+out/
+cache/
+dist/
+build/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+reports/secrets/
+*.secrets.json
+*private-key*
+*mnemonic*
+*keystore*
+
+# Deployment outputs generated locally
+reports/deployment-*.json
+!reports/deployment-mainnet.json
+reports/mainnet-*.json
+reports/sepolia-*.json
+reports/verify-mainnet-*/
+reports/verify-sepolia*/
+
+# Generated preview images / large local artifacts
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.zip
+opensea-eternal-worlds-pass/
+opensea-eternal-worlds-pass.zip
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-05T10:36:43.880Z",
+  "compilerVersion": "0.8.35+commit.47b9dedd.Emscripten.clang",
+  "contractPath": "src/EternalBeings.sol",
+  "contractName": "EternalBeings",
+  "fullyQualifiedName": "src/EternalBeings.sol:EternalBeings",
+  "optimizer": {
+    "enabled": true,
+    "runs": 1
+  },
+  "evmVersion": "shanghai",
+  "viaIR": true,
+  "constructorArgs": {
+    "topCollectionsRoot": "0xcfd388334a04e188055199c93b09e9b65ff5e742380b7aecbd5d46c05e51358f",
+    "royaltyReceiver": "0x0000000000000000000000000000000000000001",
+    "rendererAddress": "0x0000000000000000000000000000000000000002",
+    "abiEncodedNo0x": "cfd388334a04e188055199c93b09e9b65ff5e742380b7aecbd5d46c05e51358f00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002"
+  },
+  "bytecode": {
+    "creationBytes": 25837,
+    "runtimeBytes": 23474
+  },
+  "files": {
+    "standardJsonInput": "reports/verify/standard-json-input.json",
+    "constructorArgs": "reports/verify/constructor-args.txt"
+  }
+}

@@ -1,0 +1,702 @@
+[
+  {
+    "rank": 1,
+    "address": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB",
+    "tier": 5,
+    "name": "CryptoPunks",
+    "note": "Historic blue-chip collection"
+  },
+  {
+    "rank": 2,
+    "address": "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+    "tier": 5,
+    "name": "Bored Ape Yacht Club",
+    "note": "Yuga Labs flagship collection"
+  },
+  {
+    "rank": 3,
+    "address": "0x60E4d786628FeA6478F785A6d7e704777c86a7c6",
+    "tier": 5,
+    "name": "Mutant Ape Yacht Club",
+    "note": "Yuga Labs collection"
+  },
+  {
+    "rank": 4,
+    "address": "0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258",
+    "tier": 5,
+    "name": "Otherdeed for Otherside",
+    "note": "Yuga Labs metaverse land collection"
+  },
+  {
+    "rank": 5,
+    "address": "0xED5AF388653567Af2F388E6224dC7C4b3241C544",
+    "tier": 5,
+    "name": "Azuki",
+    "note": "Anime PFP blue-chip collection"
+  },
+  {
+    "rank": 6,
+    "address": "0x49cF6f5d44E70224e2E23fDcdd2C053F30aDA28B",
+    "tier": 5,
+    "name": "CLONE X",
+    "note": "RTFKT / Nike collection"
+  },
+  {
+    "rank": 7,
+    "address": "0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7",
+    "tier": 5,
+    "name": "Meebits",
+    "note": "Larva Labs / Yuga Labs collection"
+  },
+  {
+    "rank": 8,
+    "address": "0x23581767a106ae21c074b2276D25e5C3e136a68b",
+    "tier": 5,
+    "name": "Moonbirds",
+    "note": "PROOF collection"
+  },
+  {
+    "rank": 9,
+    "address": "0x8a90cab2b38dba80c64b7734e58ee1db38b8992e",
+    "tier": 5,
+    "name": "Doodles",
+    "note": "Doodles original collection"
+  },
+  {
+    "rank": 10,
+    "address": "0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6",
+    "tier": 5,
+    "name": "Wrapped CryptoPunks",
+    "note": "ERC721 wrapper for CryptoPunks"
+  },
+  {
+    "rank": 11,
+    "address": "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a",
+    "tier": 4,
+    "name": "Chromie Squiggle by Snowfro",
+    "note": "Art Blocks flagship generative-art collection"
+  },
+  {
+    "rank": 12,
+    "address": "0x9c8ff314C9Bc7F6e59A9d9225Fb22946427edc03",
+    "tier": 4,
+    "name": "Nouns",
+    "note": "Nouns DAO original collection"
+  },
+  {
+    "rank": 13,
+    "address": "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+    "tier": 4,
+    "name": "ENS .eth Names",
+    "note": "ENS base registrar ERC721"
+  },
+  {
+    "rank": 14,
+    "address": "0xBd3531dA5CF5857e7CfAA92426877b022e612cf8",
+    "tier": 4,
+    "name": "Pudgy Penguins",
+    "note": "Pudgy Penguins original collection"
+  },
+  {
+    "rank": 15,
+    "address": "0x1A92f7381B9F03921564a437210bB9396471050C",
+    "tier": 4,
+    "name": "Cool Cats",
+    "note": "Cool Cats original collection"
+  },
+  {
+    "rank": 16,
+    "address": "0x1CB1A5e65610AEfF2551A50f76a87a7d3fB649C6",
+    "tier": 4,
+    "name": "CrypToadz",
+    "note": "CrypToadz by GREMPLIN"
+  },
+  {
+    "rank": 17,
+    "address": "0x79FCDEF22feeD20eDDacbB2587640e45491b757f",
+    "tier": 4,
+    "name": "mfers",
+    "note": "mfers by sartoshi"
+  },
+  {
+    "rank": 18,
+    "address": "0xb5c747561a185a146f83cfff25bdfd2455b31ff4",
+    "tier": 4,
+    "name": "Boss Beauties",
+    "note": "ERC721 replacement for non-standard Gutter Cat Gang entry"
+  },
+  {
+    "rank": 19,
+    "address": "0xe785E82358879F061BC3dcAC6f0444462D4b5330",
+    "tier": 4,
+    "name": "World of Women",
+    "note": "World of Women original collection"
+  },
+  {
+    "rank": 20,
+    "address": "0x57a204AA1042f6E66DD7730813f4024114d74f37",
+    "tier": 4,
+    "name": "CyberKongz",
+    "note": "CyberKongz Genesis collection"
+  },
+  {
+    "rank": 21,
+    "address": "0x3bf2922f4520a8BA0c2eFC3D2a1539678DaD5e9D",
+    "tier": 4,
+    "name": "0N1 Force",
+    "note": "0N1 Force original collection"
+  },
+  {
+    "rank": 22,
+    "address": "0x2acAb3DEa77832C09420663b0E1cB386031bA17B",
+    "tier": 4,
+    "name": "DeadFellaz",
+    "note": "DeadFellaz original collection"
+  },
+  {
+    "rank": 23,
+    "address": "0x960b7a6BCD451c9968473f7bbFd9Be826EFd549A",
+    "tier": 4,
+    "name": "OnChainMonkey",
+    "note": "OnChainMonkey original collection"
+  },
+  {
+    "rank": 24,
+    "address": "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7",
+    "tier": 4,
+    "name": "Loot",
+    "note": "Loot original collection"
+  },
+  {
+    "rank": 25,
+    "address": "0x0b4B2bA334f476C8F41bFe52A428D6891755554d",
+    "tier": 4,
+    "name": "JRNY NFT Club",
+    "note": "ERC721 replacement after removing Autoglyphs review item"
+  },
+  {
+    "rank": 26,
+    "address": "0x1a2F71468F656E97c2F86541E57189F59951efe7",
+    "tier": 4,
+    "name": "CryptoMories",
+    "note": "ERC721 replacement after removing non-standard CryptoKitties"
+  },
+  {
+    "rank": 27,
+    "address": "0xA3AEE8BCE55BEeA1951EF834b99f3Ac60d1ABeeB",
+    "tier": 4,
+    "name": "VeeFriends",
+    "note": "VeeFriends Series 1"
+  },
+  {
+    "rank": 28,
+    "address": "0x9A534628B4062E123cE7Ee2222ec20B86e16Ca8F",
+    "tier": 4,
+    "name": "MekaVerse",
+    "note": "MekaVerse original collection"
+  },
+  {
+    "rank": 29,
+    "address": "0x3FE1a4c1481c8351E91B64D5c398b159DE07cbc5",
+    "tier": 4,
+    "name": "SupDucks",
+    "note": "SupDucks original collection"
+  },
+  {
+    "rank": 30,
+    "address": "0xC92cedDfb8dd984A89fb494c376f9A48b999aAFc",
+    "tier": 4,
+    "name": "Creature World",
+    "note": "Creature World original collection"
+  },
+  {
+    "rank": 31,
+    "address": "0xba30e5f9bb24caa003e9f2f0497ad287fdf95623",
+    "tier": 3,
+    "name": "Bored Ape Kennel Club",
+    "note": "Yuga Labs companion collection"
+  },
+  {
+    "rank": 32,
+    "address": "0x306b1ea3ecdf94ab739f1910bbda052ed4a9f949",
+    "tier": 3,
+    "name": "BEANZ Official",
+    "note": "Azuki ecosystem collection"
+  },
+  {
+    "rank": 33,
+    "address": "0xc3f733ca98e0dad0386979eb96fb1722a1a05e69",
+    "tier": 3,
+    "name": "MoonCats - Acclimated",
+    "note": "Historic early Ethereum NFT collection"
+  },
+  {
+    "rank": 34,
+    "address": "0x0cfb5d82be2b949e8fa73a656df91821e2ad99fd",
+    "tier": 3,
+    "name": "10KTF",
+    "note": "10KTF original collection"
+  },
+  {
+    "rank": 35,
+    "address": "0x45db714f24f5a313569c41683047f1d49e78ba07",
+    "tier": 3,
+    "name": "SpacePunksClub",
+    "note": "ERC721 replacement for non-standard 10KTF Stockroom entry"
+  },
+  {
+    "rank": 36,
+    "address": "0xccdf1373040d9ca4b5be1392d1945c1dae4a862c",
+    "tier": 3,
+    "name": "PORSCHE 911",
+    "note": "ERC721 replacement for non-standard adidas Originals entry"
+  },
+  {
+    "rank": 37,
+    "address": "0x749f5ddf5ab4c1f26f74560a78300563c34b417d",
+    "tier": 3,
+    "name": "ALTS by adidas",
+    "note": "Adidas NFT collection"
+  },
+  {
+    "rank": 38,
+    "address": "0x123b30e25973fecd8354dd5f41cc45a3065ef88c",
+    "tier": 3,
+    "name": "alien frens",
+    "note": "Alien Frens original collection"
+  },
+  {
+    "rank": 39,
+    "address": "0xaad35c2dadbe77f97301617d82e661776c891fa9",
+    "tier": 3,
+    "name": "Akutars",
+    "note": "Akutars original collection"
+  },
+  {
+    "rank": 40,
+    "address": "0xd0318da435dbce0b347cc6faa330b5a9889e3585",
+    "tier": 3,
+    "name": "ASM Brains",
+    "note": "Altered State Machine Brains collection"
+  },
+  {
+    "rank": 41,
+    "address": "0x86fc6f6c6702ceF7d3BaE87eF41256715416DB71",
+    "tier": 3,
+    "name": "Jadu AVA",
+    "note": "Jadu AVA collection"
+  },
+  {
+    "rank": 42,
+    "address": "0xf3e778f839934fc819cfa1040aabacecba01e049",
+    "tier": 3,
+    "name": "Avastars",
+    "note": "Early on-chain generative avatar collection"
+  },
+  {
+    "rank": 43,
+    "address": "0x05745e72fb8b4a9b51118a168d956760e4a36444",
+    "tier": 3,
+    "name": "NFT Worlds Genesis Avatars",
+    "note": "NFT Worlds avatar collection"
+  },
+  {
+    "rank": 44,
+    "address": "0x7ab2352b1d2e185560494d5e577f9d3c238b78c5",
+    "tier": 3,
+    "name": "Adam Bomb Squad",
+    "note": "The Hundreds NFT collection"
+  },
+  {
+    "rank": 45,
+    "address": "0xb4d06d46a8285f4ec79fd294f78a881799d8ced9",
+    "tier": 3,
+    "name": "3Landers",
+    "note": "3Landers original collection"
+  },
+  {
+    "rank": 46,
+    "address": "0x740c178e10662bBb050BDE257bFA318dEfE3cabC",
+    "tier": 3,
+    "name": "8liens NFT",
+    "note": "8liens original collection"
+  },
+  {
+    "rank": 47,
+    "address": "0x198478f870d97d62d640368d111b979d7ca3c38f",
+    "tier": 3,
+    "name": "8SIAN",
+    "note": "8SIAN original collection"
+  },
+  {
+    "rank": 48,
+    "address": "0x18df6c571f6fe9283b87f910e41dc5c8b77b7da5",
+    "tier": 3,
+    "name": "Animetas",
+    "note": "Animetas original collection"
+  },
+  {
+    "rank": 49,
+    "address": "0x7e3ef31186d1bec0d3f35ad701d065743b84c790",
+    "tier": 3,
+    "name": "Antonym: GENESIS",
+    "note": "Antonym Genesis collection"
+  },
+  {
+    "rank": 50,
+    "address": "0x12f28e2106ce8fd8464885b80ea865e98b465149",
+    "tier": 3,
+    "name": "BEEPLE - GENESIS COLLECTION",
+    "note": "Beeple Genesis collection"
+  },
+  {
+    "rank": 51,
+    "address": "0xc2c747e0f7004f9e8817db2ca4997657a7746928",
+    "tier": 2,
+    "name": "Hashmasks",
+    "note": "Historic identity art collection"
+  },
+  {
+    "rank": 52,
+    "address": "0x769272677fab02575e84945f03eca517acc544cc",
+    "tier": 2,
+    "name": "The Captainz",
+    "note": "Memeland flagship collection"
+  },
+  {
+    "rank": 53,
+    "address": "0x8821bee2ba0df28761afff119d66390d594cd280",
+    "tier": 2,
+    "name": "DeGods",
+    "note": "Ethereum DeGods collection"
+  },
+  {
+    "rank": 54,
+    "address": "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e",
+    "tier": 2,
+    "name": "Azuki Elementals",
+    "note": "Azuki ecosystem collection"
+  },
+  {
+    "rank": 55,
+    "address": "0x4b15a9c28034dc83db40cd810001427d3bd7163d",
+    "tier": 2,
+    "name": "HV-MTL",
+    "note": "Yuga Labs HV-MTL collection"
+  },
+  {
+    "rank": 56,
+    "address": "0xe012baf811cf9c05c408e879c399960d1f305903",
+    "tier": 2,
+    "name": "Otherside Koda",
+    "note": "Otherside Koda collection"
+  },
+  {
+    "rank": 57,
+    "address": "0x790b2cf29ed4f310bf7641f013c65d4560d28371",
+    "tier": 2,
+    "name": "Otherdeed Expanded",
+    "note": "Otherside ecosystem collection"
+  },
+  {
+    "rank": 58,
+    "address": "0x1c49ed56da6be87b804bc1b8b817a259aa3132ed",
+    "tier": 2,
+    "name": "99 Originals",
+    "note": "ERC721 replacement for non-standard Bored Ape Chemistry Club entry"
+  },
+  {
+    "rank": 59,
+    "address": "0x1eb7382976077f92cf25c27cc3b900a274fd0012",
+    "tier": 2,
+    "name": "Bored Ape Comic",
+    "note": "Bored Ape ecosystem comic collection"
+  },
+  {
+    "rank": 60,
+    "address": "0x128675d4fddbc4a0d3f8aa777d8ee0fb8b427c2f",
+    "tier": 2,
+    "name": "PUNKS Comic",
+    "note": "PUNKS Comic collection"
+  },
+  {
+    "rank": 61,
+    "address": "0x572e33ffa523865791ab1c26b42a86ac244df784",
+    "tier": 2,
+    "name": "10KTF Gucci Grail",
+    "note": "10KTF ecosystem collaboration"
+  },
+  {
+    "rank": 62,
+    "address": "0x7ea3cca10668b8346aec0bf1844a49e995527c8b",
+    "tier": 2,
+    "name": "CyberKongz VX",
+    "note": "CyberKongz ecosystem collection"
+  },
+  {
+    "rank": 63,
+    "address": "0x1f7c16fce4fc894143afb5545bf04f676bf7dcf3",
+    "tier": 2,
+    "name": "CyberKongz Genkai",
+    "note": "CyberKongz Genkai collection"
+  },
+  {
+    "rank": 64,
+    "address": "0x6e9da81ce622fb65abf6a8d8040e460ff2543add",
+    "tier": 2,
+    "name": "Gutter Dogs",
+    "note": "Gutter Cat Gang ecosystem collection"
+  },
+  {
+    "rank": 65,
+    "address": "0x950b9476a4de757bb134483029ac4ec17e739e3a",
+    "tier": 2,
+    "name": "Gutter Pigeons",
+    "note": "Gutter Cat Gang ecosystem collection"
+  },
+  {
+    "rank": 66,
+    "address": "0x41f20599e9e049004c4d169046eb7023117a6244",
+    "tier": 2,
+    "name": "Gutter Clones",
+    "note": "Gutter Cat Gang ecosystem collection"
+  },
+  {
+    "rank": 67,
+    "address": "0x60bb1e2aa1c9acafb4d34f71585d7e959f387769",
+    "tier": 2,
+    "name": "Art Gobblers",
+    "note": "Art Gobblers collection"
+  },
+  {
+    "rank": 68,
+    "address": "0x5946aeaab44e65eb370ffaa6a7ef2218cff9b47d",
+    "tier": 2,
+    "name": "Creepz by OVERLORD",
+    "note": "Creepz genesis collection"
+  },
+  {
+    "rank": 69,
+    "address": "0x307af7d28afee82092aa95d35644898311ca5360",
+    "tier": 2,
+    "name": "Chimpers",
+    "note": "ERC721 replacement for non-standard Creepz Invasion Pass entry"
+  },
+  {
+    "rank": 70,
+    "address": "0x160c404b2b49cbc3240055ceaee026df1e8497a0",
+    "tier": 2,
+    "name": "PXN: Ghost Division",
+    "note": "PXN collection"
+  },
+  {
+    "rank": 71,
+    "address": "0x4db1f25d3d98600140dfc18deb7515be5bd293af",
+    "tier": 1,
+    "name": "Hape Prime",
+    "note": "Hape Prime collection"
+  },
+  {
+    "rank": 72,
+    "address": "0x59468516a8259058bad1ca5f8f4bff190d30e066",
+    "tier": 1,
+    "name": "Invisible Friends",
+    "note": "Invisible Friends collection"
+  },
+  {
+    "rank": 73,
+    "address": "0x49c36afa15c7fdbd57ce3d61d80f39b6615a76ef",
+    "tier": 1,
+    "name": "3D Invisible Friends",
+    "note": "Invisible Friends ecosystem collection"
+  },
+  {
+    "rank": 74,
+    "address": "0xa5c0bd78d1667c13bfb403e2a3336871396713c5",
+    "tier": 1,
+    "name": "Coolman's Universe",
+    "note": "Coolman Universe collection"
+  },
+  {
+    "rank": 75,
+    "address": "0xfcb1315c4273954f74cb16d5b663dbf479eec62e",
+    "tier": 1,
+    "name": "Capsule House",
+    "note": "Capsule House collection"
+  },
+  {
+    "rank": 76,
+    "address": "0xd2f668a8461d6761115daf8aeb3cdf5f40c532c6",
+    "tier": 1,
+    "name": "Karafuru",
+    "note": "Karafuru collection"
+  },
+  {
+    "rank": 77,
+    "address": "0x701a038af4bd0fc9b69a829ddcb2f61185a49568",
+    "tier": 1,
+    "name": "KIWAMI Genesis",
+    "note": "Kiwami Genesis collection"
+  },
+  {
+    "rank": 78,
+    "address": "0x0c2e57efddba8c768147d1fdf9176a0a6ebd5d83",
+    "tier": 1,
+    "name": "Kaiju Kingz",
+    "note": "Kaiju Kingz collection"
+  },
+  {
+    "rank": 79,
+    "address": "0xc99c679c50033bbc5321eb88752e89a93e9e83c5",
+    "tier": 1,
+    "name": "KILLABEARS",
+    "note": "KILLABEARS collection"
+  },
+  {
+    "rank": 80,
+    "address": "0xd1258db6ac08eb0e625b75b371c023da478e94a9",
+    "tier": 1,
+    "name": "DigiDaigaku",
+    "note": "DigiDaigaku genesis collection"
+  },
+  {
+    "rank": 81,
+    "address": "0x466cfcd0525189b573e794f554b8a751279213ac",
+    "tier": 1,
+    "name": "Dooplicator",
+    "note": "Doodles ecosystem collection"
+  },
+  {
+    "rank": 82,
+    "address": "0xccc441ac31f02cd96c153db6fd5fe0a2f4e6a68d",
+    "tier": 1,
+    "name": "FLUF World",
+    "note": "FLUF World collection"
+  },
+  {
+    "rank": 83,
+    "address": "0x575ec01a9e70bf3e192a774eb265c46ec993e4cc",
+    "tier": 1,
+    "name": "FLUF World: EGGs",
+    "note": "FLUF World ecosystem collection"
+  },
+  {
+    "rank": 84,
+    "address": "0xbd275ce24f32d6ce4e9d9519c55abe9bc0ed7fcf",
+    "tier": 1,
+    "name": "BYOPills",
+    "note": "BYOPills collection"
+  },
+  {
+    "rank": 85,
+    "address": "0xbda2481db91fc0f942ed3f53de378ba45ba9d17e",
+    "tier": 1,
+    "name": "Wolf Game - Farmer",
+    "note": "Wolf Game ecosystem collection"
+  },
+  {
+    "rank": 86,
+    "address": "0x892848074ddea461a15f337250da3ce55580ca85",
+    "tier": 1,
+    "name": "CyberBrokers",
+    "note": "CyberBrokers collection"
+  },
+  {
+    "rank": 87,
+    "address": "0xf4ee95274741437636e748ddac70818b4ed7d043",
+    "tier": 1,
+    "name": "The Doge Pound",
+    "note": "Doge Pound collection"
+  },
+  {
+    "rank": 88,
+    "address": "0x42069abfe407c60cf4ae4112bedead391dba1cdb",
+    "tier": 1,
+    "name": "CryptoDickbutts",
+    "note": "CryptoDickbutts collection"
+  },
+  {
+    "rank": 89,
+    "address": "0x34eebee6942d8def3c125458d1a86e0a897fd6f9",
+    "tier": 1,
+    "name": "Checks - VV Edition",
+    "note": "Checks VV edition collection"
+  },
+  {
+    "rank": 90,
+    "address": "0x036721e5a769cc48b3189efbb9cce4471e8a48b1",
+    "tier": 1,
+    "name": "Checks",
+    "note": "Checks original collection"
+  },
+  {
+    "rank": 91,
+    "address": "0xc1caf0c19a8ac28c41fe59ba6c754e4b9bd54de9",
+    "tier": 1,
+    "name": "CryptoSkulls",
+    "note": "Historic CryptoSkulls collection"
+  },
+  {
+    "rank": 92,
+    "address": "0x8d04a8c79ceb0889bdd12acdf3fa9d207ed3ff63",
+    "tier": 1,
+    "name": "Blitmap",
+    "note": "On-chain art collection"
+  },
+  {
+    "rank": 93,
+    "address": "0xdfde78d2baec499fe18f2be74b6c287eed9511d7",
+    "tier": 1,
+    "name": "BrainDrops",
+    "note": "AI art platform collection"
+  },
+  {
+    "rank": 94,
+    "address": "0x9251dEC8DF720C2ADF3B6f46d968107cbBADf4d4",
+    "tier": 1,
+    "name": "1337 skulls",
+    "note": "ERC721 replacement after removing KnownOrigin review item"
+  },
+  {
+    "rank": 95,
+    "address": "0x97ca7fe0b0288f5eb85f386fed876618fb9b8ab8",
+    "tier": 1,
+    "name": "Ether Cards Founder",
+    "note": "Ether Cards Founder collection"
+  },
+  {
+    "rank": 96,
+    "address": "0xc143bbfcdbdbed6d454803804752a064a622c1f3",
+    "tier": 1,
+    "name": "Async Blueprints",
+    "note": "Async Art blueprint collection"
+  },
+  {
+    "rank": 97,
+    "address": "0xd70f41dd5875eee7fa9dd8048567bc932124a8d2",
+    "tier": 1,
+    "name": "DeepBlack",
+    "note": "AI art collection"
+  },
+  {
+    "rank": 98,
+    "address": "0xbbfb6e466f376e493da35b5665dbfc19f7204231",
+    "tier": 1,
+    "name": "GEN.ART Airdrop Collection",
+    "note": "GEN.ART collection"
+  },
+  {
+    "rank": 99,
+    "address": "0x80416304142fa37929f8a4eee83ee7d2dac12d7c",
+    "tier": 1,
+    "name": "Generative Masks",
+    "note": "Generative Masks collection"
+  },
+  {
+    "rank": 100,
+    "address": "0x4b1705c75fde41e35e454ddd14e5d0a0eac06280",
+    "tier": 1,
+    "name": "Etheria v0.9",
+    "note": "Historic Ethereum virtual land collection"
+  }
+]

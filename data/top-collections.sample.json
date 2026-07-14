@@ -1,0 +1,12 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000001",
+    "tier": 4,
+    "name": "Example Tier S Collection"
+  },
+  {
+    "address": "0x0000000000000000000000000000000000000002",
+    "tier": 3,
+    "name": "Example Tier A Collection"
+  }
+]

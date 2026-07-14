@@ -1,0 +1,16 @@
+{
+  "profile": "mainnet",
+  "description": "Production parameters. Keep these for Ethereum mainnet deployment.",
+  "constants": {
+    "EPOCH_BLOCKS": 7200,
+    "COMMIT_BLOCKS": 4800,
+    "MINTS_PER_EPOCH": 333,
+    "MAX_ENDURANCE": 7200,
+    "COOLDOWN_BLOCKS": 40,
+    "UNKNOWN_HOLD_BLOCKS": 7200,
+    "CRYPTOPUNK_OBSERVATION_BLOCKS": 7200,
+    "UNKNOWN_MIN_TOTAL_SUPPLY": 1000,
+    "UNKNOWN_COLLECTION_DEVOUR_LIMIT": 100,
+    "ROYALTY_BPS": 300
+  }
+}

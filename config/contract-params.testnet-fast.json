@@ -1,0 +1,24 @@
+{
+  "profile": "testnet-fast",
+  "description": "Fast rehearsal parameters for public testnets. Do not use for mainnet.",
+  "constants": {
+    "EPOCH_BLOCKS": 12,
+    "COMMIT_BLOCKS": 4,
+    "MINTS_PER_EPOCH": 333,
+    "MAX_ENDURANCE": 120,
+    "COOLDOWN_BLOCKS": 1,
+    "UNKNOWN_HOLD_BLOCKS": 0,
+    "CRYPTOPUNK_OBSERVATION_BLOCKS": 32,
+    "UNKNOWN_MIN_TOTAL_SUPPLY": 1,
+    "UNKNOWN_COLLECTION_DEVOUR_LIMIT": 100,
+    "ROYALTY_BPS": 300
+  },
+  "expectedTiming": {
+    "commitPhaseBlocks": 4,
+    "revealPhaseBlocks": 8,
+    "fullMintCycleBlocks": 12,
+    "approxSepoliaCycleMinutesAt12sBlocks": 2.4,
+    "externalUnknownHoldBlocks": 0,
+    "huntCooldownBlocks": 1
+  }
+}

@@ -1,0 +1,1703 @@
+{
+  "generatedAt": "2026-07-01T11:00:18.346Z",
+  "inputPath": "data/top-collections.ethereum.curated.json",
+  "root": "0xcfd388334a04e188055199c93b09e9b65ff5e742380b7aecbd5d46c05e51358f",
+  "count": 100,
+  "tiers": {
+    "1": 30,
+    "2": 20,
+    "3": 20,
+    "4": 20,
+    "5": 10
+  },
+  "entries": [
+    {
+      "index": 0,
+      "rank": 1,
+      "address": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB",
+      "tier": 5,
+      "name": "CryptoPunks",
+      "note": "Historic blue-chip collection",
+      "proof": [
+        "0x212a6c4ed0014903e8997f5ed85e19a12d6cd1f6d9a1ecec7e0efa0cc8c51688",
+        "0x79e8d4af0909a743b572a9f4b3f7aad3792a7b004952d96e4ec1feadc64ff283",
+        "0x4ada01b9c05e66ac789ef672dbb33c37df4c375f090337bd1d1e725a9e6523f9",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 1,
+      "rank": 2,
+      "address": "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+      "tier": 5,
+      "name": "Bored Ape Yacht Club",
+      "note": "Yuga Labs flagship collection",
+      "proof": [
+        "0x6e21ba1954822c6aec0bb030446f4d82360f7b0339569572b3c41da4e6f797b5",
+        "0x79e8d4af0909a743b572a9f4b3f7aad3792a7b004952d96e4ec1feadc64ff283",
+        "0x4ada01b9c05e66ac789ef672dbb33c37df4c375f090337bd1d1e725a9e6523f9",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 2,
+      "rank": 3,
+      "address": "0x60E4d786628FeA6478F785A6d7e704777c86a7c6",
+      "tier": 5,
+      "name": "Mutant Ape Yacht Club",
+      "note": "Yuga Labs collection",
+      "proof": [
+        "0x62051d691f95f4501670bb2bdc87eafa0145b7d2b493c2014ee18906d195866e",
+        "0x3a65d14faf127b5ebc1fd107bf71fd85fab41adf7bcca586029fc0f569c98b1d",
+        "0x4ada01b9c05e66ac789ef672dbb33c37df4c375f090337bd1d1e725a9e6523f9",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 3,
+      "rank": 4,
+      "address": "0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258",
+      "tier": 5,
+      "name": "Otherdeed for Otherside",
+      "note": "Yuga Labs metaverse land collection",
+      "proof": [
+        "0xb418efc8daf293815054a96e2512198faeb93aa06c1bc75afc064b3602439677",
+        "0x3a65d14faf127b5ebc1fd107bf71fd85fab41adf7bcca586029fc0f569c98b1d",
+        "0x4ada01b9c05e66ac789ef672dbb33c37df4c375f090337bd1d1e725a9e6523f9",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 4,
+      "rank": 5,
+      "address": "0xED5AF388653567Af2F388E6224dC7C4b3241C544",
+      "tier": 5,
+      "name": "Azuki",
+      "note": "Anime PFP blue-chip collection",
+      "proof": [
+        "0x6f88be801baad86ae967e7e307515b4db19ae3b7299b6a8f752f7d90a59920ae",
+        "0xd63a1e49b21594663b06b00cb09a76800bac52366a9b2cb4e4efc0dcb02142e2",
+        "0x43bc6c5795b67078a2446e09ed32f4a5003f3f294a056fa68f66925c0c5a9d89",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 5,
+      "rank": 6,
+      "address": "0x49cF6f5d44E70224e2E23fDcdd2C053F30aDA28B",
+      "tier": 5,
+      "name": "CLONE X",
+      "note": "RTFKT / Nike collection",
+      "proof": [
+        "0x0be90a65d22a78953d7b29bfb53805eeeb75ac00f080e77c53c2cbaccf3fb826",
+        "0xd63a1e49b21594663b06b00cb09a76800bac52366a9b2cb4e4efc0dcb02142e2",
+        "0x43bc6c5795b67078a2446e09ed32f4a5003f3f294a056fa68f66925c0c5a9d89",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 6,
+      "rank": 7,
+      "address": "0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7",
+      "tier": 5,
+      "name": "Meebits",
+      "note": "Larva Labs / Yuga Labs collection",
+      "proof": [
+        "0x9b33f0e71fd0fc56b15ce66e47a0b85a274c6cab3e0222ced10144c3fe3b2fea",
+        "0xbff6b78cb7e568f6631a50100172621c74288cfbdcc99e2677ee99f1514ef31f",
+        "0x43bc6c5795b67078a2446e09ed32f4a5003f3f294a056fa68f66925c0c5a9d89",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 7,
+      "rank": 8,
+      "address": "0x23581767a106ae21c074b2276D25e5C3e136a68b",
+      "tier": 5,
+      "name": "Moonbirds",
+      "note": "PROOF collection",
+      "proof": [
+        "0x3c52631474fbf85ac8eaea1b30b0457020c21f68a70fa3827d0f676f4089c36b",
+        "0xbff6b78cb7e568f6631a50100172621c74288cfbdcc99e2677ee99f1514ef31f",
+        "0x43bc6c5795b67078a2446e09ed32f4a5003f3f294a056fa68f66925c0c5a9d89",
+        "0x2df3646bbca99cb5feccc0f6ebfc6e30d3713c7887ce355d384186a42b716b8f",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 8,
+      "rank": 9,
+      "address": "0x8a90cab2b38dba80c64b7734e58ee1db38b8992e",
+      "tier": 5,
+      "name": "Doodles",
+      "note": "Doodles original collection",
+      "proof": [
+        "0x650e017f1fce8ff43555fe9fa3945bf3ca29262db0f8d68cb38d509974dd22c3",
+        "0x2e02b9212fc879c35f676a3d8253672de154a4534c06018193cc9cfdb29bed9d",
+        "0x3dc37610dc31c895d415bd1ab2829bbace22c12c2d95e4b1c9e3cba4fe45728d",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 9,
+      "rank": 10,
+      "address": "0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6",
+      "tier": 5,
+      "name": "Wrapped CryptoPunks",
+      "note": "ERC721 wrapper for CryptoPunks",
+      "proof": [
+        "0x84fa4f6bdb6aa02344125a979b0853abd9a1ca49261c6287ddae895222273aba",
+        "0x2e02b9212fc879c35f676a3d8253672de154a4534c06018193cc9cfdb29bed9d",
+        "0x3dc37610dc31c895d415bd1ab2829bbace22c12c2d95e4b1c9e3cba4fe45728d",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 10,
+      "rank": 11,
+      "address": "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a",
+      "tier": 4,
+      "name": "Chromie Squiggle by Snowfro",
+      "note": "Art Blocks flagship generative-art collection",
+      "proof": [
+        "0x3d317a55133994d26c43dcbe06873d717b7f4027411748785e31b85b5b3cf82f",
+        "0x451c67d26f9757640c08464446ca7a8d2e7e7a88b17fff971acf28b704b3a9df",
+        "0x3dc37610dc31c895d415bd1ab2829bbace22c12c2d95e4b1c9e3cba4fe45728d",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 11,
+      "rank": 12,
+      "address": "0x9c8ff314C9Bc7F6e59A9d9225Fb22946427edc03",
+      "tier": 4,
+      "name": "Nouns",
+      "note": "Nouns DAO original collection",
+      "proof": [
+        "0x152fe55e3223caca03785fede09e594b766f2b0a7ea80872fbcb8ed3fbeff67d",
+        "0x451c67d26f9757640c08464446ca7a8d2e7e7a88b17fff971acf28b704b3a9df",
+        "0x3dc37610dc31c895d415bd1ab2829bbace22c12c2d95e4b1c9e3cba4fe45728d",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 12,
+      "rank": 13,
+      "address": "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+      "tier": 4,
+      "name": "ENS .eth Names",
+      "note": "ENS base registrar ERC721",
+      "proof": [
+        "0x205b4e789bf91af37834c5830ba4a3a539698ac94601e23966ee8bc047c71ba3",
+        "0xb68bbd2fdd0b7733f97efb6f2b211d16f3afa12e67c8175f8a47b1c0ad6e2ac5",
+        "0x9b353517884bc0e446ff28358427fd9ca69adebb8d9532a6a0a2964e126b1a13",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 13,
+      "rank": 14,
+      "address": "0xBd3531dA5CF5857e7CfAA92426877b022e612cf8",
+      "tier": 4,
+      "name": "Pudgy Penguins",
+      "note": "Pudgy Penguins original collection",
+      "proof": [
+        "0x5bacd16f5dbb21787509773a269e56749bc566974db193666a382d983a0d92fe",
+        "0xb68bbd2fdd0b7733f97efb6f2b211d16f3afa12e67c8175f8a47b1c0ad6e2ac5",
+        "0x9b353517884bc0e446ff28358427fd9ca69adebb8d9532a6a0a2964e126b1a13",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 14,
+      "rank": 15,
+      "address": "0x1A92f7381B9F03921564a437210bB9396471050C",
+      "tier": 4,
+      "name": "Cool Cats",
+      "note": "Cool Cats original collection",
+      "proof": [
+        "0xf5e425c1bbeb6d9832f657c080a7cd66c25ab439271f7ce0f026cbc97280dfd2",
+        "0x4595003537c17afe74f49797b003d9c5e4388b5b084de7c0140e9879ca7a247a",
+        "0x9b353517884bc0e446ff28358427fd9ca69adebb8d9532a6a0a2964e126b1a13",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 15,
+      "rank": 16,
+      "address": "0x1CB1A5e65610AEfF2551A50f76a87a7d3fB649C6",
+      "tier": 4,
+      "name": "CrypToadz",
+      "note": "CrypToadz by GREMPLIN",
+      "proof": [
+        "0xed4d3d269e4fe4232e44df29321ec6e2b597df8324f690808f3c8e176663db81",
+        "0x4595003537c17afe74f49797b003d9c5e4388b5b084de7c0140e9879ca7a247a",
+        "0x9b353517884bc0e446ff28358427fd9ca69adebb8d9532a6a0a2964e126b1a13",
+        "0x338d82e97c891ea1f6fba8c30ce29e4b72a1fbc8c782a6403985614c687978ef",
+        "0x631ed56e137fd36a75712c1357630391f1a18051f8c3fe8b52204551116dcbcf",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 16,
+      "rank": 17,
+      "address": "0x79FCDEF22feeD20eDDacbB2587640e45491b757f",
+      "tier": 4,
+      "name": "mfers",
+      "note": "mfers by sartoshi",
+      "proof": [
+        "0xefe3252bbf2216d491a40a896aea063acab5ea2ca424ba84f6ac04e88a3ebcd0",
+        "0x34d44f0345bbaf7e3ca59cd3c54902d47fd71cd9f875f6e7ab91cd803fa7c36c",
+        "0x3599be9fbaaf9fb97bf0d798cdc5cfa75bbd5ea1a667efe771d676c2c4605a9f",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 17,
+      "rank": 18,
+      "address": "0xb5c747561a185a146f83cfff25bdfd2455b31ff4",
+      "tier": 4,
+      "name": "Boss Beauties",
+      "note": "ERC721 replacement for non-standard Gutter Cat Gang entry",
+      "proof": [
+        "0x2e40053955a076e893593928c52bd041a35306d15ce1e5baab08ac735dd67bb1",
+        "0x34d44f0345bbaf7e3ca59cd3c54902d47fd71cd9f875f6e7ab91cd803fa7c36c",
+        "0x3599be9fbaaf9fb97bf0d798cdc5cfa75bbd5ea1a667efe771d676c2c4605a9f",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 18,
+      "rank": 19,
+      "address": "0xe785E82358879F061BC3dcAC6f0444462D4b5330",
+      "tier": 4,
+      "name": "World of Women",
+      "note": "World of Women original collection",
+      "proof": [
+        "0xf2958f12d1d155a03a59bb31e77c9312390b60ccc1d020c276c3632833a827bd",
+        "0x432a1b0c434a5d3c7680092b40767a45a169a16395cc7940fc39da44295255ee",
+        "0x3599be9fbaaf9fb97bf0d798cdc5cfa75bbd5ea1a667efe771d676c2c4605a9f",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 19,
+      "rank": 20,
+      "address": "0x57a204AA1042f6E66DD7730813f4024114d74f37",
+      "tier": 4,
+      "name": "CyberKongz",
+      "note": "CyberKongz Genesis collection",
+      "proof": [
+        "0xf7ae930ea69b42579bbf4d537aa858359664be40d5dcdcab35ec3bf312c9a079",
+        "0x432a1b0c434a5d3c7680092b40767a45a169a16395cc7940fc39da44295255ee",
+        "0x3599be9fbaaf9fb97bf0d798cdc5cfa75bbd5ea1a667efe771d676c2c4605a9f",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 20,
+      "rank": 21,
+      "address": "0x3bf2922f4520a8BA0c2eFC3D2a1539678DaD5e9D",
+      "tier": 4,
+      "name": "0N1 Force",
+      "note": "0N1 Force original collection",
+      "proof": [
+        "0x94cc4c55f5ffbf10710d06f13e7bf2628ab15d394e73d811ec4ceb6b25133ee5",
+        "0xcefd2cf7377509346852d94dd4f3bed575eca8a3da3d3bb832d832d359031e20",
+        "0x05b20f841c708fbee69966e607ef37f4806744683c531e559a767857abdd3891",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 21,
+      "rank": 22,
+      "address": "0x2acAb3DEa77832C09420663b0E1cB386031bA17B",
+      "tier": 4,
+      "name": "DeadFellaz",
+      "note": "DeadFellaz original collection",
+      "proof": [
+        "0x25e43fa85fc19cfd9cbd14aa3b942cee8d7156626cb8669ca928f5374bccad56",
+        "0xcefd2cf7377509346852d94dd4f3bed575eca8a3da3d3bb832d832d359031e20",
+        "0x05b20f841c708fbee69966e607ef37f4806744683c531e559a767857abdd3891",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 22,
+      "rank": 23,
+      "address": "0x960b7a6BCD451c9968473f7bbFd9Be826EFd549A",
+      "tier": 4,
+      "name": "OnChainMonkey",
+      "note": "OnChainMonkey original collection",
+      "proof": [
+        "0x6cc5d3fb40d82e3b3b10d3c81e2e9088d98155510f076ab6de7a43c9de6ca2b1",
+        "0x2352ce5be3c8eff376518bc2988b1b5f626970e0a8e0aedf6d035913f4121f92",
+        "0x05b20f841c708fbee69966e607ef37f4806744683c531e559a767857abdd3891",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 23,
+      "rank": 24,
+      "address": "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7",
+      "tier": 4,
+      "name": "Loot",
+      "note": "Loot original collection",
+      "proof": [
+        "0xdd20cdcd96c17b5491d03e1cb95b9122230745605611cd05642d13846a71f21c",
+        "0x2352ce5be3c8eff376518bc2988b1b5f626970e0a8e0aedf6d035913f4121f92",
+        "0x05b20f841c708fbee69966e607ef37f4806744683c531e559a767857abdd3891",
+        "0xc8e6f6c754d02046478560da0f5f73ee968aecb0f5091e2522d292afd0c98a0d",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 24,
+      "rank": 25,
+      "address": "0x0b4B2bA334f476C8F41bFe52A428D6891755554d",
+      "tier": 4,
+      "name": "JRNY NFT Club",
+      "note": "ERC721 replacement after removing Autoglyphs review item",
+      "proof": [
+        "0x8576019e7090bc3e8e0e04e9de79ba3db22f5352f63180bf73748c93001e9059",
+        "0x3ba2409374461ef5a5bdce6df61d7aee60722c9c97f2095f8793da0aadf1933a",
+        "0xbacf785402a7095d0d0968638c01596c63b9bdcb1f24495366d289a61e04fcb3",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 25,
+      "rank": 26,
+      "address": "0x1a2F71468F656E97c2F86541E57189F59951efe7",
+      "tier": 4,
+      "name": "CryptoMories",
+      "note": "ERC721 replacement after removing non-standard CryptoKitties",
+      "proof": [
+        "0xceaf150212c03581cb6f38f6940c8c71fc7c0a672231a91a8c2db346b96faf1d",
+        "0x3ba2409374461ef5a5bdce6df61d7aee60722c9c97f2095f8793da0aadf1933a",
+        "0xbacf785402a7095d0d0968638c01596c63b9bdcb1f24495366d289a61e04fcb3",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 26,
+      "rank": 27,
+      "address": "0xA3AEE8BCE55BEeA1951EF834b99f3Ac60d1ABeeB",
+      "tier": 4,
+      "name": "VeeFriends",
+      "note": "VeeFriends Series 1",
+      "proof": [
+        "0x8eab6705adf2103c4b8cf8252fd8604528d48d00c9b83f2e5ac5d82fcb7790aa",
+        "0x961a1e303c126b8be22a3f8b83642f6e632fa9fa66e6df400b6eecb074470ff4",
+        "0xbacf785402a7095d0d0968638c01596c63b9bdcb1f24495366d289a61e04fcb3",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 27,
+      "rank": 28,
+      "address": "0x9A534628B4062E123cE7Ee2222ec20B86e16Ca8F",
+      "tier": 4,
+      "name": "MekaVerse",
+      "note": "MekaVerse original collection",
+      "proof": [
+        "0xe57a7d05adaaf06f5a809bdff715d22b64dd03a498b184adebc5aa13edd0bd0a",
+        "0x961a1e303c126b8be22a3f8b83642f6e632fa9fa66e6df400b6eecb074470ff4",
+        "0xbacf785402a7095d0d0968638c01596c63b9bdcb1f24495366d289a61e04fcb3",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 28,
+      "rank": 29,
+      "address": "0x3FE1a4c1481c8351E91B64D5c398b159DE07cbc5",
+      "tier": 4,
+      "name": "SupDucks",
+      "note": "SupDucks original collection",
+      "proof": [
+        "0x40b691fe450668fee3aca10c2f6bcf3f3be5b255c4add74f6fe7189a2b614b26",
+        "0xea96587e5b0cabf5b09fc9a9c7fdfb62cc5542eedbecf01c9e6447571fc38d7c",
+        "0xa9b019c06770ba92b9a0f7c1e655c69e8464e8c823ec1ff70a3a405a3d883d1e",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 29,
+      "rank": 30,
+      "address": "0xC92cedDfb8dd984A89fb494c376f9A48b999aAFc",
+      "tier": 4,
+      "name": "Creature World",
+      "note": "Creature World original collection",
+      "proof": [
+        "0xa56d452a2bbf55eeb8b31e0388e2eb22121da3f4e054247267b1afe79a222cf9",
+        "0xea96587e5b0cabf5b09fc9a9c7fdfb62cc5542eedbecf01c9e6447571fc38d7c",
+        "0xa9b019c06770ba92b9a0f7c1e655c69e8464e8c823ec1ff70a3a405a3d883d1e",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 30,
+      "rank": 31,
+      "address": "0xba30e5f9bb24caa003e9f2f0497ad287fdf95623",
+      "tier": 3,
+      "name": "Bored Ape Kennel Club",
+      "note": "Yuga Labs companion collection",
+      "proof": [
+        "0xfdea6dc8d349d8678dd7c185883caa7f1218105a81826be840d7b28190328c59",
+        "0x83e2356eff82797f01e9b8aead10efd10f07221b3b04c73cddaa522546cb110d",
+        "0xa9b019c06770ba92b9a0f7c1e655c69e8464e8c823ec1ff70a3a405a3d883d1e",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 31,
+      "rank": 32,
+      "address": "0x306b1ea3ecdf94ab739f1910bbda052ed4a9f949",
+      "tier": 3,
+      "name": "BEANZ Official",
+      "note": "Azuki ecosystem collection",
+      "proof": [
+        "0x9816e8e7c04bb794865c702099dde55c35d85aedae99a951121ab3fe3ebd5268",
+        "0x83e2356eff82797f01e9b8aead10efd10f07221b3b04c73cddaa522546cb110d",
+        "0xa9b019c06770ba92b9a0f7c1e655c69e8464e8c823ec1ff70a3a405a3d883d1e",
+        "0x1dda9db7f1b05d22e065b62ab86ae4ff63ed3d2ff1d57b361c43609384e0cb1b",
+        "0xad44bd506c3a491c47ae90e1a0b4a51cb78b7a3f06dbcce3e2055496634670ec",
+        "0x1e174abe87e658e917e81ccf081800af5bcf352f19e2bb3f50f5eafce1a009b8",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 32,
+      "rank": 33,
+      "address": "0xc3f733ca98e0dad0386979eb96fb1722a1a05e69",
+      "tier": 3,
+      "name": "MoonCats - Acclimated",
+      "note": "Historic early Ethereum NFT collection",
+      "proof": [
+        "0x63b6d5c6671307e7060b05ec6d35d9ebc036747c6412b5194439ed6e6ffee0b7",
+        "0xa17c267d1c493fa71d0c700cc5314a20c94837a8bdc337788caa8b91ecf320bf",
+        "0x2cb4630ac58d5f83a811ed84d9b358cac140ac7f47b86928aa7d433298982747",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 33,
+      "rank": 34,
+      "address": "0x0cfb5d82be2b949e8fa73a656df91821e2ad99fd",
+      "tier": 3,
+      "name": "10KTF",
+      "note": "10KTF original collection",
+      "proof": [
+        "0xf1eb173a00b8f589014539748e0eb16785f2e34205812d0fb873af49686f008f",
+        "0xa17c267d1c493fa71d0c700cc5314a20c94837a8bdc337788caa8b91ecf320bf",
+        "0x2cb4630ac58d5f83a811ed84d9b358cac140ac7f47b86928aa7d433298982747",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 34,
+      "rank": 35,
+      "address": "0x45db714f24f5a313569c41683047f1d49e78ba07",
+      "tier": 3,
+      "name": "SpacePunksClub",
+      "note": "ERC721 replacement for non-standard 10KTF Stockroom entry",
+      "proof": [
+        "0x04d74122df953d3ff50bd45703ed4bc7138b653f19551a5f9afb81e3d3ca81d8",
+        "0x119fb9f37242892acd559aa696fee2c4f3c0d3790c531a7b9970b0187816c535",
+        "0x2cb4630ac58d5f83a811ed84d9b358cac140ac7f47b86928aa7d433298982747",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 35,
+      "rank": 36,
+      "address": "0xccdf1373040d9ca4b5be1392d1945c1dae4a862c",
+      "tier": 3,
+      "name": "PORSCHE 911",
+      "note": "ERC721 replacement for non-standard adidas Originals entry",
+      "proof": [
+        "0x5daf49c3c113e9ff121fccd356ab817cdd46f2f34276cd3c8097239f0cd64737",
+        "0x119fb9f37242892acd559aa696fee2c4f3c0d3790c531a7b9970b0187816c535",
+        "0x2cb4630ac58d5f83a811ed84d9b358cac140ac7f47b86928aa7d433298982747",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 36,
+      "rank": 37,
+      "address": "0x749f5ddf5ab4c1f26f74560a78300563c34b417d",
+      "tier": 3,
+      "name": "ALTS by adidas",
+      "note": "Adidas NFT collection",
+      "proof": [
+        "0x59a3e936fbf7cd70d0b5ca098861f88fcf243b2290e9bd630539fdf64414c7d4",
+        "0xf896bd28ee45491eb65adb61cf2157b62583eccde18178ef9cac8e017b0bc269",
+        "0x288ea1e5fd0eaf3c1542d7458b940f2de5b58239ecc1b8b011e25c189e864447",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 37,
+      "rank": 38,
+      "address": "0x123b30e25973fecd8354dd5f41cc45a3065ef88c",
+      "tier": 3,
+      "name": "alien frens",
+      "note": "Alien Frens original collection",
+      "proof": [
+        "0x1640f4813182424df4488ca1bf3d4ac209b2ce0b7a7cdd272adb68b9e373430e",
+        "0xf896bd28ee45491eb65adb61cf2157b62583eccde18178ef9cac8e017b0bc269",
+        "0x288ea1e5fd0eaf3c1542d7458b940f2de5b58239ecc1b8b011e25c189e864447",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 38,
+      "rank": 39,
+      "address": "0xaad35c2dadbe77f97301617d82e661776c891fa9",
+      "tier": 3,
+      "name": "Akutars",
+      "note": "Akutars original collection",
+      "proof": [
+        "0x2b164a6aa3f3653f4a38797a0cbf5f6ac63476e1e19abb66f3afbb9ce68b339f",
+        "0xad014b2b19374ae129b30724a1292dc41c607c59d2a638602c16f2ae668ad6e1",
+        "0x288ea1e5fd0eaf3c1542d7458b940f2de5b58239ecc1b8b011e25c189e864447",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 39,
+      "rank": 40,
+      "address": "0xd0318da435dbce0b347cc6faa330b5a9889e3585",
+      "tier": 3,
+      "name": "ASM Brains",
+      "note": "Altered State Machine Brains collection",
+      "proof": [
+        "0x4d4254beff4b04280cc85f3251a6b597542244c5be792b970de3c5c091d650de",
+        "0xad014b2b19374ae129b30724a1292dc41c607c59d2a638602c16f2ae668ad6e1",
+        "0x288ea1e5fd0eaf3c1542d7458b940f2de5b58239ecc1b8b011e25c189e864447",
+        "0x1e6a0e08b6ea67dd828bfe5bd81bcaae00e684f693b3ec6af2b38aa4f1fe756c",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 40,
+      "rank": 41,
+      "address": "0x86fc6f6c6702ceF7d3BaE87eF41256715416DB71",
+      "tier": 3,
+      "name": "Jadu AVA",
+      "note": "Jadu AVA collection",
+      "proof": [
+        "0xb783c88837adf59568f0191357f7371cfff75e6a576c77cd770965d037163c5e",
+        "0x55423f7f51c152a7075533365047b3cbdfe864e638e9a9f9f5afd178e61cdaba",
+        "0x5bf32740734ad4352e1be5beb336254bad598490084ebedc3188a4cb8e1b875e",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 41,
+      "rank": 42,
+      "address": "0xf3e778f839934fc819cfa1040aabacecba01e049",
+      "tier": 3,
+      "name": "Avastars",
+      "note": "Early on-chain generative avatar collection",
+      "proof": [
+        "0xb93a61d6060073d01f3846bd5cfae573ccc8a2da08006c1a573c48171ac2c92d",
+        "0x55423f7f51c152a7075533365047b3cbdfe864e638e9a9f9f5afd178e61cdaba",
+        "0x5bf32740734ad4352e1be5beb336254bad598490084ebedc3188a4cb8e1b875e",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 42,
+      "rank": 43,
+      "address": "0x05745e72fb8b4a9b51118a168d956760e4a36444",
+      "tier": 3,
+      "name": "NFT Worlds Genesis Avatars",
+      "note": "NFT Worlds avatar collection",
+      "proof": [
+        "0xec61ac1cc82883619ab4426bed3c0cc52bb72f3ea39839d3379626366c5af8f3",
+        "0x5c8914c7114588b69518614707ca682e4bcfc68388dd7047eb98220805f135fb",
+        "0x5bf32740734ad4352e1be5beb336254bad598490084ebedc3188a4cb8e1b875e",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 43,
+      "rank": 44,
+      "address": "0x7ab2352b1d2e185560494d5e577f9d3c238b78c5",
+      "tier": 3,
+      "name": "Adam Bomb Squad",
+      "note": "The Hundreds NFT collection",
+      "proof": [
+        "0x8a0ea1e8609d6cd75387d5f7467c654bb793b59a15b0af5d6e427fb1e670ab29",
+        "0x5c8914c7114588b69518614707ca682e4bcfc68388dd7047eb98220805f135fb",
+        "0x5bf32740734ad4352e1be5beb336254bad598490084ebedc3188a4cb8e1b875e",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 44,
+      "rank": 45,
+      "address": "0xb4d06d46a8285f4ec79fd294f78a881799d8ced9",
+      "tier": 3,
+      "name": "3Landers",
+      "note": "3Landers original collection",
+      "proof": [
+        "0xe3af91aa7d50441298c9226af4deb7345e03f089abc2b7a7db63ba3e3376fb16",
+        "0xca146589930dd854a9a1f0b37be34fcd02021481727cba801e8d695a5906b3ce",
+        "0x44c77248f9041280d19eaf9b23f037820828875400768205ada86adafaaf45df",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 45,
+      "rank": 46,
+      "address": "0x740c178e10662bBb050BDE257bFA318dEfE3cabC",
+      "tier": 3,
+      "name": "8liens NFT",
+      "note": "8liens original collection",
+      "proof": [
+        "0x8230814030263cc2ea09470af8320bb58563ccb810f5e6221d848dd9b5858bd6",
+        "0xca146589930dd854a9a1f0b37be34fcd02021481727cba801e8d695a5906b3ce",
+        "0x44c77248f9041280d19eaf9b23f037820828875400768205ada86adafaaf45df",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 46,
+      "rank": 47,
+      "address": "0x198478f870d97d62d640368d111b979d7ca3c38f",
+      "tier": 3,
+      "name": "8SIAN",
+      "note": "8SIAN original collection",
+      "proof": [
+        "0x5bc7b21337ceefa0b71330789860f1b36d2d29ea35771264e17f71aa502ff1ec",
+        "0x321b8165545b9eaca0c6d69bf364ae75c99877aaa97b0114e363eb877fe81279",
+        "0x44c77248f9041280d19eaf9b23f037820828875400768205ada86adafaaf45df",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 47,
+      "rank": 48,
+      "address": "0x18df6c571f6fe9283b87f910e41dc5c8b77b7da5",
+      "tier": 3,
+      "name": "Animetas",
+      "note": "Animetas original collection",
+      "proof": [
+        "0xbaecf7005371362ea0d070d13483d02af082d1a8b70b90ef74b139e291d954f8",
+        "0x321b8165545b9eaca0c6d69bf364ae75c99877aaa97b0114e363eb877fe81279",
+        "0x44c77248f9041280d19eaf9b23f037820828875400768205ada86adafaaf45df",
+        "0xead99b3f38862d5c5537fd54ea2319f6da216dbad92831b194e018bea2bf40ca",
+        "0x2405c43dbaae656a48339d94559f137949902a7b468d014b02fbfd032f1e83c5",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 48,
+      "rank": 49,
+      "address": "0x7e3ef31186d1bec0d3f35ad701d065743b84c790",
+      "tier": 3,
+      "name": "Antonym: GENESIS",
+      "note": "Antonym Genesis collection",
+      "proof": [
+        "0x51e439c4b959de3b0178d70ed4067df7776cc9a8e9310b57d1df69319170845a",
+        "0xf442b00d27cfd7fa28c9bfa0a724d978b753fbf29da6f381a1db13bcab50e982",
+        "0x3c533db28ec71088b6539a73fc94aae43748ce79477bfe6a16324e6199a46c80",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 49,
+      "rank": 50,
+      "address": "0x12f28e2106ce8fd8464885b80ea865e98b465149",
+      "tier": 3,
+      "name": "BEEPLE - GENESIS COLLECTION",
+      "note": "Beeple Genesis collection",
+      "proof": [
+        "0xad7c0d9b22220ca8889254c9c1da879790b62dcd881173a26edaeabf94067732",
+        "0xf442b00d27cfd7fa28c9bfa0a724d978b753fbf29da6f381a1db13bcab50e982",
+        "0x3c533db28ec71088b6539a73fc94aae43748ce79477bfe6a16324e6199a46c80",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 50,
+      "rank": 51,
+      "address": "0xc2c747e0f7004f9e8817db2ca4997657a7746928",
+      "tier": 2,
+      "name": "Hashmasks",
+      "note": "Historic identity art collection",
+      "proof": [
+        "0x2031df1c0b9ce462c0d0e4fbb2091ede586e508b3754e754d38f4adbbc677a80",
+        "0x656c94ee5edfb338897212d7738342ee6e394c71089d43c262e71c27ddd0f61a",
+        "0x3c533db28ec71088b6539a73fc94aae43748ce79477bfe6a16324e6199a46c80",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 51,
+      "rank": 52,
+      "address": "0x769272677fab02575e84945f03eca517acc544cc",
+      "tier": 2,
+      "name": "The Captainz",
+      "note": "Memeland flagship collection",
+      "proof": [
+        "0x13bedbaf9806e882a7ae4e4e5f268ec1bd31ef1dcc7d5142eadc212cc4f89cd9",
+        "0x656c94ee5edfb338897212d7738342ee6e394c71089d43c262e71c27ddd0f61a",
+        "0x3c533db28ec71088b6539a73fc94aae43748ce79477bfe6a16324e6199a46c80",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 52,
+      "rank": 53,
+      "address": "0x8821bee2ba0df28761afff119d66390d594cd280",
+      "tier": 2,
+      "name": "DeGods",
+      "note": "Ethereum DeGods collection",
+      "proof": [
+        "0x11a88711ed6b57bb76c1705a061150c77662f61e6c5198079730cd8129088316",
+        "0xa166996dfcbfb989b2178d58a1ee129595829384adadcf6009f2d4a2f3d084c0",
+        "0xc6158908a29d0a5dc7d3fdf613364f62dd806afab426348dd70ad8315f9561f3",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 53,
+      "rank": 54,
+      "address": "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e",
+      "tier": 2,
+      "name": "Azuki Elementals",
+      "note": "Azuki ecosystem collection",
+      "proof": [
+        "0xa1bbeaa5af9336fc180b352dc8d63de5f2b9ac1c8d47bf5b63218143466e2e44",
+        "0xa166996dfcbfb989b2178d58a1ee129595829384adadcf6009f2d4a2f3d084c0",
+        "0xc6158908a29d0a5dc7d3fdf613364f62dd806afab426348dd70ad8315f9561f3",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 54,
+      "rank": 55,
+      "address": "0x4b15a9c28034dc83db40cd810001427d3bd7163d",
+      "tier": 2,
+      "name": "HV-MTL",
+      "note": "Yuga Labs HV-MTL collection",
+      "proof": [
+        "0x841150f9fdd205a5c267bb6525c186ce6d9d5ab8fd536ec2064b9c659dc16e82",
+        "0xd76c9c2171f4926ab2dd158176275f02bc35a98bcea9b816f49017f706d4b374",
+        "0xc6158908a29d0a5dc7d3fdf613364f62dd806afab426348dd70ad8315f9561f3",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 55,
+      "rank": 56,
+      "address": "0xe012baf811cf9c05c408e879c399960d1f305903",
+      "tier": 2,
+      "name": "Otherside Koda",
+      "note": "Otherside Koda collection",
+      "proof": [
+        "0x28ba1e6ef0fa5e0ac7b67d8da2bfeac852252620ea9e5eea01e40e0d8e074a0b",
+        "0xd76c9c2171f4926ab2dd158176275f02bc35a98bcea9b816f49017f706d4b374",
+        "0xc6158908a29d0a5dc7d3fdf613364f62dd806afab426348dd70ad8315f9561f3",
+        "0xf8c690f52e787666687d7d4dd1ecfca84bc3bc8a1f6447e0519e618989e94a8f",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 56,
+      "rank": 57,
+      "address": "0x790b2cf29ed4f310bf7641f013c65d4560d28371",
+      "tier": 2,
+      "name": "Otherdeed Expanded",
+      "note": "Otherside ecosystem collection",
+      "proof": [
+        "0xc05af79cced07fb7ea33b922c3d8498826219d6befd4f0787d85e5739d39889f",
+        "0x96e29da64074cb598522d85f1607b6cca3bea113a7b6edba25e9e11fe8041b63",
+        "0xb649b744237279585b379cf38325252fc059a8f78ac987547f9ec1a46f5d9c0e",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 57,
+      "rank": 58,
+      "address": "0x1c49ed56da6be87b804bc1b8b817a259aa3132ed",
+      "tier": 2,
+      "name": "99 Originals",
+      "note": "ERC721 replacement for non-standard Bored Ape Chemistry Club entry",
+      "proof": [
+        "0x6c886f7f93124a2499c78ce9b62a9b980806afb2e31f146b04cb7e07f7447702",
+        "0x96e29da64074cb598522d85f1607b6cca3bea113a7b6edba25e9e11fe8041b63",
+        "0xb649b744237279585b379cf38325252fc059a8f78ac987547f9ec1a46f5d9c0e",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 58,
+      "rank": 59,
+      "address": "0x1eb7382976077f92cf25c27cc3b900a274fd0012",
+      "tier": 2,
+      "name": "Bored Ape Comic",
+      "note": "Bored Ape ecosystem comic collection",
+      "proof": [
+        "0x9fc43037001ddd36047fff9e774c83c1e0431acfe0b4bee61bff51944c11a711",
+        "0x648ee4e1b696c35c47e645963e19b01c4ad741d6870d30ced967a5492fbe13be",
+        "0xb649b744237279585b379cf38325252fc059a8f78ac987547f9ec1a46f5d9c0e",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 59,
+      "rank": 60,
+      "address": "0x128675d4fddbc4a0d3f8aa777d8ee0fb8b427c2f",
+      "tier": 2,
+      "name": "PUNKS Comic",
+      "note": "PUNKS Comic collection",
+      "proof": [
+        "0xfce0c1a7a53e9c455a9fbf4141028b6dd5c87fa572176a461a3418816feabc9e",
+        "0x648ee4e1b696c35c47e645963e19b01c4ad741d6870d30ced967a5492fbe13be",
+        "0xb649b744237279585b379cf38325252fc059a8f78ac987547f9ec1a46f5d9c0e",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 60,
+      "rank": 61,
+      "address": "0x572e33ffa523865791ab1c26b42a86ac244df784",
+      "tier": 2,
+      "name": "10KTF Gucci Grail",
+      "note": "10KTF ecosystem collaboration",
+      "proof": [
+        "0xdda88399194128921c5f91abfcd0dc87386ea41d447a8e9d8c54d2adbbd326a9",
+        "0xa1d11bbfb3271ac43ecadaead92828950d0d753a9583dbbb8ae1d3705af6ac21",
+        "0x642c402f7bc7cda976c18e5428e9099cd1294535232b8f4e4cdf827693c909ee",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 61,
+      "rank": 62,
+      "address": "0x7ea3cca10668b8346aec0bf1844a49e995527c8b",
+      "tier": 2,
+      "name": "CyberKongz VX",
+      "note": "CyberKongz ecosystem collection",
+      "proof": [
+        "0x31f7655e31c2693934a87ccb96ae987bf03e2675a4466e5e7025317edf3d3517",
+        "0xa1d11bbfb3271ac43ecadaead92828950d0d753a9583dbbb8ae1d3705af6ac21",
+        "0x642c402f7bc7cda976c18e5428e9099cd1294535232b8f4e4cdf827693c909ee",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 62,
+      "rank": 63,
+      "address": "0x1f7c16fce4fc894143afb5545bf04f676bf7dcf3",
+      "tier": 2,
+      "name": "CyberKongz Genkai",
+      "note": "CyberKongz Genkai collection",
+      "proof": [
+        "0x0b0fd972ac81a46bb7568c4d9215e302ff9a3d52ab5ac8f3ae5bd25ff2d8e24c",
+        "0xc47bafa346a30ab6387da28c468128951824a8b951e4d3ff7f1633a54c7e5a20",
+        "0x642c402f7bc7cda976c18e5428e9099cd1294535232b8f4e4cdf827693c909ee",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 63,
+      "rank": 64,
+      "address": "0x6e9da81ce622fb65abf6a8d8040e460ff2543add",
+      "tier": 2,
+      "name": "Gutter Dogs",
+      "note": "Gutter Cat Gang ecosystem collection",
+      "proof": [
+        "0x5848e20b8143a857017411e8ce7124f71dbf33d830f9ca256995db17973f978e",
+        "0xc47bafa346a30ab6387da28c468128951824a8b951e4d3ff7f1633a54c7e5a20",
+        "0x642c402f7bc7cda976c18e5428e9099cd1294535232b8f4e4cdf827693c909ee",
+        "0xbc8a75fa873e311ef3b16c8a9ea415cc86f33d70d31e8407f042976d4accbb56",
+        "0x5e29858a211815796c844ac17ad51534034c25ad7ba27cfa3353ae336c2d70dd",
+        "0x227ab304071980e888422027bacf5c279da96bee0291916df2d59bb0094070f3",
+        "0x88812071e7340eb36c8aaee59e3ad200d9ba3059aa852c8e04710be071a2e8e9"
+      ]
+    },
+    {
+      "index": 64,
+      "rank": 65,
+      "address": "0x950b9476a4de757bb134483029ac4ec17e739e3a",
+      "tier": 2,
+      "name": "Gutter Pigeons",
+      "note": "Gutter Cat Gang ecosystem collection",
+      "proof": [
+        "0xcff9cf73b9c405284afa059f31932f4497f7984e0b1291938ab3d62db38fecca",
+        "0xa5c4a5fdd94d099eefe00755c087105dff729c247ed52dfa4f23354e3a3e979f",
+        "0x97f4f095d5d56a1753cb534f44b2edea4cbf7ca87911288ec896c0c1380ae9c7",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 65,
+      "rank": 66,
+      "address": "0x41f20599e9e049004c4d169046eb7023117a6244",
+      "tier": 2,
+      "name": "Gutter Clones",
+      "note": "Gutter Cat Gang ecosystem collection",
+      "proof": [
+        "0xec8270223ccedb188567184feb80208efb3c9cc24008de4a82288eab4caff6b6",
+        "0xa5c4a5fdd94d099eefe00755c087105dff729c247ed52dfa4f23354e3a3e979f",
+        "0x97f4f095d5d56a1753cb534f44b2edea4cbf7ca87911288ec896c0c1380ae9c7",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 66,
+      "rank": 67,
+      "address": "0x60bb1e2aa1c9acafb4d34f71585d7e959f387769",
+      "tier": 2,
+      "name": "Art Gobblers",
+      "note": "Art Gobblers collection",
+      "proof": [
+        "0x494c3f87f9b02d796e532679df34463748494b968b91d41fb202accaed220996",
+        "0x7f7ca2a6669c7e202080bb4fd7ca8be71c5f271c16b3dbb3fac8227a683177f4",
+        "0x97f4f095d5d56a1753cb534f44b2edea4cbf7ca87911288ec896c0c1380ae9c7",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 67,
+      "rank": 68,
+      "address": "0x5946aeaab44e65eb370ffaa6a7ef2218cff9b47d",
+      "tier": 2,
+      "name": "Creepz by OVERLORD",
+      "note": "Creepz genesis collection",
+      "proof": [
+        "0x69f4d1858f3395d24e85785eb42490739834a8b8f3bb97d63ad7e14a30b8af1e",
+        "0x7f7ca2a6669c7e202080bb4fd7ca8be71c5f271c16b3dbb3fac8227a683177f4",
+        "0x97f4f095d5d56a1753cb534f44b2edea4cbf7ca87911288ec896c0c1380ae9c7",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 68,
+      "rank": 69,
+      "address": "0x307af7d28afee82092aa95d35644898311ca5360",
+      "tier": 2,
+      "name": "Chimpers",
+      "note": "ERC721 replacement for non-standard Creepz Invasion Pass entry",
+      "proof": [
+        "0x81a256d7e9295108c13f937befb5e900f52f8e1a4f3f47b867bf48517e6b7426",
+        "0x2c25d42d22b47be1fc7135ee65362b851a1a3212301c950de951834c21afa5ea",
+        "0x1c72557bfbdbc6e00f75f25e6edb595fe8b501a3ca40324ec4bf4c7d732b1f86",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 69,
+      "rank": 70,
+      "address": "0x160c404b2b49cbc3240055ceaee026df1e8497a0",
+      "tier": 2,
+      "name": "PXN: Ghost Division",
+      "note": "PXN collection",
+      "proof": [
+        "0xfcca69c54592d6e0b8fd15e41ebcc1a78efe3d60c4bd071c5a946b7f654b6da0",
+        "0x2c25d42d22b47be1fc7135ee65362b851a1a3212301c950de951834c21afa5ea",
+        "0x1c72557bfbdbc6e00f75f25e6edb595fe8b501a3ca40324ec4bf4c7d732b1f86",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 70,
+      "rank": 71,
+      "address": "0x4db1f25d3d98600140dfc18deb7515be5bd293af",
+      "tier": 1,
+      "name": "Hape Prime",
+      "note": "Hape Prime collection",
+      "proof": [
+        "0x5fa069cc6676de2a176fcf7041d757093f3900fec4d6352940d927be6c5d8ea9",
+        "0xb2ddb17d910277b2f9378f1ad7c6900079fe4a3e3a3a4ee978fd7e1c9fcc9616",
+        "0x1c72557bfbdbc6e00f75f25e6edb595fe8b501a3ca40324ec4bf4c7d732b1f86",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 71,
+      "rank": 72,
+      "address": "0x59468516a8259058bad1ca5f8f4bff190d30e066",
+      "tier": 1,
+      "name": "Invisible Friends",
+      "note": "Invisible Friends collection",
+      "proof": [
+        "0xefe3093cd6623319efbc2131767874c90191dc7f871b02f5341486121cff0b8f",
+        "0xb2ddb17d910277b2f9378f1ad7c6900079fe4a3e3a3a4ee978fd7e1c9fcc9616",
+        "0x1c72557bfbdbc6e00f75f25e6edb595fe8b501a3ca40324ec4bf4c7d732b1f86",
+        "0x311d0eeefacc5d559d2c670c75c68f78ff6f6ebca71278d66518f2e4c5f81c7d",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 72,
+      "rank": 73,
+      "address": "0x49c36afa15c7fdbd57ce3d61d80f39b6615a76ef",
+      "tier": 1,
+      "name": "3D Invisible Friends",
+      "note": "Invisible Friends ecosystem collection",
+      "proof": [
+        "0xefa54b0b2d8e5a707dc28fa7fc5ab86056d6d8e9f2ce68e53bf821323ac8d864",
+        "0x76f0b68b8ece4783afef96b9c32fe3ad39ced8e0ccdbb9896e41ed78a90bd29e",
+        "0x99a03a866d499c4af15f03651eab306158b7969170b4d2c7e04fcb83e7d40944",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 73,
+      "rank": 74,
+      "address": "0xa5c0bd78d1667c13bfb403e2a3336871396713c5",
+      "tier": 1,
+      "name": "Coolman's Universe",
+      "note": "Coolman Universe collection",
+      "proof": [
+        "0x67d602ff790b9b3dc6b189823594865fd08cc0d2ccdeeff61f9384f305590f5b",
+        "0x76f0b68b8ece4783afef96b9c32fe3ad39ced8e0ccdbb9896e41ed78a90bd29e",
+        "0x99a03a866d499c4af15f03651eab306158b7969170b4d2c7e04fcb83e7d40944",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 74,
+      "rank": 75,
+      "address": "0xfcb1315c4273954f74cb16d5b663dbf479eec62e",
+      "tier": 1,
+      "name": "Capsule House",
+      "note": "Capsule House collection",
+      "proof": [
+        "0x8de619c746030f7e32b0f86dd178c7f824d66bd85090f89bbabada5a458a463c",
+        "0xf02a0bb56f415eca78e523bf9d4f89ebd1c49b80a59c7a6cca46a3ae9f057e46",
+        "0x99a03a866d499c4af15f03651eab306158b7969170b4d2c7e04fcb83e7d40944",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 75,
+      "rank": 76,
+      "address": "0xd2f668a8461d6761115daf8aeb3cdf5f40c532c6",
+      "tier": 1,
+      "name": "Karafuru",
+      "note": "Karafuru collection",
+      "proof": [
+        "0x48d4fc385084a5965bd3dcf296a9a59e1631c85484955f82536ff7e9749a9fa9",
+        "0xf02a0bb56f415eca78e523bf9d4f89ebd1c49b80a59c7a6cca46a3ae9f057e46",
+        "0x99a03a866d499c4af15f03651eab306158b7969170b4d2c7e04fcb83e7d40944",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 76,
+      "rank": 77,
+      "address": "0x701a038af4bd0fc9b69a829ddcb2f61185a49568",
+      "tier": 1,
+      "name": "KIWAMI Genesis",
+      "note": "Kiwami Genesis collection",
+      "proof": [
+        "0xd4294cc507f60bc1f6237ba25069dbc84ac74743160fc26d6648007475c3d2e1",
+        "0x666e92c15599d5872bdba562ee8d49b95d71fce18f048437fc34e4830f55d049",
+        "0x5b05db939ca089d8339c0e47e0fdd9aaf9102f7bdf6aaf94dd554180dc27f81b",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 77,
+      "rank": 78,
+      "address": "0x0c2e57efddba8c768147d1fdf9176a0a6ebd5d83",
+      "tier": 1,
+      "name": "Kaiju Kingz",
+      "note": "Kaiju Kingz collection",
+      "proof": [
+        "0x69c5cf7763314d0240ebdbed8d009e8aa3b95cc532901f2570f8905a8410e887",
+        "0x666e92c15599d5872bdba562ee8d49b95d71fce18f048437fc34e4830f55d049",
+        "0x5b05db939ca089d8339c0e47e0fdd9aaf9102f7bdf6aaf94dd554180dc27f81b",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 78,
+      "rank": 79,
+      "address": "0xc99c679c50033bbc5321eb88752e89a93e9e83c5",
+      "tier": 1,
+      "name": "KILLABEARS",
+      "note": "KILLABEARS collection",
+      "proof": [
+        "0x5e1e083823110463aed8b06111ba557745674335192ea5ad5ad2c956f7f6b7d4",
+        "0x8ea12053c39fa2110862b6a5f7b64f3fed220b249071dc3d26d2ff0827bc4473",
+        "0x5b05db939ca089d8339c0e47e0fdd9aaf9102f7bdf6aaf94dd554180dc27f81b",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 79,
+      "rank": 80,
+      "address": "0xd1258db6ac08eb0e625b75b371c023da478e94a9",
+      "tier": 1,
+      "name": "DigiDaigaku",
+      "note": "DigiDaigaku genesis collection",
+      "proof": [
+        "0x55cf0b2ce7f998d792039ebf0232a57867ce7a6ed74037d3009ed97ddff22758",
+        "0x8ea12053c39fa2110862b6a5f7b64f3fed220b249071dc3d26d2ff0827bc4473",
+        "0x5b05db939ca089d8339c0e47e0fdd9aaf9102f7bdf6aaf94dd554180dc27f81b",
+        "0x7223c15f5b239369422558a694881c4c276e8cc4428b19943bf327b951574e0b",
+        "0x74713f2ded759231f93eda05cf8d44a6608fdc809c210c1459ddd2d225229c3d",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 80,
+      "rank": 81,
+      "address": "0x466cfcd0525189b573e794f554b8a751279213ac",
+      "tier": 1,
+      "name": "Dooplicator",
+      "note": "Doodles ecosystem collection",
+      "proof": [
+        "0xb0c790d3c8d32003c260023daa7c1ebe7b78c29743e7fedc7b80bed0589f7c62",
+        "0x1fb38ac228d6d344a1bcdcf6d45721a2b53088efed99536fc6244e28f7911cf2",
+        "0x705fb8836744f48aa44b2890fd53a385877ca83f9642453854a88c7a77cc10e6",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 81,
+      "rank": 82,
+      "address": "0xccc441ac31f02cd96c153db6fd5fe0a2f4e6a68d",
+      "tier": 1,
+      "name": "FLUF World",
+      "note": "FLUF World collection",
+      "proof": [
+        "0xf474391cead9780348d7fc940b07d9212f89ef581e64e90b92a4c9bd7a04e1f6",
+        "0x1fb38ac228d6d344a1bcdcf6d45721a2b53088efed99536fc6244e28f7911cf2",
+        "0x705fb8836744f48aa44b2890fd53a385877ca83f9642453854a88c7a77cc10e6",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 82,
+      "rank": 83,
+      "address": "0x575ec01a9e70bf3e192a774eb265c46ec993e4cc",
+      "tier": 1,
+      "name": "FLUF World: EGGs",
+      "note": "FLUF World ecosystem collection",
+      "proof": [
+        "0x8fd770b9b7db132a427211e168d5340c303ce4eb5c068bbb30186ea02c76ddc5",
+        "0x15cdb63122b4ded6e1022ac97d083f14e69aa136fd7befbd35b8eb246095bf9c",
+        "0x705fb8836744f48aa44b2890fd53a385877ca83f9642453854a88c7a77cc10e6",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 83,
+      "rank": 84,
+      "address": "0xbd275ce24f32d6ce4e9d9519c55abe9bc0ed7fcf",
+      "tier": 1,
+      "name": "BYOPills",
+      "note": "BYOPills collection",
+      "proof": [
+        "0xc236a404f4c647e93c702f7af8f325daec2a4458c37519c297a1ad543f569d9e",
+        "0x15cdb63122b4ded6e1022ac97d083f14e69aa136fd7befbd35b8eb246095bf9c",
+        "0x705fb8836744f48aa44b2890fd53a385877ca83f9642453854a88c7a77cc10e6",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 84,
+      "rank": 85,
+      "address": "0xbda2481db91fc0f942ed3f53de378ba45ba9d17e",
+      "tier": 1,
+      "name": "Wolf Game - Farmer",
+      "note": "Wolf Game ecosystem collection",
+      "proof": [
+        "0x25fd6bac31c1ee3d0cfc791a3c2d1c916394d790894bdaf4f3d24d9c194d5a30",
+        "0xafcdf741716cd155ce4349126af92173ff5c01637e4e1344c163fda1e2044801",
+        "0x4cf5df327d53bfd772928905c86f78e405707fc47c5cf118f9ad1ebceee7b00a",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 85,
+      "rank": 86,
+      "address": "0x892848074ddea461a15f337250da3ce55580ca85",
+      "tier": 1,
+      "name": "CyberBrokers",
+      "note": "CyberBrokers collection",
+      "proof": [
+        "0x258ccdcabae8d300003b4e239d94f9b3243efdb3f14d9800141cb68ba401bc91",
+        "0xafcdf741716cd155ce4349126af92173ff5c01637e4e1344c163fda1e2044801",
+        "0x4cf5df327d53bfd772928905c86f78e405707fc47c5cf118f9ad1ebceee7b00a",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 86,
+      "rank": 87,
+      "address": "0xf4ee95274741437636e748ddac70818b4ed7d043",
+      "tier": 1,
+      "name": "The Doge Pound",
+      "note": "Doge Pound collection",
+      "proof": [
+        "0x5f991f3046f9da70b785f51ea70882808b0bbed2bbb3bf4da26c449712b5a169",
+        "0x660110c2304410da987e3f8f1eff7d4ef27072f3b29d3f35b86720226cd3ff62",
+        "0x4cf5df327d53bfd772928905c86f78e405707fc47c5cf118f9ad1ebceee7b00a",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 87,
+      "rank": 88,
+      "address": "0x42069abfe407c60cf4ae4112bedead391dba1cdb",
+      "tier": 1,
+      "name": "CryptoDickbutts",
+      "note": "CryptoDickbutts collection",
+      "proof": [
+        "0xbba52b8a52ca4292d519a84fcd03754559fd90b5151ece29b0eca97a9ccdb284",
+        "0x660110c2304410da987e3f8f1eff7d4ef27072f3b29d3f35b86720226cd3ff62",
+        "0x4cf5df327d53bfd772928905c86f78e405707fc47c5cf118f9ad1ebceee7b00a",
+        "0x43af8419a2a43cb8b407e81281ea19da7de98934660ad5690505088882f9fd90",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 88,
+      "rank": 89,
+      "address": "0x34eebee6942d8def3c125458d1a86e0a897fd6f9",
+      "tier": 1,
+      "name": "Checks - VV Edition",
+      "note": "Checks VV edition collection",
+      "proof": [
+        "0xdd56b472a2ec5821529cbbf91f25e930450a15d61a8f3bd72971c637a25974ad",
+        "0xa8c43551667b9827e3f1f577e1dfd89efd644cf3887c66c14daf14fc725f5ab6",
+        "0x8eb452fb62234282d7bf1f044ca0134c86920615b054b724f21ff85bc8e15317",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 89,
+      "rank": 90,
+      "address": "0x036721e5a769cc48b3189efbb9cce4471e8a48b1",
+      "tier": 1,
+      "name": "Checks",
+      "note": "Checks original collection",
+      "proof": [
+        "0x82e74e19f1d79641df848b926cc6c1e10421ba23f47446e5f057938f0510d705",
+        "0xa8c43551667b9827e3f1f577e1dfd89efd644cf3887c66c14daf14fc725f5ab6",
+        "0x8eb452fb62234282d7bf1f044ca0134c86920615b054b724f21ff85bc8e15317",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 90,
+      "rank": 91,
+      "address": "0xc1caf0c19a8ac28c41fe59ba6c754e4b9bd54de9",
+      "tier": 1,
+      "name": "CryptoSkulls",
+      "note": "Historic CryptoSkulls collection",
+      "proof": [
+        "0x4c43aa0d1fe7ec9ab42c066f9fec49f3f28dcfeabf85ac6921f438d187c97da4",
+        "0x56a7023bfc95a573639e146dff083692f7578a4b78c9a17a63491d8a95fa4929",
+        "0x8eb452fb62234282d7bf1f044ca0134c86920615b054b724f21ff85bc8e15317",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 91,
+      "rank": 92,
+      "address": "0x8d04a8c79ceb0889bdd12acdf3fa9d207ed3ff63",
+      "tier": 1,
+      "name": "Blitmap",
+      "note": "On-chain art collection",
+      "proof": [
+        "0x2b6465a9884e986f1798f8541ee1f3479c8cf3cae49c33f56b2bdd885375f82b",
+        "0x56a7023bfc95a573639e146dff083692f7578a4b78c9a17a63491d8a95fa4929",
+        "0x8eb452fb62234282d7bf1f044ca0134c86920615b054b724f21ff85bc8e15317",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 92,
+      "rank": 93,
+      "address": "0xdfde78d2baec499fe18f2be74b6c287eed9511d7",
+      "tier": 1,
+      "name": "BrainDrops",
+      "note": "AI art platform collection",
+      "proof": [
+        "0x3d76da649615cc6c4a2d919265e71246564e48085d3ce22359f8aa114a93f0c6",
+        "0x66a4452c32151fb8f07543971748c41688ac2073096054af49916cd433d1c73c",
+        "0x95220477107c024a1f559bda42e7287b887b74e81be5e93175ac81857c9dd563",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 93,
+      "rank": 94,
+      "address": "0x9251dEC8DF720C2ADF3B6f46d968107cbBADf4d4",
+      "tier": 1,
+      "name": "1337 skulls",
+      "note": "ERC721 replacement after removing KnownOrigin review item",
+      "proof": [
+        "0xf902291d918e4a36c66d2b7c3ae894dece722ba7b1df7b7adfb7a5772720c151",
+        "0x66a4452c32151fb8f07543971748c41688ac2073096054af49916cd433d1c73c",
+        "0x95220477107c024a1f559bda42e7287b887b74e81be5e93175ac81857c9dd563",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 94,
+      "rank": 95,
+      "address": "0x97ca7fe0b0288f5eb85f386fed876618fb9b8ab8",
+      "tier": 1,
+      "name": "Ether Cards Founder",
+      "note": "Ether Cards Founder collection",
+      "proof": [
+        "0xcbe640c6d92108d2bacfbbdec829ce7c6244549c3c3271d57ba6222ad9d822d7",
+        "0x333f673eab1974353390cb78ffa3827c31ff05c1e78e10fb177c454cc074f467",
+        "0x95220477107c024a1f559bda42e7287b887b74e81be5e93175ac81857c9dd563",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 95,
+      "rank": 96,
+      "address": "0xc143bbfcdbdbed6d454803804752a064a622c1f3",
+      "tier": 1,
+      "name": "Async Blueprints",
+      "note": "Async Art blueprint collection",
+      "proof": [
+        "0x452117c6ad0fce07e10334b25eba5e0bcb3d7776705efb0b07eb1b052f3dcba0",
+        "0x333f673eab1974353390cb78ffa3827c31ff05c1e78e10fb177c454cc074f467",
+        "0x95220477107c024a1f559bda42e7287b887b74e81be5e93175ac81857c9dd563",
+        "0x0dc69cb598d48f529edebb9e04d98bd3365782963ae27a59685c07af9270dd5f",
+        "0xf71f6269b7f382812697688f4160e0b55dabb61d1c2b9ab61c041f9d9081dc4e",
+        "0xb27d6ae396d41626ecccd28a5c31796783521f4ab3f8d33bab4e356c9edbf2ed",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 96,
+      "rank": 97,
+      "address": "0xd70f41dd5875eee7fa9dd8048567bc932124a8d2",
+      "tier": 1,
+      "name": "DeepBlack",
+      "note": "AI art collection",
+      "proof": [
+        "0xe4fd7ed5d6d49441cc0e806f89a2ce1e318f8f6f8231e4884fd3e5b56e7c05b2",
+        "0xdd491f3252781ba6d78025a12562c31df8d7011648ce1d7b6dcfc46ad8129965",
+        "0x9744a072fe9bb94813071c9ab373f0a33cbba97cc1786540d87c7fda61125a5b",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 97,
+      "rank": 98,
+      "address": "0xbbfb6e466f376e493da35b5665dbfc19f7204231",
+      "tier": 1,
+      "name": "GEN.ART Airdrop Collection",
+      "note": "GEN.ART collection",
+      "proof": [
+        "0x9cc52a1b7b688d01f4c0dd50b5ea530f796a310d169967776c01bcffa8a174b6",
+        "0xdd491f3252781ba6d78025a12562c31df8d7011648ce1d7b6dcfc46ad8129965",
+        "0x9744a072fe9bb94813071c9ab373f0a33cbba97cc1786540d87c7fda61125a5b",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 98,
+      "rank": 99,
+      "address": "0x80416304142fa37929f8a4eee83ee7d2dac12d7c",
+      "tier": 1,
+      "name": "Generative Masks",
+      "note": "Generative Masks collection",
+      "proof": [
+        "0x237aa9a35835fce9d083a06ee1301c446974e4d025f5caa134e5fcd622d75cfd",
+        "0xa884c161dd43bdda33b867ae32c82293a8f91f770f3bf73485331ae329b3deda",
+        "0x9744a072fe9bb94813071c9ab373f0a33cbba97cc1786540d87c7fda61125a5b",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    },
+    {
+      "index": 99,
+      "rank": 100,
+      "address": "0x4b1705c75fde41e35e454ddd14e5d0a0eac06280",
+      "tier": 1,
+      "name": "Etheria v0.9",
+      "note": "Historic Ethereum virtual land collection",
+      "proof": [
+        "0x53af8421965001b8032018815067db1544a09f271cc2fb9c21869fe663b45524",
+        "0xa884c161dd43bdda33b867ae32c82293a8f91f770f3bf73485331ae329b3deda",
+        "0x9744a072fe9bb94813071c9ab373f0a33cbba97cc1786540d87c7fda61125a5b",
+        "0x6daa7157872f1a9d0dbca3f54f49765221c6c580b8f061b8f060bcd986c0b441"
+      ]
+    }
+  ]
+}
