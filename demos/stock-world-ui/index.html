@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Eternal Beings Stock World Demo</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+  <header class="app-header">
+    <a class="brand" href="#create" aria-label="Eternal Beings Stock World demo">
+      <img src="./logo.png" alt="" width="42" height="42">
+      <span><strong>ETERNAL BEINGS</strong><small>STOCK WORLD / INTERACTIVE DEMO</small></span>
+    </a>
+    <div class="network"><i></i> ROBINHOOD CHAIN <b>DEMO</b></div>
+    <div class="wallet-actions">
+      <button id="resetButton" class="button button-secondary" type="button">Reset Demo</button>
+      <button class="wallet-button" type="button"><span></span>0x7Eb7...B749</button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Stock World demo sections">
+    <button class="tab active" data-view="create" type="button">Create World</button>
+    <button class="tab" data-view="overview" type="button">Overview</button>
+    <button class="tab" data-view="market" type="button">Curve Market</button>
+    <button class="tab" data-view="nfts" type="button">NFT Fair Launch</button>
+    <button class="tab" data-view="rewards" type="button">Fee Rewards <b id="rewardBadge">0</b></button>
+  </nav>
+
+  <main>
+    <section id="createView" class="view active">
+      <div class="page-heading compact-heading">
+        <div>
+          <p class="eyebrow">CREATE // STOCK WORLD</p>
+          <h1>Choose the market behind your World.</h1>
+          <p>Select any supported Pons quote asset, define the World identity, then lock the fee distribution at launch.</p>
+        </div>
+        <div class="phase-block"><span>LAUNCH COST</span><strong>0.0003 ETH</strong><small>Gas is paid separately</small></div>
+      </div>
+
+      <div class="create-layout">
+        <section class="panel stock-selector-panel">
+          <div class="panel-head"><div><span>STEP 01</span><strong>Paired Asset</strong></div><b id="assetCount">60 ASSETS</b></div>
+          <div class="asset-toolbar">
+            <label><span>SEARCH STOCK TOKENS & ASSETS</span><input id="stockSearch" type="search" placeholder="Search NVDA, TSLA, ETH..." autocomplete="off"></label>
+            <div class="selected-asset"><span>SELECTED</span><strong id="selectedStockLabel">NVDA</strong></div>
+          </div>
+          <div id="stockGrid" class="stock-grid" aria-label="Available paired assets"></div>
+          <p class="asset-note">Demo list mirrors the paired assets displayed by Pons. Production contracts must use verified canonical Robinhood Chain addresses.</p>
+        </section>
+
+        <section class="panel world-form-panel">
+          <div class="panel-head"><div><span>STEP 02</span><strong>World Identity</strong></div><b>FIXED SUPPLY</b></div>
+          <div class="form-grid">
+            <label><span>WORLD NAME</span><input id="worldNameInput" value="NVSignal World" maxlength="48"></label>
+            <label><span>WORLD TOKEN SYMBOL</span><input id="worldSymbolInput" value="NVSIGNAL" maxlength="12"></label>
+            <label><span>WORLD TOKEN SUPPLY</span><input value="1,000,000" disabled></label>
+            <label><span>NFT MAX SUPPLY</span><input id="nftSupplyInput" type="number" min="100" max="10000" step="100" value="1000"></label>
+            <label><span>NFT WALLET LIMIT</span><input value="2" disabled></label>
+            <label><span>GRADUATION TARGET</span><div class="input-suffix"><input id="targetInput" type="number" min="1" step="0.1" value="41.6"><b id="targetAsset">NVDA</b></div></label>
+          </div>
+          <div class="create-summary">
+            <span>MARKET PAIR</span><strong id="createPairSummary">NVSIGNAL / NVDA</strong><small>Constant-product curve → locked Uniswap v4 pool</small>
+          </div>
+        </section>
+
+        <section class="panel create-fee-panel">
+          <div class="panel-head"><div><span>STEP 03</span><strong>Trading Fee Distribution</strong></div><b id="createSplitStatus" class="status-ok">100% ALLOCATED</b></div>
+          <p class="panel-copy">Split 100% of the Pons-style 1% trading fee. Creator share is capped at 30%.</p>
+          <div class="create-sliders sliders">
+            <label><span><b>WORLD TOKEN HOLDERS</b><output id="createTokenOutput">40%</output></span><input id="createTokenSplit" type="range" min="0" max="100" value="40"></label>
+            <label><span><b>WORLD NFT HOLDERS</b><output id="createNftOutput">40%</output></span><input id="createNftSplit" type="range" min="0" max="100" value="40"></label>
+            <label><span><b>CREATOR</b><output id="createCreatorOutput">20%</output></span><input id="createCreatorSplit" type="range" min="0" max="30" value="20"></label>
+          </div>
+          <div class="launch-checks">
+            <div><span>PAIR ASSET</span><strong id="checkPair">NVDA</strong></div>
+            <div><span>TRADING FEE</span><strong>1.00%</strong></div>
+            <div><span>NFT MINT</span><strong>COMMIT / REVEAL / CLAIM</strong></div>
+            <div><span>LIQUIDITY</span><strong>PERMANENTLY LOCKED</strong></div>
+          </div>
+          <button id="createWorldButton" class="button claim-all" type="button">CREATE DEMO WORLD →</button>
+          <p id="createMessage" class="inline-message">Simulation only. No contract will be deployed.</p>
+        </section>
+      </div>
+    </section>
+
+    <section id="overviewView" class="view">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">STOCK WORLD // <span id="overviewPairEyebrow">NVDA</span> PAIR</p>
+          <h1 id="overviewWorldName">NVSignal World</h1>
+          <p>A World Token market paired with <span id="overviewPairName">NVDA</span>. Trading activity powers NFT and holder rewards.</p>
+        </div>
+        <div class="phase-block"><span>PHASE</span><strong id="phaseLabel">CURVE LIVE</strong><small id="phaseDetail">Raising NVDA for graduation</small></div>
+      </div>
+
+      <div class="metric-band">
+        <div><span>WORLD TOKEN</span><strong id="overviewSymbol">$NVSIGNAL</strong><small>Fixed supply · 1,000,000</small></div>
+        <div><span>PAIR ASSET</span><strong id="overviewPairAsset">NVDA</strong><small>Robinhood Chain quote asset</small></div>
+        <div><span>TRADING FEE</span><strong>1.00%</strong><small>Paid in quote asset</small></div>
+        <div><span>GRADUATION</span><strong id="graduationPercent">20.0%</strong><small id="raisedMetric">8.32 / 41.60 NVDA</small></div>
+      </div>
+
+      <div class="two-column">
+        <section class="panel">
+          <div class="panel-head">
+            <div><span>LAUNCH CONFIGURATION</span><strong>Fee Distribution</strong></div>
+            <b id="splitStatus" class="status-ok">100% ALLOCATED</b>
+          </div>
+          <p class="panel-copy">Each percentage distributes a share of the 1% trading fee. Launch parameters become permanent after deployment.</p>
+          <div class="split-chart" aria-label="Fee split visualization">
+            <i id="tokenArc"></i><i id="nftArc"></i><i id="creatorArc"></i>
+            <div><strong id="splitTotal">100%</strong><span>FEE SPLIT</span></div>
+          </div>
+          <div class="sliders">
+            <label>
+              <span><b>WORLD TOKEN HOLDERS</b><output id="tokenSplitOutput">40%</output></span>
+              <input id="tokenSplit" type="range" min="0" max="100" value="40">
+            </label>
+            <label>
+              <span><b>WORLD NFT HOLDERS</b><output id="nftSplitOutput">40%</output></span>
+              <input id="nftSplit" type="range" min="0" max="100" value="40">
+            </label>
+            <label>
+              <span><b>CREATOR</b><output id="creatorSplitOutput">20%</output></span>
+              <input id="creatorSplit" type="range" min="0" max="30" value="20">
+            </label>
+          </div>
+          <div class="panel-footer">
+            <span>Creator share is capped at 30%.</span>
+            <button id="applySplitButton" class="button button-primary" type="button">Apply Demo Split</button>
+          </div>
+        </section>
+
+        <section class="panel market-progress-panel">
+          <div class="panel-head">
+            <div><span>GRADUATION MONITOR</span><strong id="overviewPairMarket">NVSIGNAL / NVDA</strong></div>
+            <b id="marketStateBadge" class="status-live">LIVE</b>
+          </div>
+          <div class="progress-orbit">
+            <div><strong id="raisedLarge">8.3200</strong><span>PAIR ASSET RAISED</span></div>
+          </div>
+          <div class="progress-track"><i id="graduationBar"></i></div>
+          <div class="progress-labels"><span>0 NVDA</span><strong id="targetLabel">TARGET 41.60 NVDA</strong></div>
+          <dl class="compact-data">
+            <div><dt>Current curve price</dt><dd id="curvePrice">0.000060 NVDA</dd></div>
+            <div><dt>Liquidity reserve</dt><dd id="liquidityReserve">6.4000 NVDA</dd></div>
+            <div><dt>Unallocated NFT fees</dt><dd id="unallocatedOverview">0.8400 NVDA</dd></div>
+          </dl>
+          <button class="button button-wide" data-go="market" type="button">Open Curve Market →</button>
+        </section>
+      </div>
+    </section>
+
+    <section id="marketView" class="view">
+      <div class="page-heading compact-heading">
+        <div><p class="eyebrow">CONSTANT-PRODUCT CURVE</p><h1>Curve Market</h1><p>Buy and sell the World Token against the selected quote asset before graduation.</p></div>
+        <div class="quote"><span>1 NVSIGNAL</span><strong id="marketPrice">0.000060 NVDA</strong></div>
+      </div>
+      <div class="two-column trade-layout">
+        <section class="panel trade-panel">
+          <div class="segmented" role="tablist" aria-label="Trade direction">
+            <button id="buyMode" class="active" type="button">Buy</button>
+            <button id="sellMode" type="button">Sell</button>
+          </div>
+          <label class="amount-field"><span id="tradeInputLabel">YOU PAY</span><div><input id="tradeAmount" type="number" min="0" step="0.01" value="1"><strong id="tradeInputAsset">NVDA</strong></div><small id="tradeBalance">Balance 12.5000 NVDA</small></label>
+          <div class="trade-arrow">↓</div>
+          <div class="receive-box"><span>YOU RECEIVE</span><strong id="tradeReceive">16,500.0000 NVSIGNAL</strong></div>
+          <dl class="trade-breakdown">
+            <div><dt>Trading fee</dt><dd id="tradeFee">0.0100 NVDA · 1%</dd></div>
+            <div><dt>Estimated price impact</dt><dd id="priceImpact">0.24%</dd></div>
+            <div><dt>Fee distribution</dt><dd id="feeBreakdown">40 / 40 / 20</dd></div>
+          </dl>
+          <button id="executeTradeButton" class="button button-primary button-wide" type="button">Buy NVSIGNAL</button>
+          <p id="tradeMessage" class="inline-message">Demo transactions do not use real assets.</p>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>CONNECTED WALLET</span><strong>Your Position</strong></div><b>DEMO BALANCE</b></div>
+          <div class="balance-list">
+            <div><span>PAIR ASSET BALANCE</span><strong id="walletNvda">12.5000 NVDA</strong></div>
+            <div><span>WORLD TOKEN</span><strong id="walletWorld">0.0000 NVSIGNAL</strong></div>
+            <div><span>WORLD NFTs</span><strong id="walletNfts">0 NFTs</strong></div>
+            <div><span>NFT WEIGHT</span><strong id="walletWeight">0</strong></div>
+          </div>
+          <div class="raised-block"><span>GRADUATION PROGRESS</span><strong id="marketRaised">8.3200 / 41.6000 NVDA</strong><div class="progress-track"><i id="marketGraduationBar"></i></div></div>
+          <div class="notice"><b>STOCK TOKEN PAIR</b><p>The World Token is an independent game asset. It does not represent ownership of the paired company or fund.</p></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="nftsView" class="view">
+      <div class="page-heading compact-heading">
+        <div><p class="eyebrow">EVOLVING FEE RIGHTS</p><h1>World NFTs</h1><p>Minted NFTs participate in future trading fees. Fusion increases reward weight.</p></div>
+        <div class="quote"><span>ELIGIBLE WEIGHT</span><strong id="eligibleWeightHeader">0</strong></div>
+      </div>
+      <section class="panel fair-launch-panel">
+        <div class="fair-launch-head">
+          <div><span>LIVE NFT FAIR LAUNCH</span><strong id="fairPhaseTitle">COMMIT</strong><p id="fairPhaseDescription">Submit a hidden mint commitment. No wallet can see another wallet's choice.</p></div>
+          <div class="epoch-clock"><span>EPOCH <b id="fairEpoch">1</b></span><strong id="fairCountdown">02:00</strong><small id="fairNextPhase">NEXT: REVEAL</small></div>
+        </div>
+        <div class="fair-progress"><i id="fairProgressBar"></i></div>
+        <div class="fair-stats">
+          <div><span>COMMITMENTS</span><strong id="commitCount">0</strong></div>
+          <div><span>REVEALED</span><strong id="revealCount">0</strong></div>
+          <div><span>CLAIMED</span><strong id="claimCount">0</strong></div>
+          <div><span>WALLET LIMIT</span><strong>2 NFTs</strong></div>
+          <div><span>MAX SUPPLY</span><strong id="fairMaxSupply">1,000</strong></div>
+        </div>
+        <div class="fair-actions">
+          <button id="fairCommitButton" class="button button-primary" type="button">Commit Mint</button>
+          <button id="fairRevealButton" class="button button-secondary" type="button" disabled>Reveal</button>
+          <button id="fairClaimButton" class="button button-secondary" type="button" disabled>Claim NFT</button>
+          <button id="advancePhaseButton" class="button button-warning" type="button">Advance Demo Phase</button>
+        </div>
+        <p id="fairLaunchMessage" class="inline-message">The demo phase button replaces waiting for live Robinhood Chain blocks.</p>
+      </section>
+
+      <div class="three-column">
+        <section class="panel action-panel">
+          <div class="panel-number">01</div><span>MINT STATUS</span><strong>Fair-launch allocation</strong>
+          <div class="nft-preview"><div id="nftGlyph">&gt;_</div><small>NVSignal Being</small></div>
+          <dl class="compact-data"><div><dt>Maximum supply</dt><dd id="mintMaxSupply">1,000</dd></div><div><dt>Minted</dt><dd id="mintedCount">0</dd></div><div><dt>Starting weight</dt><dd>1</dd></div></dl>
+          <button class="button button-secondary button-wide" data-focus-fair-launch type="button">View Fair Launch</button>
+        </section>
+        <section class="panel action-panel">
+          <div class="panel-number">02</div><span>FUSION</span><strong>Combine two NFTs</strong>
+          <div class="fusion-formula"><b>1</b><i>+</i><b>1</b><i>→</i><strong>3</strong></div>
+          <p>Two standard NFTs are burned. One evolved NFT is created with greater fee weight.</p>
+          <dl class="compact-data"><div><dt>Your alive NFTs</dt><dd id="fusionNftCount">0</dd></div><div><dt>Current total weight</dt><dd id="fusionWeight">0</dd></div><div><dt>Next fusion weight</dt><dd>3</dd></div></dl>
+          <button id="fusionButton" class="button button-secondary button-wide" type="button" disabled>Fuse Two NFTs</button>
+        </section>
+        <section class="panel action-panel liquidity-panel">
+          <div class="panel-number">03</div><span>ZERO NFT RESERVE</span><strong>Commit fees to liquidity</strong>
+          <div class="reserve-value"><strong id="unallocatedNftFees">0.8400</strong><span>PAIR ASSET UNALLOCATED</span></div>
+          <p id="commitExplanation">No NFTs exist. The creator may permanently commit all unallocated NFT fees to locked liquidity.</p>
+          <button id="commitLiquidityButton" class="button button-warning button-wide" type="button">Commit All to Liquidity</button>
+          <small id="commitRule">Disabled permanently after the first NFT is minted.</small>
+        </section>
+      </div>
+      <div class="panel nft-ledger">
+        <div class="panel-head"><div><span>YOUR COLLECTION</span><strong>Minted & Evolved NFTs</strong></div><b id="collectionSummary">0 NFTs · 0 WEIGHT</b></div>
+        <div id="nftList" class="nft-list"><p class="empty-state">No World NFTs minted in this demo.</p></div>
+      </div>
+    </section>
+
+    <section id="rewardsView" class="view">
+      <div class="page-heading compact-heading">
+        <div><p class="eyebrow">QUOTE-DENOMINATED TRADING FEES</p><h1>Fee Rewards</h1><p>Your share of trading fees from NVSignal World.</p></div>
+        <div class="quote"><span>TOTAL CLAIMABLE</span><strong id="totalClaimableHeader">0.0000 NVDA</strong></div>
+      </div>
+      <div class="rewards-layout">
+        <section>
+          <div class="reward-total"><span>TOTAL CLAIMABLE</span><strong id="totalClaimable">0.0000 NVDA</strong><small id="rewardCategoryCount">0 active reward categories</small></div>
+          <div class="reward-rows">
+            <article><b>01</b><div><span>WORLD TOKEN HOLDER</span><small id="tokenRewardBasis">0.0000 NVSIGNAL held</small></div><strong id="tokenReward">0.0000 NVDA</strong><button class="button button-secondary claim-button" data-claim="token" type="button">Claim</button></article>
+            <article><b>02</b><div><span>WORLD NFT HOLDER</span><small id="nftRewardBasis">0 NFTs · 0 weight</small></div><strong id="nftReward">0.0000 NVDA</strong><button class="button button-secondary claim-button" data-claim="nft" type="button">Claim</button></article>
+            <article><b>03</b><div><span>CREATOR</span><small>Creator fee recipient</small></div><strong id="creatorReward">0.5695 NVDA</strong><button class="button button-secondary claim-button" data-claim="creator" type="button">Claim</button></article>
+          </div>
+          <button id="claimAllButton" class="button claim-all" type="button">CLAIM ALL · <span id="claimAllAmount">0.5695 NVDA</span> →</button>
+        </section>
+        <aside class="panel activity-panel">
+          <div class="panel-head"><div><span>REWARD ACTIVITY</span><strong>Recent Events</strong></div><b>LIVE DEMO</b></div>
+          <div id="activityList" class="activity-list"></div>
+          <div class="notice"><b>REWARD RULES</b><p>Rewards are paid in the selected quote asset. Newly minted or transferred NFTs never receive historical fees.</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>ETERNAL BEINGS // STOCK WORLD DEMO</span><span>NO REAL ASSETS · NO WALLET SIGNATURES</span></footer>
+  <script src="./app.js"></script>
+</body>
+</html>
