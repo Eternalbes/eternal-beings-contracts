@@ -4,6 +4,18 @@ Prototype for a no-owner, non-upgradeable on-chain NFT game.
 
 The intended production shape can be contract-only: no official UI, no server, no admin panel, and no off-chain renderer. Players interact through explorers, wallets, scripts, or community-built tools.
 
+## EB-ZEC Zcash protocol draft
+
+This repository also publishes an independent research track for bringing Eternal Beings to Zcash as a shielded memo inscription protocol. It is separate from the deployed Ethereum contracts in this repository and is not yet a live Zcash product.
+
+- [Read the EB-ZEC whitepaper](docs/zcash/EB-ZEC-Protocol-Whitepaper-v1.0.md)
+- [Download the whitepaper PDF](docs/zcash/EB-ZEC-Protocol-Whitepaper-v1.0.pdf)
+- [Read the normative memo inscription protocol](docs/zcash/EB-ZEC-Memo-Inscription-Protocol-v1.md)
+- [Download the machine-readable JSON Schema](docs/zcash/eb-zec-v1.schema.json)
+- [Download from the official website](https://eternalbeings.space/EB-ZEC-Protocol-Whitepaper-v1.0.pdf)
+
+EB-ZEC uses signed canonical JSON messages in encrypted Zcash memos. The draft defines `mint-commit`, `mint-reveal`, `transfer`, `hunt-start`, `hunt-resolve`, `mutate`, `consume-permit`, `devour`, `fuse`, `list`, `cancel`, `buy`, and `payment-ack`. Independent indexers apply the same deterministic rules, while a reproducible renderer derives artwork and metadata from canonical Being state.
+
 Core rules included in `src/EternalBeings.sol`:
 
 - 9999 Genesis NFT supply.
