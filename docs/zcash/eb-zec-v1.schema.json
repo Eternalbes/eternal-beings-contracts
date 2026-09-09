@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eternalbeings.space/protocol/eb-zec-v1.schema.json",
+  "title": "EB-ZEC Memo Inscription Protocol v1",
+  "description": "Structural schema for canonical EB-ZEC JSON messages. Signature, chain ordering, state, payment, and finality checks are performed by the protocol validator.",
+  "oneOf": [
+    { "$ref": "#/$defs/worldGenesis" },
+    { "$ref": "#/$defs/mintCommit" },
+    { "$ref": "#/$defs/mintReveal" },
+    { "$ref": "#/$defs/transfer" },
+    { "$ref": "#/$defs/huntStart" },
+    { "$ref": "#/$defs/huntResolve" },
+    { "$ref": "#/$defs/mutate" },
+    { "$ref": "#/$defs/consumePermit" },
+    { "$ref": "#/$defs/devour" },
+    { "$ref": "#/$defs/fuse" },
+    { "$ref": "#/$defs/list" },
+    { "$ref": "#/$defs/cancel" },
+    { "$ref": "#/$defs/buy" },
+    { "$ref": "#/$defs/paymentAck" }
+  ],
+  "$defs": {
+    "b16": { "type": "string", "pattern": "^[A-Za-z0-9_-]{22}$" },
+    "b32": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+    "b64": { "type": "string", "pattern": "^[A-Za-z0-9_-]{86}$" },
+    "u16": { "type": "integer", "minimum": 0, "maximum": 65535 },
+    "u32": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "u64": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "protocol": {
+      "type": "object",
+      "properties": {
+        "p": { "const": "eb-zec" },
+        "v": { "const": 1 },
+        "world": { "$ref": "#/$defs/b16" }
+      },
+      "required": ["p", "v", "world"]
+    },
+    "signed": {
+      "type": "object",
+      "properties": {
+        "controller": { "$ref": "#/$defs/b32" },
+        "sig": { "$ref": "#/$defs/b64" }
+      },
+      "required": ["controller", "sig"]
+    },
+    "beingHead": {
+      "type": "object",
+      "properties": {
+        "being": { "$ref": "#/$defs/b32" },
+        "prev": { "$ref": "#/$defs/b32" },
+        "nonce": { "$ref": "#/$defs/u64" }
+      },
+      "required": ["being", "prev", "nonce"]
+    },
+    "worldGenesis": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "world-genesis" },
+            "manifest": { "$ref": "#/$defs/b32" },
+            "height": { "$ref": "#/$defs/u32" },
+            "release": { "$ref": "#/$defs/b32" },
+            "sig": { "$ref": "#/$defs/b64" }
+          },
+          "required": ["op", "manifest", "height", "release", "sig"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "mintCommit": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "mint-commit" },
+            "round": { "$ref": "#/$defs/u64" },
+            "commitment": { "$ref": "#/$defs/b32" },
+            "client": { "$ref": "#/$defs/b16" }
+          },
+          "required": ["op", "round", "commitment", "client"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "mintReveal": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "mint-reveal" },
+            "round": { "$ref": "#/$defs/u64" },
+            "commit": { "$ref": "#/$defs/b32" },
+            "secret": { "$ref": "#/$defs/b32" },
+            "salt": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "round", "commit", "secret", "salt"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "transfer": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "transfer" },
+            "to": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "to"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "huntStart": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "hunt-start" },
+            "scene": { "$ref": "#/$defs/u16" }
+          },
+          "required": ["op", "scene"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "huntResolve": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        { "type": "object", "properties": { "op": { "const": "hunt-resolve" } }, "required": ["op"] }
+      ],
+      "unevaluatedProperties": false
+    },
+    "mutate": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        { "type": "object", "properties": { "op": { "const": "mutate" } }, "required": ["op"] }
+      ],
+      "unevaluatedProperties": false
+    },
+    "consumePermit": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "consume-permit" },
+            "consumer": { "$ref": "#/$defs/b32" },
+            "mode": { "enum": ["devour", "fuse"] },
+            "expires": { "$ref": "#/$defs/u32" }
+          },
+          "required": ["op", "consumer", "mode", "expires"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "devour": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "devour" },
+            "sacrifice": { "$ref": "#/$defs/b32" },
+            "permit": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "sacrifice", "permit"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "fuse": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "fuse" },
+            "sacrifice": { "$ref": "#/$defs/b32" },
+            "permit": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "sacrifice", "permit"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "list": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "list" },
+            "price_zat": { "$ref": "#/$defs/u64" },
+            "pay_to": { "type": "string", "pattern": "^t[13][1-9A-HJ-NP-Za-km-z]{33}$" },
+            "expires": { "$ref": "#/$defs/u32" }
+          },
+          "required": ["op", "price_zat", "pay_to", "expires"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "cancel": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "cancel" },
+            "listing": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "listing"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "buy": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "buy" },
+            "being": { "$ref": "#/$defs/b32" },
+            "listing": { "$ref": "#/$defs/b32" },
+            "amount_zat": { "$ref": "#/$defs/u64" }
+          },
+          "required": ["op", "being", "listing", "amount_zat"]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "paymentAck": {
+      "allOf": [
+        { "$ref": "#/$defs/protocol" },
+        { "$ref": "#/$defs/signed" },
+        { "$ref": "#/$defs/beingHead" },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "payment-ack" },
+            "listing": { "$ref": "#/$defs/b32" },
+            "buy": { "$ref": "#/$defs/b32" }
+          },
+          "required": ["op", "listing", "buy"]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}
