@@ -1,0 +1,17 @@
+{
+  "name": "eternal-beings-world-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Read-only Three.js projection of the Eternal Beings Ethereum instance",
+  "scripts": {
+    "build": "esbuild app.js --bundle --platform=browser --format=iife --minify --outfile=app.bundle.js",
+    "serve": "python3 -m http.server 4175"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

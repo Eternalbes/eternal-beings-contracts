@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Eternal Beings / 3D World Demo</title>
+  <link rel="stylesheet" href="./styles.css?v=world-demo-2">
+</head>
+<body>
+  <div id="world" aria-label="Interactive Eternal Beings 3D world"></div>
+
+  <header class="topbar">
+    <a class="brand" href="../">
+      <img src="https://eternalbeings.space/logo.png" alt="">
+      <span><strong>ETERNAL BEINGS</strong><small>3D WORLD CONCEPT</small></span>
+    </a>
+    <div class="chain-state"><i></i><span id="chainState">ETHEREUM READ-ONLY</span><b id="blockNumber">BLOCK ...</b></div>
+    <span class="demo-badge">DEMO / NO TRANSACTIONS</span>
+  </header>
+
+  <div class="ore-counter" aria-label="Simulated ORE balance">
+    <span>SIM ORE</span>
+    <strong id="oreValue">0.000000</strong>
+    <small>LOCAL ONLY</small>
+  </div>
+
+  <aside class="being-panel" aria-label="Being loader and identity">
+    <p class="eyebrow">LIVE CONTRACT PROJECTION</p>
+    <h1 id="beingName">Being #88</h1>
+    <p id="beingLineage" class="lineage">Reading Ethereum...</p>
+
+    <form id="loadForm" class="load-form">
+      <label for="tokenInput">TOKEN ID</label>
+      <div>
+        <input id="tokenInput" type="number" min="1" max="9999" value="88" inputmode="numeric">
+        <button type="submit">LOAD</button>
+      </div>
+    </form>
+
+    <div class="identity-row">
+      <div id="tokenImage" class="token-image"><span>ON-CHAIN<br>SVG</span></div>
+      <dl>
+        <div><dt>OWNER</dt><dd id="ownerValue">...</dd></div>
+        <div><dt>STAGE</dt><dd id="stageValue">...</dd></div>
+        <div><dt>GENOME</dt><dd id="genomeValue">...</dd></div>
+      </dl>
+    </div>
+
+    <div class="stat-grid">
+      <div><span>POWER</span><strong id="powerValue">0</strong><i><b id="powerBar"></b></i></div>
+      <div><span>SKILL</span><strong id="skillValue">0</strong><i><b id="skillBar"></b></i></div>
+      <div><span>MASS</span><strong id="massValue">0</strong></div>
+      <div><span>COMPLEXITY</span><strong id="complexityValue">0</strong></div>
+      <div><span>DEVOURS</span><strong id="devoursValue">0</strong></div>
+      <div><span>FUSIONS</span><strong id="fusionsValue">0</strong></div>
+    </div>
+
+    <p id="loadStatus" class="load-status">Connecting to the public Ethereum instance...</p>
+  </aside>
+
+  <aside class="world-panel" aria-label="World simulator">
+    <p class="eyebrow">SIMULATION LAYER</p>
+    <h2 id="sceneName">THE NULL GARDEN</h2>
+    <div class="scene-tabs" role="group" aria-label="Hunt environment">
+      <button class="active" data-scene="ruins" type="button">RUINS</button>
+      <button data-scene="abyss" type="button">ABYSS</button>
+      <button data-scene="astral" type="button">ASTRAL</button>
+    </div>
+    <p id="sceneDescription">A quiet proving ground built from dormant chain fragments.</p>
+    <div class="target-readout">
+      <span>TARGET</span>
+      <strong id="targetName">CHAIN FRAGMENT</strong>
+      <b id="targetStatus">IN RANGE / 3 HP</b>
+    </div>
+    <div class="action-stack">
+      <button id="huntButton" type="button"><span>01</span>SIMULATE HUNT</button>
+      <button id="evolveButton" type="button"><span>02</span>PREVIEW EVOLUTION</button>
+      <button id="hybridButton" type="button"><span>03</span>PREVIEW HYBRID</button>
+      <button id="resetButton" class="secondary" type="button">RESET TO CHAIN STATE</button>
+    </div>
+    <div class="simulation-log">
+      <span>LOCAL EVENT</span>
+      <p id="simulationLog">No simulation active. Chain state remains untouched.</p>
+    </div>
+  </aside>
+
+  <div class="control-hud">
+    <div class="key-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>MOVE</span></div>
+    <div class="key-row"><kbd>SHIFT</kbd><span>SPRINT</span></div>
+    <div class="key-row"><kbd>SPACE</kbd><span>ATTACK</span></div>
+    <div class="key-row"><kbd>DRAG</kbd><span>CAMERA</span></div>
+  </div>
+
+  <div class="mobile-controls" aria-label="Touch movement controls">
+    <button data-key="KeyW" aria-label="Move forward">▲</button>
+    <button data-key="KeyA" aria-label="Move left">◀</button>
+    <button data-key="Space" aria-label="Attack">◆</button>
+    <button data-key="KeyD" aria-label="Move right">▶</button>
+    <button data-key="KeyS" aria-label="Move backward">▼</button>
+  </div>
+
+  <div class="reticle" aria-hidden="true"><i></i></div>
+  <div id="oreGains" class="ore-gains" aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.bundle.js?v=world-demo-2"></script>
+</body>
+</html>

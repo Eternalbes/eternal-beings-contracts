@@ -4,6 +4,12 @@ Prototype for a no-owner, non-upgradeable on-chain NFT game.
 
 The intended production shape can be contract-only: no official UI, no server, no admin panel, and no off-chain renderer. Players interact through explorers, wallets, scripts, or community-built tools.
 
+## 3D world concept demo
+
+The public [Eternal Beings 3D World Demo](https://eternalbeings.space/world-demo/) shows how the Ethereum instance can act as an open data layer for community-built games and interfaces. It reads a Being's live public contract state and deterministically projects its Genome, Lineage, Stage, Power, Skill, Mass, and Complexity into an interactive Three.js character.
+
+The current combat, evolution, hybrid, and ORE feedback are clearly labeled local simulations. They do not connect a wallet, submit transactions, mint ORE, or modify Ethereum state. Source and local instructions are available in [`demos/world-demo`](demos/world-demo/README.md).
+
 ## EB-ZEC Zcash protocol draft
 
 This repository also publishes an independent research track for bringing Eternal Beings to Zcash as a shielded memo inscription protocol. It is separate from the deployed Ethereum contracts in this repository and is not yet a live Zcash product.
