@@ -10,6 +10,12 @@ The public [Eternal Beings 3D World Demo](https://eternalbeings.space/world-demo
 
 The current combat, evolution, hybrid, and ORE feedback are clearly labeled local simulations. They do not connect a wallet, submit transactions, mint ORE, or modify Ethereum state. Source and local instructions are available in [`demos/world-demo`](demos/world-demo/README.md).
 
+## Stock World protocol architecture
+
+The proposed V2 architecture extends the world-launching model with a fixed-supply World Token, a fair World NFT launch, Fusion, quote-denominated fee rewards, a graduation path into permanently locked liquidity, and public interfaces for independent games and applications.
+
+- [Read the Stock World Protocol V2 architecture](docs/stock-world/Stock-World-Protocol-V2-Architecture.md)
+
 ## EB-ZEC Zcash protocol draft
 
 This repository also publishes an independent research track for bringing Eternal Beings to Zcash as a shielded memo inscription protocol. It is separate from the deployed Ethereum contracts in this repository and is not yet a live Zcash product.
