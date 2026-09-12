@@ -1,14 +1,18 @@
 const fs = require("fs");
 const solc = require("solc");
 
-const sourcePaths = [
-  "src/EternalBeings.sol",
-  "src/TestExternalNFT.sol",
-  "src/TestReentrantExternalNFT.sol",
-  "src/TestERC721Receiver.sol",
-  "src/TestCryptoPunks.sol",
-  "src/TestBatchFusion.sol",
-].filter((sourcePath) => fs.existsSync(sourcePath));
+function findSolidityFiles(directory) {
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .flatMap((entry) => {
+      const path = `${directory}/${entry.name}`;
+      return entry.isDirectory() ? findSolidityFiles(path) : [path];
+    })
+    .filter((path) => path.endsWith(".sol"))
+    .sort();
+}
+
+const sourcePaths = findSolidityFiles("src");
 const sources = Object.fromEntries(
   sourcePaths.map((sourcePath) => [
     sourcePath,

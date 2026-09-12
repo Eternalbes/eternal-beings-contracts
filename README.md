@@ -15,6 +15,7 @@ The current combat, evolution, hybrid, and ORE feedback are clearly labeled loca
 The proposed V2 architecture extends the world-launching model with a fixed-supply World Token, a fair World NFT launch, Fusion, quote-denominated fee rewards, a graduation path into permanently locked liquidity, and public interfaces for independent games and applications.
 
 - [Read the Stock World Protocol V2 architecture](docs/stock-world/Stock-World-Protocol-V2-Architecture.md)
+- [Track the Stock World Protocol V2 implementation](docs/stock-world/IMPLEMENTATION_STATUS.md)
 
 ## EB-ZEC Zcash protocol draft
 

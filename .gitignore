@@ -21,6 +21,7 @@ reports/deployment-*.json
 !reports/deployment-mainnet.json
 reports/mainnet-*.json
 reports/sepolia-*.json
+reports/readiness-report.json
 reports/verify-mainnet-*/
 reports/verify-sepolia*/
 
