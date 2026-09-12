@@ -2,6 +2,8 @@
 
 Status: Foundation milestone, not a deployable launch platform
 
+Target network: Robinhood Chain
+
 This directory tracks implementation against the architecture proposal. Code is published in narrow, tested milestones so incomplete market or reward logic is not presented as production-ready software.
 
 ## Foundation Milestone
@@ -24,6 +26,21 @@ Not implemented in this milestone:
 - Permanently locked liquidity.
 
 The missing components are required before any World can be launched. None of the current foundation contracts should be represented as a complete protocol deployment.
+
+## Network Boundary
+
+- Robinhood Chain mainnet chain ID: `4663`.
+- Robinhood Chain testnet chain ID: `46630`.
+- Native gas currency: `ETH` on both environments.
+- Canonical network values are stored in `config/robinhood-chain.json`.
+- Ethereum mainnet and Sepolia contract addresses must never be reused as Robinhood Chain addresses.
+- External protocol addresses remain unset until their Robinhood Chain deployments are independently verified.
+
+Before any future deployment, verify the connected RPC:
+
+```bash
+npm run stock-world:check-network -- testnet
+```
 
 ## Local Verification
 
