@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Stock World Protocol V2 Architecture Topology</title>
+  <desc id="desc">Architecture diagram showing external integrations, shared protocol infrastructure, isolated per-world contracts, reward flows, graduation, and permanently locked liquidity.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080b10"/>
+      <stop offset="1" stop-color="#10141c"/>
+    </linearGradient>
+    <linearGradient id="worldPanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17140b" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#0d1015" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="marketPanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#140d18" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#0d1015" stop-opacity="0.94"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrowCyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#54d6d0"/>
+    </marker>
+    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#e8bd55"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#71d59c"/>
+    </marker>
+    <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d889d7"/>
+    </marker>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0; }
+      .title { fill: #f4f7fa; font-size: 34px; font-weight: 750; }
+      .subtitle { fill: #9aa7b6; font-size: 15px; }
+      .section { font-size: 15px; font-weight: 750; }
+      .box-title { fill: #f2f5f8; font-size: 16px; font-weight: 700; }
+      .box-copy { fill: #9eabb9; font-size: 12px; }
+      .micro { fill: #8492a2; font-size: 11px; }
+      .label { font-size: 11px; font-weight: 700; }
+      .line { fill: none; stroke-width: 2; }
+      .thin { fill: none; stroke-width: 1.4; }
+      .dash { stroke-dasharray: 6 7; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1050" fill="url(#bg)"/>
+  <path d="M0 82 H1600 M0 442 H1600 M0 942 H1600" stroke="#222b36" stroke-width="1"/>
+
+  <text x="60" y="51" class="title">Stock World Protocol V2</text>
+  <text x="60" y="73" class="subtitle">Immutable world launches, fair NFT distribution, quote-asset rewards, and permanently locked markets</text>
+  <rect x="1336" y="29" width="204" height="39" rx="6" fill="#101921" stroke="#54d6d0"/>
+  <text x="1438" y="53" text-anchor="middle" fill="#78eee7" font-size="13" font-weight="700">ARCHITECTURE DRAFT 0.1</text>
+
+  <!-- External integration layer -->
+  <rect x="60" y="105" width="1480" height="102" rx="8" fill="#0d1219" stroke="#344252"/>
+  <text x="82" y="130" class="section" fill="#b9c4cf">PUBLIC INTEGRATION LAYER</text>
+  <g>
+    <rect x="90" y="146" width="250" height="40" rx="5" fill="#111923" stroke="#526274"/>
+    <text x="215" y="171" text-anchor="middle" class="box-title">Creators</text>
+    <rect x="385" y="146" width="250" height="40" rx="5" fill="#111923" stroke="#526274"/>
+    <text x="510" y="171" text-anchor="middle" class="box-title">Traders &amp; NFT Participants</text>
+    <rect x="680" y="146" width="360" height="40" rx="5" fill="#111923" stroke="#526274"/>
+    <text x="860" y="171" text-anchor="middle" class="box-title">Games, UIs, Indexers &amp; Agents</text>
+    <rect x="1085" y="146" width="425" height="40" rx="5" fill="#111923" stroke="#526274"/>
+    <text x="1297" y="171" text-anchor="middle" class="box-title">Permissionless Keepers &amp; Finalizers</text>
+  </g>
+
+  <!-- Shared infrastructure -->
+  <rect x="60" y="235" width="1480" height="177" rx="8" fill="#0a1518" stroke="#2a8887" stroke-width="1.5"/>
+  <text x="82" y="262" class="section" fill="#68e2dc">SHARED PROTOCOL INFRASTRUCTURE</text>
+  <text x="1508" y="262" text-anchor="end" class="micro">One canonical layer serving every World</text>
+
+  <g>
+    <rect x="90" y="283" width="245" height="92" rx="6" fill="#0d2023" stroke="#54d6d0"/>
+    <text x="212" y="310" text-anchor="middle" class="box-title">StockWorldFactory</text>
+    <text x="212" y="332" text-anchor="middle" class="box-copy">Validate + deploy + register</text>
+    <text x="212" y="350" text-anchor="middle" class="box-copy">Collect fixed launch fee</text>
+
+    <rect x="90" y="382" width="245" height="22" rx="4" fill="#111923" stroke="#657383"/>
+    <text x="212" y="397" text-anchor="middle" fill="#b8c3cf" font-size="10" font-weight="700">PLATFORM REVENUE VAULT · LAUNCH FEES</text>
+
+    <rect x="370" y="283" width="220" height="92" rx="6" fill="#0d2023" stroke="#54d6d0"/>
+    <text x="480" y="310" text-anchor="middle" class="box-title">QuoteAssetRegistry</text>
+    <text x="480" y="332" text-anchor="middle" class="box-copy">Approved assets</text>
+    <text x="480" y="350" text-anchor="middle" class="box-copy">Future launches only</text>
+
+    <rect x="625" y="283" width="265" height="92" rx="6" fill="#171225" stroke="#d889d7"/>
+    <text x="757" y="310" text-anchor="middle" class="box-title">GraduationGuard</text>
+    <text x="757" y="332" text-anchor="middle" class="box-copy">Preflight configuration</text>
+    <text x="757" y="350" text-anchor="middle" class="box-copy">Retryable phase protection</text>
+
+    <rect x="925" y="283" width="265" height="92" rx="6" fill="#171225" stroke="#d889d7"/>
+    <text x="1057" y="310" text-anchor="middle" class="box-title">GraduationExecutor</text>
+    <text x="1057" y="332" text-anchor="middle" class="box-copy">Create full-range position</text>
+    <text x="1057" y="350" text-anchor="middle" class="box-copy">Deliver directly to locker</text>
+
+    <rect x="1225" y="283" width="285" height="92" rx="6" fill="#0d2023" stroke="#54d6d0"/>
+    <text x="1367" y="310" text-anchor="middle" class="box-title">StockWorldHook</text>
+    <text x="1367" y="332" text-anchor="middle" class="box-copy">Collect post-graduation fees</text>
+    <text x="1367" y="350" text-anchor="middle" class="box-copy">Route quote assets to each World</text>
+  </g>
+
+  <path d="M335 329 H370" class="line" stroke="#54d6d0" marker-end="url(#arrowCyan)"/>
+  <text x="352" y="319" text-anchor="middle" class="label" fill="#54d6d0">CHECK</text>
+  <path d="M890 329 H925" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <path d="M215 186 V283" class="thin" stroke="#54d6d0" marker-end="url(#arrowCyan)"/>
+  <path d="M1297 186 V273 H1057 V283" class="thin" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+
+  <!-- Per-World isolated stack -->
+  <rect x="60" y="460" width="1015" height="462" rx="8" fill="url(#worldPanel)" stroke="#cfa94f" stroke-width="1.5"/>
+  <text x="82" y="488" class="section" fill="#f0c966">ISOLATED WORLD INSTANCE</text>
+  <text x="1042" y="488" text-anchor="end" class="micro">Deployed once per launch • immutable economics • independent accounting</text>
+
+  <rect x="90" y="517" width="265" height="112" rx="6" fill="#19170e" stroke="#e8bd55"/>
+  <text x="222" y="546" text-anchor="middle" class="box-title">WorldToken</text>
+  <text x="222" y="568" text-anchor="middle" class="box-copy">Fixed 1,000,000 supply</text>
+  <text x="222" y="586" text-anchor="middle" class="box-copy">No mint, freeze, or confiscation</text>
+  <rect x="116" y="601" width="212" height="4" rx="2" fill="#e8bd55" opacity="0.75"/>
+
+  <rect x="395" y="517" width="265" height="112" rx="6" fill="#19170e" stroke="#e8bd55"/>
+  <text x="527" y="546" text-anchor="middle" class="box-title">BondingCurve</text>
+  <text x="527" y="568" text-anchor="middle" class="box-copy">Quote × token reserve market</text>
+  <text x="527" y="586" text-anchor="middle" class="box-copy">1% quote-leg trading fee</text>
+  <text x="527" y="606" text-anchor="middle" fill="#e8bd55" font-size="11">PRE-GRADUATION MARKET</text>
+
+  <rect x="700" y="517" width="345" height="194" rx="6" fill="#0f1c17" stroke="#71d59c"/>
+  <text x="872" y="546" text-anchor="middle" class="box-title">WorldRewardVault</text>
+  <text x="872" y="568" text-anchor="middle" class="box-copy">Quote-asset rewards only</text>
+  <text x="872" y="586" text-anchor="middle" class="box-copy">Cumulative indices • pull claims</text>
+  <rect x="724" y="612" width="92" height="65" rx="4" fill="#13251d" stroke="#4ba978"/>
+  <text x="770" y="638" text-anchor="middle" fill="#8be4ae" font-size="12" font-weight="700">TOKEN</text>
+  <text x="770" y="657" text-anchor="middle" class="micro">40%</text>
+  <rect x="826" y="612" width="92" height="65" rx="4" fill="#13251d" stroke="#4ba978"/>
+  <text x="872" y="638" text-anchor="middle" fill="#8be4ae" font-size="12" font-weight="700">NFT</text>
+  <text x="872" y="657" text-anchor="middle" class="micro">40%</text>
+  <rect x="928" y="612" width="92" height="65" rx="4" fill="#13251d" stroke="#4ba978"/>
+  <text x="974" y="638" text-anchor="middle" fill="#8be4ae" font-size="12" font-weight="700">CREATOR</text>
+  <text x="974" y="657" text-anchor="middle" class="micro">20%</text>
+
+  <rect x="90" y="687" width="265" height="112" rx="6" fill="#19170e" stroke="#e8bd55"/>
+  <text x="222" y="716" text-anchor="middle" class="box-title">FairMintController</text>
+  <text x="222" y="738" text-anchor="middle" class="box-copy">Commit → Reveal → Claim</text>
+  <text x="222" y="756" text-anchor="middle" class="box-copy">Future-block entropy + wallet limit</text>
+  <text x="222" y="776" text-anchor="middle" fill="#e8bd55" font-size="11">100–10,000 NFT CAP</text>
+
+  <rect x="395" y="687" width="265" height="112" rx="6" fill="#19170e" stroke="#e8bd55"/>
+  <text x="527" y="716" text-anchor="middle" class="box-title">WorldNFT</text>
+  <text x="527" y="738" text-anchor="middle" class="box-copy">Genome + weight + evolution state</text>
+  <text x="527" y="756" text-anchor="middle" class="box-copy">On-chain ownership and metadata</text>
+  <text x="527" y="776" text-anchor="middle" fill="#e8bd55" font-size="11">TRANSFER SETTLES REWARDS</text>
+
+  <rect x="700" y="738" width="345" height="72" rx="6" fill="#171225" stroke="#d889d7"/>
+  <text x="872" y="766" text-anchor="middle" class="box-title">Fusion Engine</text>
+  <text x="872" y="788" text-anchor="middle" class="box-copy">Parent + burned sacrifice → evolved parent</text>
+
+  <rect x="90" y="840" width="570" height="57" rx="6" fill="#0f1c17" stroke="#71d59c"/>
+  <text x="375" y="865" text-anchor="middle" class="box-title">TokenRewardVault</text>
+  <text x="375" y="884" text-anchor="middle" class="box-copy">Stake World Tokens • eligibility starts next block • settle before unstake</text>
+
+  <rect x="700" y="840" width="345" height="57" rx="6" fill="#10161d" stroke="#657383"/>
+  <text x="872" y="865" text-anchor="middle" class="box-title">Public Read Interfaces &amp; Events</text>
+  <text x="872" y="884" text-anchor="middle" class="box-copy">Canonical state for every external experience</text>
+
+  <!-- World internal flows -->
+  <path d="M355 573 H395" class="line" stroke="#e8bd55" marker-end="url(#arrowGold)"/>
+  <text x="375" y="561" text-anchor="middle" class="label" fill="#e8bd55">TRADE</text>
+  <path d="M660 573 H688" class="line" stroke="#71d59c" marker-end="url(#arrowGreen)"/>
+  <text x="674" y="558" text-anchor="middle" class="label" fill="#71d59c">FEES</text>
+  <path d="M355 743 H395" class="line" stroke="#e8bd55" marker-end="url(#arrowGold)"/>
+  <text x="375" y="731" text-anchor="middle" class="label" fill="#e8bd55">MINT</text>
+  <path d="M660 743 H688" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <path d="M872 810 V828 H527 V799" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <text x="684" y="823" text-anchor="middle" class="label" fill="#d889d7">EVOLVED STATE</text>
+  <path d="M222 629 V828 H375 V840" class="line" stroke="#71d59c" marker-end="url(#arrowGreen)"/>
+  <text x="236" y="823" class="label" fill="#71d59c">STAKE</text>
+  <path d="M770 677 V816 H615 V840" class="line" stroke="#71d59c" marker-end="url(#arrowGreen)"/>
+  <path d="M872 677 V687 H527" class="thin dash" stroke="#71d59c" marker-end="url(#arrowGreen)"/>
+  <text x="680" y="680" class="label" fill="#71d59c">NFT REWARD INDEX</text>
+  <path d="M872 711 V738" class="thin dash" stroke="#71d59c" marker-end="url(#arrowGreen)"/>
+
+  <!-- Factory deploy and public access -->
+  <path d="M212 404 V430 H175 V460" class="line" stroke="#54d6d0" marker-end="url(#arrowCyan)"/>
+  <text x="225" y="433" class="label" fill="#54d6d0">DEPLOY + REGISTER</text>
+  <path d="M510 186 V445 H527 V505" class="thin dash" stroke="#9aa7b6" marker-end="url(#arrowGold)"/>
+  <path d="M860 186 V427 H872 V505" class="thin dash" stroke="#9aa7b6" marker-end="url(#arrowGreen)"/>
+
+  <!-- Permanent market -->
+  <rect x="1105" y="460" width="435" height="462" rx="8" fill="url(#marketPanel)" stroke="#b46fbd" stroke-width="1.5"/>
+  <text x="1127" y="488" class="section" fill="#e09ae2">GRADUATION &amp; PERMANENT MARKET</text>
+
+  <rect x="1135" y="517" width="375" height="85" rx="6" fill="#171225" stroke="#d889d7"/>
+  <text x="1322" y="546" text-anchor="middle" class="box-title">Monotonic Graduation</text>
+  <text x="1322" y="568" text-anchor="middle" class="box-copy">Ready → reserves swept → pool created</text>
+  <text x="1322" y="586" text-anchor="middle" class="box-copy">Permissionless and retryable</text>
+
+  <rect x="1135" y="646" width="375" height="105" rx="6" fill="#15131d" stroke="#d889d7"/>
+  <text x="1322" y="676" text-anchor="middle" class="box-title">Uniswap v4 Pool</text>
+  <text x="1322" y="698" text-anchor="middle" class="box-copy">World Token / approved quote asset</text>
+  <text x="1322" y="716" text-anchor="middle" class="box-copy">Full-range permanent market</text>
+  <rect x="1168" y="730" width="309" height="4" rx="2" fill="#d889d7" opacity="0.72"/>
+
+  <rect x="1135" y="796" width="375" height="101" rx="6" fill="#12171b" stroke="#7b8b99"/>
+  <text x="1322" y="826" text-anchor="middle" class="box-title">LiquidityLocker</text>
+  <text x="1322" y="848" text-anchor="middle" class="box-copy">Position permanently owned by contract</text>
+  <text x="1322" y="866" text-anchor="middle" class="box-copy">No withdrawal, rescue, or timed unlock</text>
+  <text x="1322" y="886" text-anchor="middle" fill="#c7d0d8" font-size="11">IRREVERSIBLY LOCKED</text>
+
+  <path d="M1057 375 V432 H1322 V505" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <path d="M1322 602 V634" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <path d="M1322 751 V784" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+  <path d="M527 517 V445 H1090 V559 H1123" class="line" stroke="#d889d7" marker-end="url(#arrowPink)"/>
+
+  <!-- Hook fee path back into the World -->
+  <path d="M1510 698 H1530 V435 H1367 V387" class="line" stroke="#54d6d0" marker-end="url(#arrowCyan)"/>
+  <path d="M1225 350 H1205 V426 H1062 V560 H1045" class="line dash" stroke="#54d6d0" marker-end="url(#arrowCyan)"/>
+
+  <!-- Footer legend -->
+  <g transform="translate(60 972)">
+    <text x="0" y="0" class="section" fill="#c7d0d8">FLOW KEY</text>
+    <line x1="95" y1="-5" x2="145" y2="-5" stroke="#54d6d0" stroke-width="3" marker-end="url(#arrowCyan)"/>
+    <text x="158" y="0" class="box-copy">Shared deployment / routing</text>
+    <line x1="355" y1="-5" x2="405" y2="-5" stroke="#e8bd55" stroke-width="3" marker-end="url(#arrowGold)"/>
+    <text x="418" y="0" class="box-copy">World asset action</text>
+    <line x1="585" y1="-5" x2="635" y2="-5" stroke="#71d59c" stroke-width="3" marker-end="url(#arrowGreen)"/>
+    <text x="648" y="0" class="box-copy">Fee / reward accounting</text>
+    <line x1="855" y1="-5" x2="905" y2="-5" stroke="#d889d7" stroke-width="3" marker-end="url(#arrowPink)"/>
+    <text x="918" y="0" class="box-copy">Graduation / Fusion</text>
+    <rect x="1122" y="-19" width="358" height="32" rx="4" fill="#0d1219" stroke="#35404d"/>
+    <text x="1301" y="2" text-anchor="middle" class="micro">External interfaces are replaceable; on-chain rules remain authoritative.</text>
+  </g>
+
+  <text x="60" y="1022" class="micro">Stock World Protocol V2 • architecture proposal • target network: Robinhood Chain</text>
+  <text x="1540" y="1022" text-anchor="end" class="micro">One factory → many isolated Worlds → permanent markets</text>
+</svg>

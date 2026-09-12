@@ -29,6 +29,8 @@ Stock World is an experimental protocol name. A World Token or World NFT does no
 
 ## 3. System Topology
 
+![Stock World Protocol V2 architecture topology](./Stock-World-Protocol-V2-Topology.svg)
+
 ```text
                          StockWorldFactory
                                 |
