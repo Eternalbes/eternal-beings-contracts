@@ -53,6 +53,10 @@ contract StockWorldConfigValidator {
         if (config.creator == address(0)) revert ZeroAddress();
         if (!quoteAssetRegistry.isSupported(config.quoteAsset)) revert UnsupportedQuoteAsset();
         if (config.graduationTarget == 0) revert InvalidGraduationTarget();
+        uint256 virtualQuoteReserve = config.graduationTarget / 9 + (config.graduationTarget % 9 == 0 ? 0 : 1);
+        if (config.graduationTarget > type(uint256).max - virtualQuoteReserve) {
+            revert InvalidGraduationTarget();
+        }
         if (config.nftMaxSupply < MIN_NFT_SUPPLY || config.nftMaxSupply > MAX_NFT_SUPPLY) {
             revert InvalidNftSupply();
         }

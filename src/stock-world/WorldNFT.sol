@@ -86,8 +86,10 @@ contract WorldNFT {
     ) {
         uint256 nameLength = bytes(name_).length;
         uint256 symbolLength = bytes(symbol_).length;
-        if (nameLength == 0 || nameLength > 64) revert InvalidName();
-        if (symbolLength == 0 || symbolLength > 12) revert InvalidSymbol();
+        // Factory-derived collection metadata appends " Beings" and "-NFT"
+        // to otherwise valid World token metadata.
+        if (nameLength == 0 || nameLength > 72) revert InvalidName();
+        if (symbolLength == 0 || symbolLength > 16) revert InvalidSymbol();
         if (maxSupply_ < StockWorldConstants.MIN_NFT_SUPPLY || maxSupply_ > StockWorldConstants.MAX_NFT_SUPPLY) {
             revert InvalidSupply();
         }
