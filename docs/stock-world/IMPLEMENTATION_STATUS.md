@@ -17,15 +17,16 @@ Implemented:
 - `TokenRewardVault`: next-block stake activation and cumulative quote-asset reward accounting.
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
+- `WorldNFT`: fixed historical supply, reward-aware transfers, on-chain metadata, and single-pair Fusion with permanent sacrifice burn.
+- `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, and expiring reservations.
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 - Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
+- Local Ganache tests for exact fair-mint winner counts, claim-order independence, reservation expiry, late entropy, transfer settlement, and Fusion burn invariants.
 
 Not implemented in this milestone:
 
 - World factory deployment.
-- Fair NFT minting and Fusion.
-- World NFT ownership, transfer, mint, and Fusion logic that calls the reward checkpoints.
 - Graduation and Uniswap v4 integration.
 - Permanently locked liquidity.
 

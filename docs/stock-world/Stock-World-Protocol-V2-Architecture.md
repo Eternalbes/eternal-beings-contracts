@@ -147,7 +147,11 @@ The contract exposes ownership, weight, fusion count, genome, metadata, and stan
 
 NFT distribution follows repeating Commit, Reveal, and Claim phases. Commitments hide participant secrets during entry. A permissionless finalization transaction combines revealed entropy with a future block value and records the epoch seed before the blockhash expires.
 
-The controller enforces the wallet allocation limit, rejects duplicate commitments, expires unrevealed entries, and never restores mint capacity when an NFT is later burned in Fusion. Unminted supply remains available to later epochs.
+Each revealer receives a sequential index. Finalization derives a random starting index and selects one circular interval containing exactly the smaller of the epoch capacity, revealed count, and globally unreserved supply. Winner status is therefore independent of claim order and requires no loop over participants.
+
+Finalized winners reserve supply only for the immutable claim window. Anyone may expire an unclaimed epoch afterward, returning unused reservations to later epochs. The controller enforces the historical wallet allocation limit, rejects duplicate commitments, naturally expires unrevealed entries, and never restores mint capacity when an NFT is later burned in Fusion.
+
+If no one finalizes within the 256-block blockhash window, the epoch remains live through a visibly flagged late-entropy fallback based on the reveal aggregate and later chain entropy. This fallback protects permanent liveness but provides weaker unpredictability than on-time finalization. Neither path should be described as cryptographic or gambling-grade randomness, and block producers retain limited influence over public chain entropy.
 
 ### 6.5 WorldRewardVault
 
@@ -263,6 +267,9 @@ These interfaces are the integration surface for independent UIs, games, analyti
 
 - World Token total supply never exceeds the launch constant.
 - Minted NFT count never exceeds the configured cap.
+- Finalized NFT reservations plus historical mints never exceed the configured cap.
+- Exactly the configured number of eligible winner indices is selected when sufficient revealers and supply exist.
+- Claim order cannot turn a non-winning reveal into a winning reveal.
 - Fusion never increases NFT count.
 - A burned NFT can never become active again.
 - Fee allocations always equal the assets received, excluding bounded rounding dust.
