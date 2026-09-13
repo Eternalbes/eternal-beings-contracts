@@ -1,12 +1,12 @@
 # Stock World Protocol V2 Implementation Status
 
-Status: Foundation milestone, not a deployable launch platform
+Status: Core market milestone, not a deployable launch platform
 
 Target network: Robinhood Chain
 
 This directory tracks implementation against the architecture proposal. Code is published in narrow, tested milestones so incomplete market or reward logic is not presented as production-ready software.
 
-## Foundation Milestone
+## Core Market Milestone
 
 Implemented:
 
@@ -16,13 +16,14 @@ Implemented:
 - `WorldToken`: fixed supply of 1,000,000 units with standard ERC-20 transfer and allowance behavior.
 - `TokenRewardVault`: next-block stake activation and cumulative quote-asset reward accounting.
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
+- `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
+- Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
 
 Not implemented in this milestone:
 
 - World factory deployment.
-- Bonding curve trading.
 - Fair NFT minting and Fusion.
 - World NFT ownership, transfer, mint, and Fusion logic that calls the reward checkpoints.
 - Graduation and Uniswap v4 integration.

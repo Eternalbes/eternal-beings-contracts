@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 /**
- * @dev Full-precision multiplication and division for reward accounting.
+ * @dev Full-precision multiplication and division for accounting and curve math.
  */
 library FullMath {
     error MulDivOverflow();
@@ -48,5 +48,10 @@ library FullMath {
 
             result = productLow * inverse;
         }
+    }
+
+    function mulDivRoundingUp(uint256 x, uint256 y, uint256 denominator) internal pure returns (uint256 result) {
+        result = mulDiv(x, y, denominator);
+        if (mulmod(x, y, denominator) != 0) result += 1;
     }
 }
