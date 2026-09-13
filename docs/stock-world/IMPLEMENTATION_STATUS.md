@@ -15,6 +15,7 @@ Implemented:
 - `StockWorldConfigValidator`: validation and deterministic hashing of launch configuration.
 - `WorldToken`: fixed supply of 1,000,000 units with standard ERC-20 transfer and allowance behavior.
 - `TokenRewardVault`: next-block stake activation and cumulative quote-asset reward accounting.
+- `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 
@@ -23,7 +24,7 @@ Not implemented in this milestone:
 - World factory deployment.
 - Bonding curve trading.
 - Fair NFT minting and Fusion.
-- World-level fee splitting and NFT reward accounting.
+- World NFT ownership, transfer, mint, and Fusion logic that calls the reward checkpoints.
 - Graduation and Uniswap v4 integration.
 - Permanently locked liquidity.
 
