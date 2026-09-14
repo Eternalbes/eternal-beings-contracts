@@ -8,6 +8,10 @@ interface IWorldRewardReserve {
     function releaseLiquidityReserve(uint256 maxAmount) external returns (uint256 amount);
 }
 
+interface IPostGraduationReserveCoordinator {
+    function onPostGraduationReserve(uint256 amount) external;
+}
+
 /**
  * @title StockWorldGraduationEscrow
  * @notice Per-World, non-custodial staging account for graduation reserves.
@@ -145,6 +149,7 @@ contract StockWorldGraduationEscrow {
         }
 
         quoteAsset.safeTransfer(coordinator, amount);
+        IPostGraduationReserveCoordinator(coordinator).onPostGraduationReserve(amount);
         emit PostGraduationReserveForwarded(coordinator, amount);
     }
 }

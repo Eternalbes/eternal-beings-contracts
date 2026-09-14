@@ -31,3 +31,10 @@ Tokens not needed at that price are sent to the ownerless permanent locker.
 Reward quote used by the initial seed is capped at the virtual quote reserve;
 larger accumulated reserves remain in the World reward vault for the public
 post-graduation forwarding path instead of making graduation impossible.
+
+The isolated Permit2 approval sequence and PositionManager action encoding in
+`StockWorldGraduationExecutor` follow the upstream V2 graduation executor
+inspected at the same pinned commit. Stock World narrows this path to ERC-20
+quote assets, pulls only the current World's exact amounts, revokes both
+approval layers after minting, returns residuals to the coordinator, locks
+World Token dust, and records quote dust against its originating escrow.

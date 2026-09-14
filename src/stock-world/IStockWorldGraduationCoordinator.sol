@@ -26,4 +26,6 @@ interface IStockWorldGraduationCoordinator {
         uint256 totalTokenAmount,
         uint256 poolTokenAmount
     ) external returns (bytes32 marketId);
+
+    function onPostGraduationReserve(uint256 amount) external;
 }

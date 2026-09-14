@@ -254,6 +254,11 @@ async function main() {
     "post-graduation rounding reserve reaches the immutable coordinator",
   );
   assert.equal(await rewardVault.liquidityReserve(), 0n, "later reserve does not become stranded");
+  assert.equal(
+    await coordinator.postGraduationReserve(),
+    laterReserve,
+    "coordinator is notified of the originating reserve amount",
+  );
 
   const factoryFunctions = new Set(
     artifact("StockWorldFactory").abi.filter((item) => item.type === "function").map((item) => item.name),

@@ -11,6 +11,7 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
     uint256 public lastQuoteAmount;
     uint256 public lastTokenAmount;
     uint256 public lastPoolTokenAmount;
+    uint256 public postGraduationReserve;
 
     error PreflightRejected();
     error CompletionRejected();
@@ -47,5 +48,9 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
         lastPoolTokenAmount = poolTokenAmount;
         marketId = keccak256(abi.encode(msg.sender, worldId, worldToken, quoteAsset));
         lastMarketId = marketId;
+    }
+
+    function onPostGraduationReserve(uint256 amount) external {
+        postGraduationReserve += amount;
     }
 }
