@@ -229,11 +229,21 @@ contract WorldRewardVault {
     }
 
     function releaseLiquidityReserve() external nonReentrant returns (uint256 amount) {
-        if (msg.sender != liquidityReserveRecipient) revert NotLiquidityReserveRecipient();
-        amount = liquidityReserve;
-        if (amount == 0) revert NothingToRelease();
+        return _releaseLiquidityReserve(type(uint256).max);
+    }
 
-        liquidityReserve = 0;
+    function releaseLiquidityReserve(uint256 maxAmount) external nonReentrant returns (uint256 amount) {
+        if (maxAmount == 0) revert ZeroAmount();
+        return _releaseLiquidityReserve(maxAmount);
+    }
+
+    function _releaseLiquidityReserve(uint256 maxAmount) private returns (uint256 amount) {
+        if (msg.sender != liquidityReserveRecipient) revert NotLiquidityReserveRecipient();
+        uint256 reserve = liquidityReserve;
+        if (reserve == 0) revert NothingToRelease();
+
+        amount = reserve < maxAmount ? reserve : maxAmount;
+        liquidityReserve = reserve - amount;
         totalLiquidityReserveReleased += amount;
         quoteAsset.safeTransfer(msg.sender, amount);
         emit LiquidityReserveReleased(msg.sender, amount);

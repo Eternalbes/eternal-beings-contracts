@@ -172,6 +172,16 @@ async function main() {
   ).wait();
   assert.equal(await curve.phase(), 2n, "terminal partial fill makes World graduation-ready");
 
+  const oversizedLiquidityFee = 200_000_000n;
+  await (await quote.connect(trader).approve(world.worldRewardVault, oversizedLiquidityFee)).wait();
+  await (await rewardVault.connect(trader).depositFee(oversizedLiquidityFee)).wait();
+  await (await rewardVault.connect(launcher).commitZeroWeightReserves()).wait();
+  const rewardReserveBeforeGraduation = await rewardVault.liquidityReserve();
+  assert(
+    rewardReserveBeforeGraduation > (await curve.virtualQuoteReserve()),
+    "test creates more reserved quote than the initial pool can price-preservingly absorb",
+  );
+
   await (await coordinator.setPreflightAllowed(false)).wait();
   await rejects(() => factory.prepareGraduation(0), "failed preflight leaves reserves on curve");
   assert.equal(await curve.phase(), 2n, "failed preflight does not sweep curve");
@@ -187,7 +197,21 @@ async function main() {
   assert.equal(await curve.phase(), 3n, "curve sweep is complete");
   assert.equal(await escrow.curveSweepRecorded(), true, "escrow records curve transfer exactly once");
   assert.equal(await escrow.trackedTokens(), expectedCurveTokens, "escrow tracks graduation token reserve");
-  assert((await escrow.trackedQuote()) >= expectedCurveQuote, "escrow also includes committed fee reserves");
+  assert.equal(
+    await escrow.trackedQuote(),
+    expectedCurveQuote + (await curve.virtualQuoteReserve()),
+    "initial pool reward quote is capped at the virtual reserve",
+  );
+  assert.equal(
+    await rewardVault.liquidityReserve(),
+    rewardReserveBeforeGraduation - (await curve.virtualQuoteReserve()),
+    "excess reward quote remains available after the initial pool seed",
+  );
+  const expectedPoolTokens =
+    (expectedCurveTokens * (await escrow.trackedQuote())) /
+    (expectedCurveQuote + (await curve.virtualQuoteReserve()));
+  assert.equal(prepared.graduationPoolTokens, expectedPoolTokens, "pool allocation preserves terminal curve price");
+  assert.equal(prepared.graduationPoolTokens, expectedCurveTokens, "a fully matched seed uses all curve tokens");
 
   await (await coordinator.setCompletionAllowed(false)).wait();
   await rejects(() => factory.completeGraduation(0), "failed market creation remains retryable");
@@ -209,6 +233,11 @@ async function main() {
   assert.equal(await escrow.trackedTokens(), 0n, "no tracked token remains in escrow");
   assert.equal(await coordinator.lastQuoteAmount(), trackedQuote, "coordinator receives exact quote amount");
   assert.equal(await coordinator.lastTokenAmount(), trackedTokens, "coordinator receives exact token amount");
+  assert.equal(
+    await coordinator.lastPoolTokenAmount(),
+    prepared.graduationPoolTokens,
+    "coordinator receives the price-preserving pool allocation",
+  );
   await rejects(() => factory.completeGraduation(0), "graduation cannot execute twice");
 
   const laterFee = 10_003n;

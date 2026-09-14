@@ -23,6 +23,7 @@ interface IStockWorldGraduationCoordinator {
         address quoteAsset,
         address graduationEscrow,
         uint256 quoteAmount,
-        uint256 tokenAmount
+        uint256 totalTokenAmount,
+        uint256 poolTokenAmount
     ) external returns (bytes32 marketId);
 }

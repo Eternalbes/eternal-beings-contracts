@@ -5,6 +5,7 @@ import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
 interface IWorldRewardReserve {
     function releaseLiquidityReserve() external returns (uint256 amount);
+    function releaseLiquidityReserve(uint256 maxAmount) external returns (uint256 amount);
 }
 
 /**
@@ -86,11 +87,11 @@ contract StockWorldGraduationEscrow {
         emit CurveSweepRecorded(quoteAmount, tokenAmount);
     }
 
-    function collectRewardReserve() external onlyFactory returns (uint256 amount) {
+    function collectRewardReserve(uint256 maxAmount) external onlyFactory returns (uint256 amount) {
         if (released) revert AlreadyReleased();
 
         uint256 balanceBefore = quoteAsset.balanceOf(address(this));
-        amount = rewardVault.releaseLiquidityReserve();
+        amount = rewardVault.releaseLiquidityReserve(maxAmount);
         uint256 balanceAfter = quoteAsset.balanceOf(address(this));
         if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) {
             revert UnsupportedTokenBehavior();

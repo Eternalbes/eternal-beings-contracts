@@ -1,0 +1,34 @@
+{
+  "status": "observed-onchain-not-yet-canonical",
+  "network": "Robinhood Chain mainnet",
+  "chainId": 4663,
+  "observedAtBlock": 62343945,
+  "source": {
+    "repository": "https://github.com/ponsdotdev/ponsfamily",
+    "repositoryCommit": "f2e069c1bf26bde0760446ecce3cf2501cf50846",
+    "ponsV2Factory": "0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e"
+  },
+  "contracts": {
+    "poolManager": {
+      "address": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
+      "codeBytes": 24009,
+      "codeHash": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626"
+    },
+    "positionManager": {
+      "address": "0x58daec3116aae6D93017bAAea7749052E8a04fA7",
+      "codeBytes": 23877,
+      "codeHash": "0xc873e135dc9aaec88489cfbad146b4cb49d6a32e0d80326377784b7ba17670b2"
+    },
+    "permit2": {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "codeBytes": 9152,
+      "codeHash": "0x5208783f52488f7d3493e5e38311ab707c1d75457fe472a19b0b4d57d66a7fca"
+    }
+  },
+  "crossChecks": [
+    "PonsV2Factory.poolManager equals PositionManager.poolManager",
+    "PonsV2Factory.permit2 equals PositionManager.permit2",
+    "Every observed address had non-empty code"
+  ],
+  "warning": "Do not copy these values into production deployment configuration until source verification and an independent Robinhood Chain deployment reference are available."
+}

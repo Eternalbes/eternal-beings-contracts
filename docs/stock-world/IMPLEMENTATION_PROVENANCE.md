@@ -20,3 +20,14 @@ Stock World replaces the upstream fee destinations and launch policy with its
 own immutable Token/NFT/Creator reward vault and ERC-20 quote-asset registry.
 The upstream repository is used as an implementation reference, not as a
 runtime dependency or an administrative dependency.
+
+The graduation reserve conversion, full-range liquidity guard, and local
+TickMath implementation were independently adapted from the same upstream V2
+graduation path and its vendored Uniswap v4 libraries, inspected at commit
+`f2e069c1bf26bde0760446ecce3cf2501cf50846`. Stock World adds its own reward
+liquidity contribution, so the pool token allocation preserves the terminal
+curve price across both swept curve quote and reserved reward quote. Any World
+Tokens not needed at that price are sent to the ownerless permanent locker.
+Reward quote used by the initial seed is capped at the virtual quote reserve;
+larger accumulated reserves remain in the World reward vault for the public
+post-graduation forwarding path instead of making graduation impossible.

@@ -10,6 +10,7 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
     bytes32 public lastMarketId;
     uint256 public lastQuoteAmount;
     uint256 public lastTokenAmount;
+    uint256 public lastPoolTokenAmount;
 
     error PreflightRejected();
     error CompletionRejected();
@@ -33,7 +34,8 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
         address quoteAsset,
         address graduationEscrow,
         uint256 quoteAmount,
-        uint256 tokenAmount
+        uint256 tokenAmount,
+        uint256 poolTokenAmount
     ) external returns (bytes32 marketId) {
         if (!completionAllowed) revert CompletionRejected();
         (uint256 receivedQuote, uint256 receivedTokens) =
@@ -42,6 +44,7 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
 
         lastQuoteAmount = quoteAmount;
         lastTokenAmount = tokenAmount;
+        lastPoolTokenAmount = poolTokenAmount;
         marketId = keccak256(abi.encode(msg.sender, worldId, worldToken, quoteAsset));
         lastMarketId = marketId;
     }

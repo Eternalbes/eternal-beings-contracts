@@ -24,17 +24,22 @@ Implemented:
 - `StockWorldFactory`: exact-fee launch, canonical World records, deterministic curve and mint parameters, module binding, and permissionless graduation coordination.
 - `StockWorldGraduationEscrow`: per-World reserve custody with no owner withdrawal, atomic coordinator release, and post-graduation reserve forwarding.
 - `IStockWorldGraduationCoordinator`: fixed integration boundary for preflight and permanent-market creation.
+- `StockWorldGraduationMath`: terminal-price-preserving pool allocation and deterministic V4 sqrt-price math.
+- Graduation reserve capping: the initial pool absorbs at most the virtual quote reserve, so fee churn cannot make a World permanently ungradable; excess quote remains forwardable after graduation.
+- `StockWorldGraduationGuard`: exact full-range tick/liquidity preflight and signed V4 amount bounds.
+- `StockWorldLiquidityLocker`: ownerless permanent custody for position NFTs and virtual-reserve token remainder.
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 - Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
 - Local Ganache tests for exact fair-mint winner counts, claim-order independence, reservation expiry, late entropy, transfer settlement, and Fusion burn invariants.
 - Local Ganache tests for atomic stack deployment, exact launch-fee forwarding, canonical address records, failed-launch rollback, preflight-before-sweep, retryable graduation, and escrow conservation.
+- Local Ganache tests for price-preserving graduation allocation, seed rejection boundaries, coordinator authentication, and irreversible locker custody.
 
 Not implemented in this milestone:
 
 - A production `StockWorldGraduationCoordinator` for Robinhood Chain's verified Uniswap v4 deployment.
 - The Uniswap v4 fee hook and World Token-to-quote conversion path.
-- Permanent liquidity position creation and a no-withdrawal liquidity locker.
+- Permanent Uniswap v4 position creation and coordinator integration with the implemented no-withdrawal locker.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.
 
 The factory is complete enough for local lifecycle testing, but its production constructor must never receive the included mock coordinator. The missing components are required before any World can be launched on Robinhood Chain. None of the current contracts should be represented as a complete production deployment.
@@ -47,6 +52,7 @@ The factory is complete enough for local lifecycle testing, but its production c
 - Canonical network values are stored in `config/robinhood-chain.json`.
 - Ethereum mainnet and Sepolia contract addresses must never be reused as Robinhood Chain addresses.
 - External protocol addresses remain unset until their Robinhood Chain deployments are independently verified.
+- On-chain candidates and bytecode hashes are recorded separately in `config/robinhood-chain.v4-observed.json`; they are not production configuration.
 
 Before any future deployment, verify the connected RPC:
 

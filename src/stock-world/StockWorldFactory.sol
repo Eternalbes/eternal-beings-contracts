@@ -10,6 +10,7 @@ import {StockWorldLaunchDeployer} from "./StockWorldLaunchDeployer.sol";
 import {WorldNFT} from "./WorldNFT.sol";
 import {WorldRewardVault} from "./WorldRewardVault.sol";
 import {WorldToken} from "./WorldToken.sol";
+import {StockWorldGraduationMath} from "./libraries/StockWorldGraduationMath.sol";
 
 /**
  * @title StockWorldFactory
@@ -37,6 +38,7 @@ contract StockWorldFactory {
         address worldNft;
         address fairMintController;
         address graduationEscrow;
+        uint256 graduationPoolTokens;
         WorldPhase phase;
     }
 
@@ -78,7 +80,9 @@ contract StockWorldFactory {
         address tokenRewardVault,
         address graduationEscrow
     );
-    event GraduationPrepared(uint256 indexed worldId, uint256 quoteAmount, uint256 tokenAmount);
+    event GraduationPrepared(
+        uint256 indexed worldId, uint256 quoteAmount, uint256 totalTokenAmount, uint256 poolTokenAmount
+    );
     event WorldGraduated(uint256 indexed worldId, bytes32 indexed marketId);
 
     constructor(
@@ -160,6 +164,7 @@ contract StockWorldFactory {
             worldNft: modules.worldNft,
             fairMintController: modules.fairMintController,
             graduationEscrow: modules.graduationEscrow,
+            graduationPoolTokens: 0,
             phase: WorldPhase.CurveLive
         });
         worldIdOfToken[modules.worldToken] = worldId + 1;
@@ -194,11 +199,16 @@ contract StockWorldFactory {
 
         uint256 curveQuote = curve.trackedQuoteReserve();
         uint256 curveTokens = curve.trackedTokenReserve();
-        uint256 rewardQuote = rewardVault.liquidityReserve();
+        uint256 virtualQuoteReserve = curve.virtualQuoteReserve();
+        uint256 availableRewardQuote = rewardVault.liquidityReserve();
+        uint256 rewardQuote = availableRewardQuote < virtualQuoteReserve ? availableRewardQuote : virtualQuoteReserve;
         uint256 totalQuote = curveQuote + rewardQuote;
+        uint256 poolTokenAmount = StockWorldGraduationMath.poolTokenAmount(
+            curveTokens, curveQuote, rewardQuote, virtualQuoteReserve
+        );
 
         graduationCoordinator.preflight(
-            worldId, world.worldToken, world.quoteAsset, totalQuote, curveTokens
+            worldId, world.worldToken, world.quoteAsset, totalQuote, poolTokenAmount
         );
 
         (uint256 sweptQuote, uint256 sweptTokens) =
@@ -207,15 +217,16 @@ contract StockWorldFactory {
 
         StockWorldGraduationEscrow escrow = StockWorldGraduationEscrow(world.graduationEscrow);
         escrow.recordCurveSweep(sweptQuote, sweptTokens);
-        if (rewardQuote != 0 && escrow.collectRewardReserve() != rewardQuote) {
+        if (rewardQuote != 0 && escrow.collectRewardReserve(rewardQuote) != rewardQuote) {
             revert InvalidGraduationState();
         }
         if (escrow.trackedQuote() != totalQuote || escrow.trackedTokens() != curveTokens) {
             revert InvalidGraduationState();
         }
 
+        world.graduationPoolTokens = poolTokenAmount;
         world.phase = WorldPhase.GraduationPrepared;
-        emit GraduationPrepared(worldId, totalQuote, curveTokens);
+        emit GraduationPrepared(worldId, totalQuote, curveTokens, poolTokenAmount);
     }
 
     function completeGraduation(uint256 worldId) external nonReentrant returns (bytes32 marketId) {
@@ -233,7 +244,8 @@ contract StockWorldFactory {
             world.quoteAsset,
             world.graduationEscrow,
             quoteAmount,
-            tokenAmount
+            tokenAmount,
+            world.graduationPoolTokens
         );
         if (marketId == bytes32(0)) revert InvalidMarketId();
         if (!escrow.released() || escrow.trackedQuote() != 0 || escrow.trackedTokens() != 0) {
@@ -247,6 +259,10 @@ contract StockWorldFactory {
 
     function getWorld(uint256 worldId) external view returns (WorldRecord memory) {
         return _world(worldId);
+    }
+
+    function isCanonicalWorld(uint256 worldId, address worldToken) external view returns (bool) {
+        return worldId < worldCount && worlds[worldId].worldToken == worldToken;
     }
 
     function calculateVirtualQuoteReserve(uint256 graduationTarget) public pure returns (uint256) {
