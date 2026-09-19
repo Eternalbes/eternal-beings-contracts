@@ -301,9 +301,9 @@ src/stock-world/
 |-- StockWorldGraduationGuard.sol
 |-- StockWorldGraduationExecutor.sol
 |-- StockWorldLiquidityLocker.sol
+|-- StockWorldHookDeployer.sol
+|-- StockWorldHook.sol
 |-- StockWorldPlatformRevenueVault.sol
-|-- hooks/
-|   `-- StockWorldHook.sol
 |-- interfaces/
 |   |-- IStockWorldFactory.sol
 |   |-- IStockWorldRewardVault.sol

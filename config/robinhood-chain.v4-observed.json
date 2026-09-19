@@ -12,17 +12,41 @@
     "poolManager": {
       "address": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
       "codeBytes": 24009,
-      "codeHash": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626"
+      "codeHash": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626",
+      "sourceVerification": {
+        "provider": "sourcify-v2",
+        "matchId": "47290695",
+        "runtimeMatch": "match",
+        "contractName": "PoolManager",
+        "fullyQualifiedName": "lib/v4-core/src/PoolManager.sol:PoolManager",
+        "compilerVersion": "0.8.26+commit.8a97fa7a"
+      }
     },
     "positionManager": {
       "address": "0x58daec3116aae6D93017bAAea7749052E8a04fA7",
       "codeBytes": 23877,
-      "codeHash": "0xc873e135dc9aaec88489cfbad146b4cb49d6a32e0d80326377784b7ba17670b2"
+      "codeHash": "0xc873e135dc9aaec88489cfbad146b4cb49d6a32e0d80326377784b7ba17670b2",
+      "sourceVerification": {
+        "provider": "sourcify-v2",
+        "matchId": "46997905",
+        "runtimeMatch": "match",
+        "contractName": "PositionManager",
+        "fullyQualifiedName": "src/PositionManager.sol:PositionManager",
+        "compilerVersion": "0.8.26+commit.8a97fa7a"
+      }
     },
     "permit2": {
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "codeBytes": 9152,
-      "codeHash": "0x5208783f52488f7d3493e5e38311ab707c1d75457fe472a19b0b4d57d66a7fca"
+      "codeHash": "0x5208783f52488f7d3493e5e38311ab707c1d75457fe472a19b0b4d57d66a7fca",
+      "sourceVerification": {
+        "provider": "sourcify-v2",
+        "matchId": "46878631",
+        "runtimeMatch": "match",
+        "contractName": "Permit2",
+        "fullyQualifiedName": "src/Permit2.sol:Permit2",
+        "compilerVersion": "0.8.17+commit.8df45f5f"
+      }
     }
   },
   "crossChecks": [
@@ -30,5 +54,5 @@
     "PonsV2Factory.permit2 equals PositionManager.permit2",
     "Every observed address had non-empty code"
   ],
-  "warning": "Do not copy these values into production deployment configuration until source verification and an independent Robinhood Chain deployment reference are available."
+  "warning": "Sourcify runtime-source matches and live wiring are independently checked, but these addresses are not represented as an official Uniswap deployment. Governance and deployment provenance still require an explicit production decision."
 }

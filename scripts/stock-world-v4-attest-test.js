@@ -2,7 +2,9 @@ const assert = require("assert");
 const { ethers } = require("ethers");
 const {
   attestCode,
+  attestSource,
   byteLength,
+  fetchSourceVerification,
   normalizeAddress,
   readAddress,
   readUint256,
@@ -45,6 +47,34 @@ async function main() {
   assert.equal(await readAddress(provider, address, "poolManager()", 123), ethers.getAddress(address));
   assert.equal(await readUint256(provider, address, "nextTokenId()", 123), 42n);
 
+  const sourceRecord = {
+    sourceVerification: {
+      provider: "sourcify-v2",
+      matchId: "77",
+      runtimeMatch: "match",
+      contractName: "PoolManager",
+      fullyQualifiedName: "src/PoolManager.sol:PoolManager",
+      compilerVersion: "0.8.26+commit.8a97fa7a",
+    },
+  };
+  const sourcePayload = {
+    matchId: "77",
+    runtimeMatch: "match",
+    verifiedAt: "2026-09-01T00:00:00Z",
+    compilation: {
+      name: "PoolManager",
+      fullyQualifiedName: "src/PoolManager.sol:PoolManager",
+      compilerVersion: "0.8.26+commit.8a97fa7a",
+    },
+  };
+  assert.equal(attestSource("PoolManager", sourceRecord, sourcePayload).matchId, "77");
+  const fetched = await fetchSourceVerification(4663n, address, async (url, options) => {
+    assert.equal(url.includes("/v2/contract/4663/"), true);
+    assert.equal(options.headers.accept, "application/json");
+    return { ok: true, json: async () => sourcePayload };
+  });
+  assert.deepEqual(fetched, sourcePayload);
+
   await assert.rejects(
     attestCode(provider, "Test", { ...record, codeBytes: 6 }, 123),
     /code size mismatch/,
@@ -60,6 +90,18 @@ async function main() {
   await assert.rejects(
     readAddress({ call: async () => "0x" }, address, "poolManager()", 123),
     /malformed data/,
+  );
+  await assert.rejects(
+    fetchSourceVerification(4663, address, async () => ({ ok: false, status: 404 })),
+    /Sourcify lookup failed/,
+  );
+  assert.throws(
+    () => attestSource("PoolManager", sourceRecord, { ...sourcePayload, runtimeMatch: "exact_match" }),
+    /source runtimeMatch mismatch/,
+  );
+  assert.throws(
+    () => attestSource("PoolManager", sourceRecord, { ...sourcePayload, compilation: undefined }),
+    /no Sourcify compilation metadata/,
   );
   assert.throws(() => normalizeAddress("not-an-address", "test"), /Invalid test address/);
 

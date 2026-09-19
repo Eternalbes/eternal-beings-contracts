@@ -54,6 +54,40 @@ async function attestCode(provider, label, record, blockTag) {
   return actual;
 }
 
+async function fetchSourceVerification(chainId, address, fetchImpl = fetch) {
+  const url =
+    `https://sourcify.dev/server/v2/contract/${chainId}/${address}`
+    + "?fields=compilation";
+  const response = await fetchImpl(url, { headers: { accept: "application/json" } });
+  if (!response.ok) throw new Error(`Sourcify lookup failed for ${address}: HTTP ${response.status}`);
+  return response.json();
+}
+
+function attestSource(label, record, source) {
+  const expected = record.sourceVerification;
+  const compilation = source.compilation;
+  if (!expected || expected.provider !== "sourcify-v2") {
+    throw new Error(`${label} has no pinned Sourcify v2 source record`);
+  }
+  if (!compilation) throw new Error(`${label} has no Sourcify compilation metadata`);
+
+  const actual = {
+    provider: "sourcify-v2",
+    matchId: String(source.matchId),
+    runtimeMatch: source.runtimeMatch,
+    contractName: compilation.name,
+    fullyQualifiedName: compilation.fullyQualifiedName,
+    compilerVersion: compilation.compilerVersion,
+    verifiedAt: source.verifiedAt,
+  };
+  for (const field of ["matchId", "runtimeMatch", "contractName", "fullyQualifiedName", "compilerVersion"]) {
+    if (actual[field] !== expected[field]) {
+      throw new Error(`${label} source ${field} mismatch: expected ${expected[field]}, received ${actual[field]}`);
+    }
+  }
+  return actual;
+}
+
 async function main() {
   const config = loadJson(networkConfigPath);
   const expectedNetwork = config[networkName];
@@ -85,6 +119,17 @@ async function main() {
     attestCode(provider, "Permit2", contracts.permit2, latestBlock),
   ]);
 
+  const [poolManagerSource, positionManagerSource, permit2Source] = await Promise.all([
+    fetchSourceVerification(network.chainId, poolManager.address),
+    fetchSourceVerification(network.chainId, positionManager.address),
+    fetchSourceVerification(network.chainId, permit2.address),
+  ]);
+  const sources = {
+    poolManager: attestSource("PoolManager", contracts.poolManager, poolManagerSource),
+    positionManager: attestSource("PositionManager", contracts.positionManager, positionManagerSource),
+    permit2: attestSource("Permit2", contracts.permit2, permit2Source),
+  };
+
   const [reportedPoolManager, reportedPermit2, nextTokenId] = await Promise.all([
     readAddress(provider, positionManager.address, "poolManager()", latestBlock),
     readAddress(provider, positionManager.address, "permit2()", latestBlock),
@@ -100,20 +145,21 @@ async function main() {
   console.log(
     JSON.stringify(
       {
-        status: "observed-v4-bytecode-and-wiring-match",
+        status: "observed-v4-bytecode-wiring-and-source-match",
         productionApproved: false,
         network: `${config.networkFamily} ${networkName}`,
         chainId: network.chainId.toString(),
         checkedAtBlock: latestBlock,
         observationBlock: observation.observedAtBlock,
         contracts: { poolManager, positionManager, permit2 },
+        sources,
         wiring: {
           positionManagerPoolManager: reportedPoolManager,
           positionManagerPermit2: reportedPermit2,
           positionManagerNextTokenId: nextTokenId.toString(),
         },
         warning:
-          "This proves current bytecode and internal wiring match the recorded observation. It does not establish an official or independently verified deployment.",
+          "This proves current bytecode, internal wiring, and pinned Sourcify source records match. It does not establish an official Uniswap deployment or approve production use.",
       },
       null,
       2,
@@ -130,7 +176,9 @@ if (require.main === module) {
 
 module.exports = {
   attestCode,
+  attestSource,
   byteLength,
+  fetchSourceVerification,
   normalizeAddress,
   readAddress,
   readUint256,
