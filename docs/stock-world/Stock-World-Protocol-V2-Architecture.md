@@ -92,9 +92,9 @@ Registry changes affect only future launches. A time-locked multisignature may m
 
 ### 5.3 StockWorldHook
 
-The singleton Uniswap v4 hook collects the post-graduation fee, identifies the World associated with each pool, converts any World Token-denominated fee into the quote asset under a strict price-impact bound, and deposits the result into that World's reward vault.
+The singleton Uniswap v4 hook collects the post-graduation fee only in the World's quote asset. A combined `beforeSwap` and `afterSwap` delta design covers quote-specified and quote-unspecified swaps, so the hook never accumulates World Token inventory and never needs a price oracle, privileged conversion operator, or manipulable internal swap. Anyone may sweep the exactly tracked quote balance into that World's reward vault.
 
-The hook accepts registrations only from the canonical factory. Its address must encode the required Uniswap v4 hook permission bits and must be deployed through a reproducible CREATE2 process.
+The hook accepts registrations only from the immutable graduation coordinator and verifies the coordinator's canonical factory and World record. Its `beforeInitialize` callback accepts only that coordinator, preventing an unrelated account from pre-initializing a canonical pool. Its address must encode the required Uniswap v4 hook permission bits and must be deployed through a reproducible CREATE2 process.
 
 ### 5.4 GraduationGuard and GraduationExecutor
 
@@ -221,7 +221,8 @@ After graduation:
 
 ```text
 Trader -> Uniswap v4 Pool -> StockWorldHook
-       -> quote conversion when required
+       -> exact quote-asset fee accounting
+       -> permissionless sweep
        -> WorldRewardVault -> Token / NFT / Creator ledgers
 ```
 
@@ -321,10 +322,11 @@ The system is separated into multiple contracts to preserve ownership boundaries
 3. Implement the reward vault and prove fee conservation invariants.
 4. Add World NFT, fair mint, transfer settlement, and Fusion.
 5. Integrate pre-graduation fee deposits.
-6. Implement the v4 hook and post-graduation quote conversion.
+6. Integrate the v4 hook.
 7. Integrate the guard, executor, and permanent locker.
-8. Add the platform revenue vault without enabling an undefined buyback policy.
-9. Run unit, fuzz, invariant, adversarial-token, reentrancy, rounding, and lifecycle tests.
+8. Add permissionless post-graduation quote-reserve liquidity additions.
+9. Add the platform revenue vault without enabling an undefined buyback policy.
+10. Run unit, fuzz, invariant, adversarial-token, reentrancy, rounding, and lifecycle tests.
 10. Deploy a fast-parameter test instance on Robinhood Chain.
 11. Exercise launch, trading, mint, transfer, Fusion, claims, graduation, v4 trading, and failed-graduation recovery.
 12. Freeze production parameters and deploy a new immutable production factory.

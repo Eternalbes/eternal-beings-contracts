@@ -1,12 +1,12 @@
 # Stock World Protocol V2 Implementation Status
 
-Status: V4 graduation integration milestone, not a production deployment
+Status: Autonomous v4 hook milestone, not a production deployment
 
 Target network: Robinhood Chain
 
 This directory tracks implementation against the architecture proposal. Code is published in narrow, tested milestones so incomplete market or reward logic is not presented as production-ready software.
 
-## V4 Graduation Integration Milestone
+## Autonomous V4 Hook Milestone
 
 Implemented:
 
@@ -30,6 +30,8 @@ Implemented:
 - `StockWorldLiquidityLocker`: ownerless permanent custody for position NFTs and virtual-reserve token remainder.
 - `StockWorldGraduationCoordinator`: one-time canonical Factory binding, immutable v4 wiring, pool creation, World registration, reserve attribution, and permanent custody finalization.
 - `StockWorldGraduationExecutor`: exact per-graduation asset pulls, Permit2 action encoding, expiring approvals, explicit revocation, and residual return.
+- `StockWorldHook`: CREATE2 permission-bit enforcement, one-time Coordinator binding, canonical pool registration, pre-initialization protection, quote-only swap fees, pool-isolated accounting, and permissionless reward-vault sweeps.
+- Permanent pools require a zero v4 core LP fee. The ownerless position cannot collect core LP fees, so the immutable 1% Hook fee is the only permanent-market fee and follows the same quote-asset reward path as the bonding curve.
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 - Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
@@ -37,12 +39,11 @@ Implemented:
 - Local Ganache tests for atomic stack deployment, exact launch-fee forwarding, canonical address records, failed-launch rollback, preflight-before-sweep, retryable graduation, and escrow conservation.
 - Local Ganache tests for price-preserving graduation allocation, seed rejection boundaries, coordinator authentication, and irreversible locker custody.
 - Local Ganache v4-stack tests for constructor wiring, pool initialization, action encoding, approval revocation, Hook registration, LP custody, dust attribution, full rollback, and retry.
+- Local Ganache Hook tests for the `0x20cc` permission mask, callback ABI selectors, one-time wiring, initialization front-run rejection, all four exact-input/output directions, partial-fill rollback, forced-balance isolation, fee conservation, and permissionless delivery.
 
 Not implemented in this milestone:
 
-- The Uniswap v4 fee hook and World Token-to-quote conversion path.
-- Hook-level `beforeInitialize` authorization that permits only the immutable graduation coordinator, preventing third parties from pre-initializing a canonical World pool.
-- Permissionless conversion or liquidity addition for attributed post-graduation quote reserves currently held by the coordinator.
+- Permissionless liquidity addition for attributed post-graduation quote reserves currently held by the coordinator.
 - Robinhood Chain fork and testnet execution against independently verified v4 deployment addresses.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.
 

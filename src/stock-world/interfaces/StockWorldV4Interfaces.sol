@@ -9,8 +9,15 @@ struct StockWorldV4PoolKey {
     address hooks;
 }
 
+struct StockWorldV4SwapParams {
+    bool zeroForOne;
+    int256 amountSpecified;
+    uint160 sqrtPriceLimitX96;
+}
+
 interface IStockWorldV4PoolManager {
     function initialize(StockWorldV4PoolKey memory key, uint160 sqrtPriceX96) external returns (int24 tick);
+    function take(address currency, address to, uint256 amount) external;
 }
 
 interface IStockWorldV4PositionManager {
@@ -33,6 +40,17 @@ interface IStockWorldHookRegistry {
         address quoteAsset,
         address rewardVault
     ) external;
+}
+
+interface IStockWorldHookCoordinator {
+    function poolManager() external view returns (address);
+    function worldHook() external view returns (address);
+    function factory() external view returns (address);
+}
+
+interface IStockWorldRewardVaultSink {
+    function quoteAsset() external view returns (address);
+    function depositFee(uint256 amount) external;
 }
 
 interface IStockWorldCanonicalFactory {

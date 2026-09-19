@@ -38,3 +38,11 @@ inspected at the same pinned commit. Stock World narrows this path to ERC-20
 quote assets, pulls only the current World's exact amounts, revokes both
 approval layers after minting, returns residuals to the coordinator, locks
 World Token dust, and records quote dust against its originating escrow.
+
+`StockWorldHook` retains the pinned reference's Uniswap v4 return-delta fee
+mechanism and exact `PoolManager.take` balance checks. Stock World deliberately
+uses both before- and after-swap callbacks to charge only the ERC-20 quote leg
+in all four exact-input/output directions. This removes the reference design's
+World Token conversion, privileged sweep operator, spot-price impact setting,
+and buyback path. The resulting fee ledger is pool-isolated, price-independent,
+and permissionlessly sweepable into each immutable `WorldRewardVault`.

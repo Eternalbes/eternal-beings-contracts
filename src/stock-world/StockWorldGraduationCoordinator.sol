@@ -107,7 +107,10 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
                 || address(permit2_).code.length == 0 || address(worldHook_).code.length == 0
                 || address(graduationGuard_).code.length == 0 || address(locker_).code.length == 0
         ) revert NotContract();
-        if (poolFee_ > 1_000_000 || tickSpacing_ < 1 || tickSpacing_ > type(int16).max) {
+        // The permanent LP is ownerless, so a non-zero core fee would accrue
+        // value that nobody can collect. All permanent-market fees are routed
+        // through StockWorldHook instead.
+        if (poolFee_ != 0 || tickSpacing_ < 1 || tickSpacing_ > type(int16).max) {
             revert InvalidPoolParameters();
         }
         if (

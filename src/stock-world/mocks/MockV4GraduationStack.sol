@@ -4,22 +4,97 @@ pragma solidity ^0.8.24;
 import {IStockWorldGraduationCoordinator} from "../IStockWorldGraduationCoordinator.sol";
 import {
     IStockWorldPermit2,
-    StockWorldV4PoolKey
+    StockWorldV4PoolKey,
+    StockWorldV4SwapParams
 } from "../interfaces/StockWorldV4Interfaces.sol";
 import {IERC20Minimal, SafeERC20} from "../libraries/SafeERC20.sol";
 
+interface IMockStockWorldV4Callbacks {
+    function beforeInitialize(address sender, StockWorldV4PoolKey calldata key, uint160 sqrtPriceX96)
+        external
+        returns (bytes4);
+
+    function beforeSwap(
+        address sender,
+        StockWorldV4PoolKey calldata key,
+        StockWorldV4SwapParams calldata params,
+        bytes calldata hookData
+    ) external returns (bytes4, int256, uint24);
+
+    function afterSwap(
+        address sender,
+        StockWorldV4PoolKey calldata key,
+        StockWorldV4SwapParams calldata params,
+        int256 delta,
+        bytes calldata hookData
+    ) external returns (bytes4, int128);
+}
+
 contract MockV4PoolManager {
+    using SafeERC20 for IERC20Minimal;
+
     mapping(bytes32 poolId => bool initialized) public initialized;
     StockWorldV4PoolKey public lastKey;
     uint160 public lastSqrtPriceX96;
+    address private callbackHook;
 
     function initialize(StockWorldV4PoolKey memory key, uint160 sqrtPriceX96) external returns (int24) {
         bytes32 poolId = keccak256(abi.encode(key));
         require(!initialized[poolId], "already initialized");
+        callbackHook = key.hooks;
+        bytes4 response = IMockStockWorldV4Callbacks(key.hooks).beforeInitialize(msg.sender, key, sqrtPriceX96);
+        callbackHook = address(0);
+        require(response == IMockStockWorldV4Callbacks.beforeInitialize.selector, "before initialize");
         initialized[poolId] = true;
         lastKey = key;
         lastSqrtPriceX96 = sqrtPriceX96;
         return 0;
+    }
+
+    function take(address currency, address to, uint256 amount) external {
+        require(msg.sender == callbackHook && callbackHook != address(0), "outside callback");
+        IERC20Minimal(currency).safeTransfer(to, amount);
+    }
+
+    function callBeforeSwap(
+        address hook,
+        address sender,
+        StockWorldV4PoolKey calldata key,
+        StockWorldV4SwapParams calldata params
+    ) external returns (bytes4 selector, int256 delta, uint24 feeOverride) {
+        callbackHook = hook;
+        (selector, delta, feeOverride) = IMockStockWorldV4Callbacks(hook).beforeSwap(sender, key, params, "");
+        callbackHook = address(0);
+    }
+
+    function callAfterSwap(
+        address hook,
+        address sender,
+        StockWorldV4PoolKey calldata key,
+        StockWorldV4SwapParams calldata params,
+        int256 balanceDelta
+    ) external returns (bytes4 selector, int128 delta) {
+        callbackHook = hook;
+        (selector, delta) = IMockStockWorldV4Callbacks(hook).afterSwap(sender, key, params, balanceDelta, "");
+        callbackHook = address(0);
+    }
+
+    function simulateSwap(
+        address hook,
+        address sender,
+        StockWorldV4PoolKey calldata key,
+        StockWorldV4SwapParams calldata params,
+        int256 balanceDelta
+    ) external returns (int256 beforeDelta, int128 afterDelta) {
+        callbackHook = hook;
+        (bytes4 beforeSelector, int256 collectedBefore,) =
+            IMockStockWorldV4Callbacks(hook).beforeSwap(sender, key, params, "");
+        require(beforeSelector == IMockStockWorldV4Callbacks.beforeSwap.selector, "before swap");
+        (bytes4 afterSelector, int128 collectedAfter) =
+            IMockStockWorldV4Callbacks(hook).afterSwap(sender, key, params, balanceDelta, "");
+        require(afterSelector == IMockStockWorldV4Callbacks.afterSwap.selector, "after swap");
+        callbackHook = address(0);
+        return (collectedBefore, collectedAfter);
     }
 }
 
@@ -111,6 +186,10 @@ contract MockStockWorldHookRegistry {
     mapping(bytes32 poolId => uint256 worldId) public worldIdOf;
     mapping(bytes32 poolId => address rewardVault) public rewardVaultOf;
 
+    function beforeInitialize(address, StockWorldV4PoolKey calldata, uint160) external pure returns (bytes4) {
+        return IMockStockWorldV4Callbacks.beforeInitialize.selector;
+    }
+
     function registerWorldPool(
         StockWorldV4PoolKey calldata key,
         address factory,
@@ -173,10 +252,31 @@ contract MockV4CanonicalFactory {
 }
 
 contract MockV4RewardVault {
+    using SafeERC20 for IERC20Minimal;
+
     address public immutable quoteAsset;
+    uint256 public totalFeesDeposited;
 
     constructor(address quoteAsset_) {
         quoteAsset = quoteAsset_;
+    }
+
+    function depositFee(uint256 amount) external {
+        IERC20Minimal quote = IERC20Minimal(quoteAsset);
+        uint256 balanceBefore = quote.balanceOf(address(this));
+        quote.safeTransferFrom(msg.sender, address(this), amount);
+        require(quote.balanceOf(address(this)) - balanceBefore == amount, "inexact fee");
+        totalFeesDeposited += amount;
+    }
+}
+
+contract MockCreate2Deployer {
+    function deploy(bytes32 salt, bytes calldata creationCode) external returns (address deployed) {
+        bytes memory code = creationCode;
+        assembly ("memory-safe") {
+            deployed := create2(0, add(code, 0x20), mload(code), salt)
+        }
+        require(deployed != address(0), "create2 failed");
     }
 }
 

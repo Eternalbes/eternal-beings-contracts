@@ -97,10 +97,25 @@ async function main() {
         await guard.getAddress(),
         await locker.getAddress(),
         authorityAddress,
-        3_000,
+        0,
         60,
       ]),
     "constructor rejects mismatched v4 infrastructure",
+  );
+  await rejects(
+    async () =>
+      deploy("StockWorldGraduationCoordinator", authority, [
+        await poolManager.getAddress(),
+        await positionManager.getAddress(),
+        await permit2.getAddress(),
+        await hook.getAddress(),
+        await guard.getAddress(),
+        await locker.getAddress(),
+        authorityAddress,
+        3_000,
+        60,
+      ]),
+    "ownerless permanent LP rejects an inaccessible core fee",
   );
   const coordinator = await deploy("StockWorldGraduationCoordinator", authority, [
     await poolManager.getAddress(),
@@ -110,7 +125,7 @@ async function main() {
     await guard.getAddress(),
     await locker.getAddress(),
     authorityAddress,
-    3_000,
+    0,
     60,
   ]);
   const factory = await deploy("MockV4CanonicalFactory", authority, [await coordinator.getAddress()]);
@@ -295,7 +310,7 @@ async function main() {
     (await token2.getAddress()).toLowerCase() < (await quote.getAddress()).toLowerCase()
       ? await quote.getAddress()
       : await token2.getAddress(),
-    3_000,
+    0,
     60,
     await hook.getAddress(),
   ];
