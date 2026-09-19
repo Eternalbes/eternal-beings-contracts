@@ -40,10 +40,11 @@ Implemented:
 - Local Ganache tests for price-preserving graduation allocation, seed rejection boundaries, coordinator authentication, and irreversible locker custody.
 - Local Ganache v4-stack tests for constructor wiring, pool initialization, action encoding, approval revocation, Hook registration, LP custody, dust attribution, full rollback, and retry.
 - Local Ganache Hook tests for the `0x20cc` permission mask, callback ABI selectors, one-time wiring, initialization front-run rejection, all four exact-input/output directions, partial-fill rollback, forced-balance isolation, fee conservation, and permissionless delivery.
+- Offline v4 attestation guard tests for missing code, code-size drift, bytecode-hash drift, malformed ABI responses, and invalid addresses.
 
 Not implemented in this milestone:
 
-- Permissionless liquidity addition for attributed post-graduation quote reserves currently held by the coordinator.
+- Manipulation-resistant use of attributed post-graduation quote reserves currently conserved by the coordinator. A quote-only reserve cannot safely be swapped and added to the same pool from a caller-selected or same-block spot price.
 - Robinhood Chain fork and testnet execution against independently verified v4 deployment addresses.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.
 
@@ -58,11 +59,13 @@ The factory is complete enough for local lifecycle testing, but its production c
 - Ethereum mainnet and Sepolia contract addresses must never be reused as Robinhood Chain addresses.
 - External protocol addresses remain unset until their Robinhood Chain deployments are independently verified.
 - On-chain candidates and bytecode hashes are recorded separately in `config/robinhood-chain.v4-observed.json`; they are not production configuration.
+- `stock-world:attest-v4` verifies the live code size, code hash, chain ID, and PositionManager wiring against that observation. A successful result is evidence of consistency, not official deployment approval.
 
 Before any future deployment, verify the connected RPC:
 
 ```bash
 npm run stock-world:check-network -- testnet
+npm run stock-world:attest-v4 -- mainnet
 ```
 
 ## Local Verification

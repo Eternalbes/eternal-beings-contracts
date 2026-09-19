@@ -209,6 +209,8 @@ If trading begins before any World NFT exists, the NFT fee allocation enters a v
 
 Before the first mint, anyone may permanently commit the reserve to the World's locked-liquidity allocation. If the first NFT is minted while the reserve is nonzero, the mint transaction commits it automatically. The first NFT participates only in fees deposited after its reward-index checkpoint.
 
+After graduation, committed quote reserves remain attributed to their originating World in the immutable graduation coordinator. They must not be converted against the same pool using a caller-selected minimum output or a same-block spot price: that would make a permissionless maintenance call sandwichable. A future liquidity-addition path must provide either independently sourced paired World Tokens or a manipulation-resistant price mechanism. Until then, the reserve remains conserved and no account can withdraw it.
+
 ## 11. Fee Flow
 
 Before graduation:
@@ -324,7 +326,7 @@ The system is separated into multiple contracts to preserve ownership boundaries
 5. Integrate pre-graduation fee deposits.
 6. Integrate the v4 hook.
 7. Integrate the guard, executor, and permanent locker.
-8. Add permissionless post-graduation quote-reserve liquidity additions.
+8. Specify and implement manipulation-resistant use of post-graduation quote reserves.
 9. Add the platform revenue vault without enabling an undefined buyback policy.
 10. Run unit, fuzz, invariant, adversarial-token, reentrancy, rounding, and lifecycle tests.
 10. Deploy a fast-parameter test instance on Robinhood Chain.
