@@ -72,6 +72,18 @@ npm run stock-world:attest-v4 -- mainnet
 npm run stock-world:deployment-rehearsal
 ```
 
+The production manifest remains intentionally blocked until the V4 dependency decision, immutable/multisig quote-asset authority, platform fee recipient, first quote assets, and deployment funding are finalized:
+
+```bash
+npm run stock-world:production-readiness
+```
+
+`config/stock-world.production.json` converts the block-based Mint schedule using a live block-cadence sample. This prevents local-test values such as `12 / 8 / 40` from reaching a fast production chain as unusably short Commit, Reveal, and Claim windows. The readiness check is read-only and never loads a private key or sends a transaction.
+
+The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `17,674,703 gas`, quote-asset registration is `50,901 gas` per asset, and the first World launch is `7,741,628 gas` paid by that World's creator. Production readiness combines the shared and registry estimates with live `maxFeePerGas` and a configurable safety multiplier instead of relying on a fixed ETH threshold.
+
+The draft production manifest starts with ten quote assets from Robinhood's official token-contract page and `/rhj/assets` registry: USDG, SPY, QQQ, MSFT, META, AMZN, GOOGL, NVDA, AAPL, and TSLA. Readiness still checks live bytecode and ERC-20 metadata for every configured address. Inclusion means only that a World may use the token as its curve quote asset; it is not an endorsement, price guarantee, or representation of legal ownership in an underlying company.
+
 ## Local Verification
 
 ```bash

@@ -37,6 +37,7 @@
     "stock-world:check-network": "node scripts/stock-world-network-check.js",
     "stock-world:attest-v4": "node scripts/stock-world-v4-attest.js",
     "stock-world:deployment-rehearsal": "WRITE_ARTIFACTS=1 node scripts/compile.js && node scripts/stock-world-deployment-rehearsal.js",
+    "stock-world:production-readiness": "node scripts/stock-world-production-readiness.js",
     "stock-world:ui-rehearsal": "STOCK_WORLD_REHEARSAL_RPC_PORT=8545 node scripts/stock-world-deployment-rehearsal.js",
     "token-metadata": "node scripts/token-metadata.js",
     "validate-deployer-secret": "node scripts/validate-deployer-secret.js",

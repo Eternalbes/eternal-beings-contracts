@@ -3,6 +3,8 @@ const fs = require("fs");
 const ganache = require("ganache");
 const { ethers } = require("ethers");
 
+const gasUsage = [];
+
 function artifact(name) {
   return JSON.parse(fs.readFileSync(`artifacts/${name}.json`, "utf8"));
 }
@@ -11,8 +13,17 @@ async function deploy(name, signer, args = []) {
   const item = artifact(name);
   const factory = new ethers.ContractFactory(item.abi, item.bytecode, signer);
   const contract = await factory.deploy(...args);
+  const receipt = await contract.deploymentTransaction().wait();
+  gasUsage.push({ label: `deploy:${name}`, gasUsed: receipt.gasUsed });
   await contract.waitForDeployment();
   return contract;
+}
+
+async function send(label, action) {
+  const transaction = await action();
+  const receipt = await transaction.wait();
+  gasUsage.push({ label, gasUsed: receipt.gasUsed });
+  return receipt;
 }
 
 async function rejects(action, message) {
@@ -81,7 +92,9 @@ async function main() {
     mined.predicted,
     "on-chain CREATE2 prediction matches the mined address",
   );
-  await (await hookDeployer.deploy(mined.salt, hookInitCode, { gasLimit: 12_000_000 })).wait();
+  await send("create2:StockWorldHook", () =>
+    hookDeployer.deploy(mined.salt, hookInitCode, { gasLimit: 12_000_000 })
+  );
   await rejects(
     () => hookDeployer.deploy(mined.salt, hookInitCode, { gasLimit: 12_000_000 }),
     "the same CREATE2 deployment cannot be repeated",
@@ -102,7 +115,9 @@ async function main() {
     0,
     60,
   ]);
-  await (await hook.bindCoordinator(await coordinator.getAddress())).wait();
+  await send("bind:StockWorldHook.coordinator", async () =>
+    hook.bindCoordinator(await coordinator.getAddress())
+  );
 
   const quoteRegistry = await deploy("QuoteAssetRegistry", deployer, [deployerAddress]);
   const validator = await deploy("StockWorldConfigValidator", deployer, [await quoteRegistry.getAddress()]);
@@ -124,16 +139,20 @@ async function main() {
   const factoryDeploymentBlock = Number(
     (await provider.getTransactionReceipt(factory.deploymentTransaction().hash)).blockNumber,
   );
-  await (await coordinator.bindFactory(await factory.getAddress())).wait();
+  await send("bind:StockWorldGraduationCoordinator.factory", async () =>
+    coordinator.bindFactory(await factory.getAddress())
+  );
 
   assert.equal(await hook.coordinator(), await coordinator.getAddress(), "Hook coordinator binding is final");
   assert.equal(await coordinator.factory(), await factory.getAddress(), "Coordinator factory binding is final");
 
   const quoteAsset = await deploy("MockQuoteAsset", deployer, ["Rehearsal USD", "rUSD", 6]);
-  await (await quoteRegistry.registerQuoteAsset(await quoteAsset.getAddress())).wait();
+  await send("register:quoteAsset", async () =>
+    quoteRegistry.registerQuoteAsset(await quoteAsset.getAddress())
+  );
   const launchFee = ethers.parseEther("0.0003");
-  await (
-    await factory.launchWorld(
+  await send("launch:firstWorld", async () =>
+    factory.launchWorld(
       [
         "Rehearsal World",
         "RWRLD",
@@ -147,7 +166,7 @@ async function main() {
       ],
       { value: launchFee, gasLimit: 50_000_000 },
     )
-  ).wait();
+  );
   const world = await factory.getWorld(0);
   for (const field of [
     "worldToken",
@@ -161,6 +180,25 @@ async function main() {
     assert.notEqual(world[field], ethers.ZeroAddress, `${field} is deployed`);
   }
   assert.equal(await factory.worldCount(), 1n, "first World is registered");
+
+  const sharedLabels = new Set([
+    "deploy:StockWorldHookDeployer",
+    "create2:StockWorldHook",
+    "deploy:StockWorldGraduationGuard",
+    "deploy:StockWorldLiquidityLocker",
+    "deploy:StockWorldGraduationCoordinator",
+    "bind:StockWorldHook.coordinator",
+    "deploy:QuoteAssetRegistry",
+    "deploy:StockWorldConfigValidator",
+    "deploy:StockWorldCoreDeployer",
+    "deploy:StockWorldNftDeployer",
+    "deploy:StockWorldLaunchDeployer",
+    "deploy:StockWorldFactory",
+    "bind:StockWorldGraduationCoordinator.factory",
+  ]);
+  const gasTotal = (labels) => gasUsage
+    .filter((item) => labels.has(item.label))
+    .reduce((total, item) => total + item.gasUsed, 0n);
 
   console.log(JSON.stringify({
     status: "stock-world-local-deployment-rehearsal-passed",
@@ -199,6 +237,12 @@ async function main() {
       "fairMintController",
       "graduationEscrow",
     ].map((field) => [field, world[field]])),
+    gasReport: {
+      sharedDeploymentGas: gasTotal(sharedLabels).toString(),
+      quoteAssetRegistrationGas: gasUsage.find((item) => item.label === "register:quoteAsset").gasUsed.toString(),
+      firstWorldLaunchGas: gasUsage.find((item) => item.label === "launch:firstWorld").gasUsed.toString(),
+      transactions: gasUsage.map((item) => ({ label: item.label, gasUsed: item.gasUsed.toString() })),
+    },
   }, null, 2));
 
   if (!server) {

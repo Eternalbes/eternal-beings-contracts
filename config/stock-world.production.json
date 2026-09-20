@@ -1,0 +1,42 @@
+{
+  "status": "draft-do-not-deploy",
+  "network": "mainnet",
+  "chainId": 4663,
+  "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+  "explorerUrl": "https://robinhoodchain.blockscout.com",
+  "deployer": "0x7eb7c0d2fe5b3c35b34cd4c512b119c2167bb749",
+  "quoteAssetAuthority": "",
+  "platformFeeRecipient": "",
+  "deploymentGasBudget": {
+    "sharedContracts": 17674703,
+    "perQuoteAssetRegistration": 50901,
+    "safetyBps": 15000
+  },
+  "mintSchedule": {
+    "commitBlocks": 864000,
+    "revealBlocks": 288000,
+    "claimBlocks": 864000
+  },
+  "permanentMarket": {
+    "poolFee": 0,
+    "tickSpacing": 60
+  },
+  "v4": {
+    "productionApproved": false,
+    "poolManager": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
+    "positionManager": "0x58daec3116aae6D93017bAAea7749052E8a04fA7",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+  },
+  "quoteAssets": [
+    "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+    "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+    "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+    "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+    "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+    "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+    "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+    "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+    "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+    "0x322F0929c4625eD5bAd873c95208D54E1c003b2d"
+  ]
+}
