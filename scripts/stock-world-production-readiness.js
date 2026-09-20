@@ -54,6 +54,10 @@ async function main() {
   const network = await provider.getNetwork();
   const latestBlock = await provider.getBlockNumber();
 
+  if (config.status !== "approved-for-deployment") {
+    blockers.push('config.status must be "approved-for-deployment"');
+  }
+
   if (network.chainId !== BigInt(config.chainId)) {
     blockers.push(`wrong chain: expected ${config.chainId}, received ${network.chainId}`);
   }
@@ -149,8 +153,15 @@ async function main() {
   if (!Array.isArray(config.quoteAssets) || config.quoteAssets.length === 0) {
     blockers.push("at least one production quote asset must be selected and verified");
   } else {
+    const uniqueAssets = new Set();
     for (const asset of config.quoteAssets) {
       try {
+        const key = normalized(asset).toLowerCase();
+        if (uniqueAssets.has(key)) {
+          blockers.push(`duplicate quote asset ${asset}`);
+          continue;
+        }
+        uniqueAssets.add(key);
         quoteAssets.push(await inspectQuoteAsset(provider, asset));
       } catch (error) {
         blockers.push(`quote asset ${asset}: ${error.message}`);

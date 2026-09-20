@@ -84,6 +84,15 @@ The deployment rehearsal also reports gas per transaction. The current measured 
 
 The draft production manifest starts with ten quote assets from Robinhood's official token-contract page and `/rhj/assets` registry: USDG, SPY, QQQ, MSFT, META, AMZN, GOOGL, NVDA, AAPL, and TSLA. Readiness still checks live bytecode and ERC-20 metadata for every configured address. Inclusion means only that a World may use the token as its curve quote asset; it is not an endorsement, price guarantee, or representation of legal ownership in an underlying company.
 
+The production deployer is checkpointed and resumable. Its default mode only runs the read-only readiness gate. Broadcasting requires the ignored deployer secret, `--broadcast`, and the exact chain-specific confirmation phrase; every mined address and transaction hash is written to an ignored deployment report before the next step begins:
+
+```bash
+npm run stock-world:production-deploy
+npm run stock-world:production-deploy -- --broadcast --confirm DEPLOY-STOCK-WORLD-4663
+```
+
+The deployer will not bypass a blocked manifest. Set `status` to `approved-for-deployment` only after every immutable address and external V4 dependency has been reviewed. If the immutable quote-asset authority is not the deployer, the report ends in `awaiting-quote-asset-authority` and lists the assets that authority must register.
+
 ## Local Verification
 
 ```bash
