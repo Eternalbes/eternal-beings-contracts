@@ -43,11 +43,12 @@ Implemented:
 - Local Ganache Hook tests for the `0x20cc` permission mask, callback ABI selectors, one-time wiring, initialization front-run rejection, all four exact-input/output directions, partial-fill rollback, forced-balance isolation, fee conservation, and permissionless delivery.
 - Offline v4 attestation guard tests for missing code, code-size drift, bytecode-hash drift, malformed ABI responses, and invalid addresses.
 - A local deployment rehearsal that mines the Hook permission address, deploys every shared production contract in dependency order, completes both one-time bindings, registers a quote asset, and launches the first complete World.
+- A Robinhood mainnet-fork production-deployer test that uses live V4 and quote-asset code, completes the checkpointed deployment, verifies every immutable dependency, and reruns from the same report without duplicate deployment.
 
 Not implemented in this milestone:
 
 - Manipulation-resistant use of attributed post-graduation quote reserves currently conserved by the coordinator. A quote-only reserve cannot safely be swapped and added to the same pool from a caller-selected or same-block spot price.
-- Robinhood Chain fork and testnet execution against the source-matched v4 candidate stack.
+- Robinhood Chain testnet execution against a source-matched V4 stack. The observed mainnet candidates are not available at the same addresses on testnet.
 - An explicit production governance decision on using the source-matched third-party v4 deployment; attestation does not make it an official Uniswap deployment.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.
 
@@ -70,6 +71,7 @@ Before any future deployment, verify the connected RPC:
 npm run stock-world:check-network -- testnet
 npm run stock-world:attest-v4 -- mainnet
 npm run stock-world:deployment-rehearsal
+npm run stock-world:production-deploy-test
 ```
 
 The production manifest remains intentionally blocked until the V4 dependency decision, immutable/multisig quote-asset authority, platform fee recipient, first quote assets, and deployment funding are finalized:
