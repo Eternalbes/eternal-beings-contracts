@@ -40,11 +40,22 @@ function mineHookSalt(deployer, initCode) {
 }
 
 async function main() {
-  const eip1193 = ganache.provider({
+  const rpcPort = Number(process.env.STOCK_WORLD_REHEARSAL_RPC_PORT || 0);
+  const chainId = Number(process.env.STOCK_WORLD_REHEARSAL_CHAIN_ID || 4663);
+  const ganacheOptions = {
     logging: { quiet: true },
-    chain: { hardfork: "shanghai", allowUnlimitedContractSize: false },
+    chain: { hardfork: "shanghai", allowUnlimitedContractSize: false, chainId, networkId: chainId },
     miner: { blockGasLimit: 120_000_000 },
-  });
+  };
+  let server;
+  let eip1193;
+  if (rpcPort > 0) {
+    server = ganache.server(ganacheOptions);
+    await server.listen(rpcPort, "127.0.0.1");
+    eip1193 = server.provider;
+  } else {
+    eip1193 = ganache.provider(ganacheOptions);
+  }
   const provider = new ethers.BrowserProvider(eip1193);
   const deployer = await provider.getSigner(0);
   const deployerAddress = await deployer.getAddress();
@@ -110,6 +121,9 @@ async function main() {
     8,
     40,
   ]);
+  const factoryDeploymentBlock = Number(
+    (await provider.getTransactionReceipt(factory.deploymentTransaction().hash)).blockNumber,
+  );
   await (await coordinator.bindFactory(await factory.getAddress())).wait();
 
   assert.equal(await hook.coordinator(), await coordinator.getAddress(), "Hook coordinator binding is final");
@@ -150,6 +164,13 @@ async function main() {
 
   console.log(JSON.stringify({
     status: "stock-world-local-deployment-rehearsal-passed",
+    uiRehearsal: {
+      rpcUrl: rpcPort > 0 ? `http://127.0.0.1:${rpcPort}` : null,
+      chainId,
+      factoryAddress: await factory.getAddress(),
+      factoryDeploymentBlock,
+      quoteAsset: await quoteAsset.getAddress(),
+    },
     hookCreate2: {
       deployer: await hookDeployer.getAddress(),
       salt: mined.salt,
@@ -180,7 +201,17 @@ async function main() {
     ].map((field) => [field, world[field]])),
   }, null, 2));
 
-  await eip1193.disconnect();
+  if (!server) {
+    await eip1193.disconnect();
+    return;
+  }
+
+  console.log(`Stock World UI rehearsal RPC is running at http://127.0.0.1:${rpcPort}`);
+  await new Promise((resolve) => {
+    process.once("SIGINT", resolve);
+    process.once("SIGTERM", resolve);
+  });
+  await server.close();
 }
 
 main().catch((error) => {

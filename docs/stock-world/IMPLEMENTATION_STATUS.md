@@ -79,3 +79,11 @@ npm run test:stock-world
 ```
 
 The command compiles all Solidity sources, deploys an atomic World stack to an ephemeral Ganache chain, and runs positive and negative lifecycle checks.
+
+For browser integration work, keep the same rehearsal deployment available over a loopback-only JSON-RPC endpoint:
+
+```bash
+npm run stock-world:ui-rehearsal
+```
+
+The command binds Ganache to `127.0.0.1:8545`, deploys one complete rehearsal World, and prints the temporary Factory address, Factory deployment block, and quote asset address. It does not write an account private key or modify any website configuration. Stop it with `Ctrl+C` and never publish its temporary addresses as production values.
