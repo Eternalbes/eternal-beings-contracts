@@ -45,4 +45,10 @@ library StockWorldConstants {
     uint16 internal constant BPS_DENOMINATOR = 10_000;
     uint16 internal constant BASE_TRADING_FEE_BPS = 100;
     uint16 internal constant MAX_CREATOR_BPS = 3_000;
+
+    // The v4 graduation path ultimately narrows both seed amounts to signed
+    // int128 deltas. The target leaves room for the maximum 1/9 virtual-reserve
+    // contribution that may be added to the initial pool seed.
+    uint256 internal constant MAX_GRADUATION_SEED_AMOUNT = uint256(uint128(type(int128).max));
+    uint256 internal constant MAX_GRADUATION_TARGET = MAX_GRADUATION_SEED_AMOUNT * 9 / 10;
 }

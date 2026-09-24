@@ -88,6 +88,21 @@ async function main() {
   assert.equal(await validator.WORLD_TOKEN_SUPPLY(), ethers.parseEther("1000000"), "fixed token supply exposed");
   assert.equal(await validator.PLATFORM_LAUNCH_FEE(), ethers.parseEther("0.0003"), "launch fee exposed");
   assert.equal(await validator.BASE_TRADING_FEE_BPS(), 100n, "base trading fee is one percent");
+  const maxGraduationTarget = await validator.MAX_GRADUATION_TARGET();
+  assert.equal(
+    maxGraduationTarget,
+    ((1n << 127n) - 1n) * 9n / 10n,
+    "graduation target leaves room for the maximum liquidity-reserve contribution",
+  );
+  assert.notEqual(
+    await validator.validateConfig({ ...validConfig, graduationTarget: maxGraduationTarget }),
+    ethers.ZeroHash,
+    "largest permanently seedable graduation target is accepted",
+  );
+  await assertRejects(
+    () => validator.validateConfig({ ...validConfig, graduationTarget: maxGraduationTarget + 1n }),
+    "graduation target above the permanent-market seed limit is rejected",
+  );
 
   await assertRejects(
     () => validator.validateConfig({ ...validConfig, nftMaxSupply: 99 }),

@@ -8,7 +8,7 @@
   "quoteAssetAuthority": "",
   "platformFeeRecipient": "",
   "deploymentGasBudget": {
-    "sharedContracts": 17693793,
+    "sharedContracts": 17944015,
     "perQuoteAssetRegistration": 50901,
     "safetyBps": 15000
   },

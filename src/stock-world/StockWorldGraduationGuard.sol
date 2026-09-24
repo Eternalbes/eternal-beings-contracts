@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {FullMath} from "./libraries/FullMath.sol";
 import {StockWorldGraduationMath} from "./libraries/StockWorldGraduationMath.sol";
+import {StockWorldConstants} from "./StockWorldTypes.sol";
 
 /**
  * @title StockWorldGraduationGuard
@@ -11,7 +12,7 @@ import {StockWorldGraduationMath} from "./libraries/StockWorldGraduationMath.sol
 contract StockWorldGraduationGuard {
     uint160 public constant MIN_SQRT_PRICE = 4_295_128_739;
     uint160 public constant MAX_SQRT_PRICE = 1_461_446_703_485_210_103_287_273_052_203_988_822_378_723_970_342;
-    uint256 public constant MAX_SEED_AMOUNT = uint256(uint128(type(int128).max));
+    uint256 public constant MAX_SEED_AMOUNT = StockWorldConstants.MAX_GRADUATION_SEED_AMOUNT;
     uint256 private constant Q96 = 1 << 96;
 
     error InvalidCurrencyPair();

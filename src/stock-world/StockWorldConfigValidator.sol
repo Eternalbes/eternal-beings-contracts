@@ -18,6 +18,7 @@ contract StockWorldConfigValidator {
     uint16 public constant DEFAULT_NFT_WALLET_LIMIT = StockWorldConstants.DEFAULT_NFT_WALLET_LIMIT;
     uint16 public constant BASE_TRADING_FEE_BPS = StockWorldConstants.BASE_TRADING_FEE_BPS;
     uint16 public constant MAX_CREATOR_BPS = StockWorldConstants.MAX_CREATOR_BPS;
+    uint256 public constant MAX_GRADUATION_TARGET = StockWorldConstants.MAX_GRADUATION_TARGET;
 
     error ZeroAddress();
     error InvalidName();
@@ -56,7 +57,9 @@ contract StockWorldConfigValidator {
         if (config.quoteAsset != address(0) && !quoteAssetRegistry.isSupported(config.quoteAsset)) {
             revert UnsupportedQuoteAsset();
         }
-        if (config.graduationTarget == 0) revert InvalidGraduationTarget();
+        if (config.graduationTarget == 0 || config.graduationTarget > MAX_GRADUATION_TARGET) {
+            revert InvalidGraduationTarget();
+        }
         uint256 virtualQuoteReserve = config.graduationTarget / 9 + (config.graduationTarget % 9 == 0 ? 0 : 1);
         if (config.graduationTarget > type(uint256).max - virtualQuoteReserve) {
             revert InvalidGraduationTarget();

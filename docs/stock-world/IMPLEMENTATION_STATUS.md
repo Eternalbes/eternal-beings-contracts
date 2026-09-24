@@ -18,6 +18,7 @@ Implemented:
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
 - Native ETH as the default quote asset (`address(0)`), with registry-approved ERC-20 Stock Tokens and other assets remaining selectable alternatives.
+- An immutable graduation-target ceiling that guarantees the curve target plus its maximum reward-liquidity contribution remains representable by the permanent v4 seed path.
 - `WorldNFT`: fixed historical supply, reward-aware transfers, on-chain metadata, and single-pair Fusion with permanent sacrifice burn.
 - `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, and expiring reservations.
 - `StockWorldCoreDeployer` and `StockWorldNftDeployer`: stateless bytecode shards that keep deployer runtimes below EIP-170 limits.
@@ -83,7 +84,7 @@ npm run stock-world:production-readiness
 
 `config/stock-world.production.json` converts the block-based Mint schedule using a live block-cadence sample. This prevents local-test values such as `12 / 8 / 40` from reaching a fast production chain as unusably short Commit, Reveal, and Claim windows. The readiness check is read-only and never loads a private key or sends a transaction.
 
-The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `17,693,793 gas`, quote-asset registration is `50,901 gas` per asset, and the first World launch is approximately `7,758,278 gas` paid by that World's creator. Production readiness combines the shared and registry estimates with live `maxFeePerGas` and a configurable safety multiplier instead of relying on a fixed ETH threshold.
+The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `17,944,015 gas`, quote-asset registration is `50,901 gas` per asset, and the first World launch is approximately `7,967,506 gas` paid by that World's creator. Production readiness combines the shared and registry estimates with live `maxFeePerGas` and a configurable safety multiplier instead of relying on a fixed ETH threshold.
 
 The draft production manifest starts with ten quote assets from Robinhood's official token-contract page and `/rhj/assets` registry: USDG, SPY, QQQ, MSFT, META, AMZN, GOOGL, NVDA, AAPL, and TSLA. Readiness still checks live bytecode and ERC-20 metadata for every configured address. Inclusion means only that a World may use the token as its curve quote asset; it is not an endorsement, price guarantee, or representation of legal ownership in an underlying company.
 
