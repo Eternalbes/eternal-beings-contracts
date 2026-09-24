@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 
 interface IWorldRewardReserve {
     function releaseLiquidityReserve() external returns (uint256 amount);
@@ -9,7 +10,7 @@ interface IWorldRewardReserve {
 }
 
 interface IPostGraduationReserveCoordinator {
-    function onPostGraduationReserve(uint256 amount) external;
+    function onPostGraduationReserve(uint256 amount) external payable;
 }
 
 /**
@@ -21,7 +22,7 @@ interface IPostGraduationReserveCoordinator {
 contract StockWorldGraduationEscrow {
     using SafeERC20 for IERC20Minimal;
 
-    IERC20Minimal public immutable quoteAsset;
+    address public immutable quoteAsset;
     IERC20Minimal public immutable worldToken;
     IWorldRewardReserve public immutable rewardVault;
     address public immutable factory;
@@ -52,19 +53,20 @@ contract StockWorldGraduationEscrow {
     event PostGraduationReserveForwarded(address indexed coordinator, uint256 amount);
 
     constructor(
-        IERC20Minimal quoteAsset_,
+        address quoteAsset_,
         IERC20Minimal worldToken_,
         IWorldRewardReserve rewardVault_,
         address factory_,
         address coordinator_
     ) {
         if (
-            address(quoteAsset_) == address(0) || address(worldToken_) == address(0)
-                || address(rewardVault_) == address(0) || factory_ == address(0) || coordinator_ == address(0)
+            address(worldToken_) == address(0) || address(rewardVault_) == address(0)
+                || factory_ == address(0) || coordinator_ == address(0)
         ) revert ZeroAddress();
         if (
-            address(quoteAsset_).code.length == 0 || address(worldToken_).code.length == 0
-                || address(rewardVault_).code.length == 0 || coordinator_.code.length == 0
+            (quoteAsset_ != address(0) && quoteAsset_.code.length == 0)
+                || address(worldToken_).code.length == 0 || address(rewardVault_).code.length == 0
+                || coordinator_.code.length == 0
         ) revert NotContract();
 
         quoteAsset = quoteAsset_;
@@ -79,9 +81,11 @@ contract StockWorldGraduationEscrow {
         _;
     }
 
+    receive() external payable {}
+
     function recordCurveSweep(uint256 quoteAmount, uint256 tokenAmount) external onlyFactory {
         if (curveSweepRecorded) revert AlreadyRecorded();
-        if (quoteAsset.balanceOf(address(this)) < quoteAmount || worldToken.balanceOf(address(this)) < tokenAmount) {
+        if (QuoteAssetLib.balanceOf(quoteAsset, address(this)) < quoteAmount || worldToken.balanceOf(address(this)) < tokenAmount) {
             revert InvalidBalance();
         }
 
@@ -94,9 +98,9 @@ contract StockWorldGraduationEscrow {
     function collectRewardReserve(uint256 maxAmount) external onlyFactory returns (uint256 amount) {
         if (released) revert AlreadyReleased();
 
-        uint256 balanceBefore = quoteAsset.balanceOf(address(this));
+        uint256 balanceBefore = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         amount = rewardVault.releaseLiquidityReserve(maxAmount);
-        uint256 balanceAfter = quoteAsset.balanceOf(address(this));
+        uint256 balanceAfter = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) {
             revert UnsupportedTokenBehavior();
         }
@@ -121,14 +125,14 @@ contract StockWorldGraduationEscrow {
 
         quoteAmount = trackedQuote;
         tokenAmount = trackedTokens;
-        if (quoteAsset.balanceOf(address(this)) < quoteAmount || worldToken.balanceOf(address(this)) < tokenAmount) {
+        if (QuoteAssetLib.balanceOf(quoteAsset, address(this)) < quoteAmount || worldToken.balanceOf(address(this)) < tokenAmount) {
             revert InvalidBalance();
         }
 
         released = true;
         trackedQuote = 0;
         trackedTokens = 0;
-        if (quoteAmount != 0) quoteAsset.safeTransfer(coordinator, quoteAmount);
+        if (quoteAmount != 0) QuoteAssetLib.send(quoteAsset, coordinator, quoteAmount);
         if (tokenAmount != 0) worldToken.safeTransfer(coordinator, tokenAmount);
 
         emit ReservesReleased(coordinator, quoteAmount, tokenAmount);
@@ -141,15 +145,19 @@ contract StockWorldGraduationEscrow {
     function forwardPostGraduationReserve() external returns (uint256 amount) {
         if (!released) revert NotReleased();
 
-        uint256 balanceBefore = quoteAsset.balanceOf(address(this));
+        uint256 balanceBefore = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         amount = rewardVault.releaseLiquidityReserve();
-        uint256 balanceAfter = quoteAsset.balanceOf(address(this));
+        uint256 balanceAfter = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) {
             revert UnsupportedTokenBehavior();
         }
 
-        quoteAsset.safeTransfer(coordinator, amount);
-        IPostGraduationReserveCoordinator(coordinator).onPostGraduationReserve(amount);
+        if (quoteAsset == address(0)) {
+            IPostGraduationReserveCoordinator(coordinator).onPostGraduationReserve{value: amount}(amount);
+        } else {
+            IERC20Minimal(quoteAsset).safeTransfer(coordinator, amount);
+            IPostGraduationReserveCoordinator(coordinator).onPostGraduationReserve(amount);
+        }
         emit PostGraduationReserveForwarded(coordinator, amount);
     }
 }

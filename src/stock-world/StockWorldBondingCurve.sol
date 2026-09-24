@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {StockWorldConstants} from "./StockWorldTypes.sol";
 import {FullMath} from "./libraries/FullMath.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 import {StockWorldCurveMath} from "./libraries/StockWorldCurveMath.sol";
 
@@ -12,7 +13,7 @@ interface IERC20SupplyMinimal is IERC20Minimal {
 
 interface IWorldRewardVaultFeeSink {
     function quoteAsset() external view returns (address);
-    function depositFee(uint256 amount) external;
+    function depositFee(uint256 amount) external payable;
 }
 
 /**
@@ -20,8 +21,8 @@ interface IWorldRewardVaultFeeSink {
  * @notice Immutable pre-graduation constant-product market for one Stock World.
  * @dev Its tracked reserves, partial-fill boundary, quote-leg fee treatment,
  *      and graduation ordering follow the mature MIT-licensed Pons V2 design.
- *      This implementation is ERC-20 quote only and routes every fee into the
- *      Stock World reward system instead of protocol/creator fee escrows.
+ *      Native ETH is represented by address(0); other quotes are registry-
+ *      approved ERC-20s. Every fee routes into the Stock World reward system.
  */
 contract StockWorldBondingCurve {
     using SafeERC20 for IERC20Minimal;
@@ -36,7 +37,7 @@ contract StockWorldBondingCurve {
     uint256 public constant BPS_DENOMINATOR = 10_000;
     uint256 public constant FEE_BPS = StockWorldConstants.BASE_TRADING_FEE_BPS;
 
-    IERC20Minimal public immutable quoteAsset;
+    address public immutable quoteAsset;
     IWorldRewardVaultFeeSink public immutable rewardVault;
     address public immutable factory;
     uint256 public immutable virtualQuoteReserve;
@@ -84,19 +85,21 @@ contract StockWorldBondingCurve {
     event ReservesSwept(address indexed recipient, uint256 quoteAmount, uint256 tokenAmount);
 
     constructor(
-        IERC20Minimal quoteAsset_,
+        address quoteAsset_,
         IWorldRewardVaultFeeSink rewardVault_,
         address factory_,
         uint256 virtualQuoteReserve_,
         uint256 graduationTarget_
     ) {
-        if (address(quoteAsset_) == address(0) || address(rewardVault_) == address(0) || factory_ == address(0)) {
+        if (address(rewardVault_) == address(0) || factory_ == address(0)) {
             revert ZeroAddress();
         }
-        if (address(quoteAsset_).code.length == 0 || address(rewardVault_).code.length == 0) revert NotContract();
+        if ((quoteAsset_ != address(0) && quoteAsset_.code.length == 0) || address(rewardVault_).code.length == 0) {
+            revert NotContract();
+        }
         if (virtualQuoteReserve_ == 0 || graduationTarget_ == 0) revert InvalidEconomics();
         if (virtualQuoteReserve_ > type(uint256).max - graduationTarget_) revert InvalidEconomics();
-        if (rewardVault_.quoteAsset() != address(quoteAsset_)) revert InvalidEconomics();
+        if (rewardVault_.quoteAsset() != quoteAsset_) revert InvalidEconomics();
 
         quoteAsset = quoteAsset_;
         rewardVault = rewardVault_;
@@ -200,6 +203,7 @@ contract StockWorldBondingCurve {
 
     function buy(uint256 quoteIn, uint256 minTokensOut, address recipient, uint256 deadline)
         external
+        payable
         nonReentrant
         returns (uint256 tokensOut)
     {
@@ -207,7 +211,7 @@ contract StockWorldBondingCurve {
         if (minTokensOut == 0) revert MinimumOutputRequired();
         if (block.timestamp > deadline) revert DeadlineExpired();
 
-        _pullExact(quoteAsset, msg.sender, quoteIn);
+        QuoteAssetLib.pullExact(quoteAsset, msg.sender, quoteIn);
         (uint256 quoteSpent, uint256 output, uint256 fee, uint256 refund) = previewBuy(quoteIn);
         tokensOut = output;
 
@@ -224,7 +228,7 @@ contract StockWorldBondingCurve {
 
         IERC20Minimal(address(worldToken)).safeTransfer(recipient, tokensOut);
         if (fee != 0) _depositFee(fee);
-        if (refund != 0) quoteAsset.safeTransfer(msg.sender, refund);
+        if (refund != 0) QuoteAssetLib.send(quoteAsset, msg.sender, refund);
 
         emit CurveBuy(msg.sender, recipient, quoteSpent, tokensOut, fee, refund);
     }
@@ -242,13 +246,13 @@ contract StockWorldBondingCurve {
         quoteOut = output;
         if (quoteOut < minQuoteOut) revert SlippageExceeded(quoteOut, minQuoteOut);
 
-        _pullExact(IERC20Minimal(address(worldToken)), msg.sender, tokensIn);
+        QuoteAssetLib.pullExact(address(worldToken), msg.sender, tokensIn);
         uint256 grossQuoteOut = quoteOut + fee;
         trackedTokenReserve += tokensIn;
         trackedQuoteReserve -= grossQuoteOut;
         totalQuoteFees += fee;
 
-        quoteAsset.safeTransfer(recipient, quoteOut);
+        QuoteAssetLib.send(quoteAsset, recipient, quoteOut);
         if (fee != 0) _depositFee(fee);
 
         emit CurveSell(msg.sender, recipient, tokensIn, quoteOut, fee);
@@ -269,14 +273,14 @@ contract StockWorldBondingCurve {
         trackedQuoteReserve = 0;
         trackedTokenReserve = 0;
 
-        if (quoteAmount != 0) quoteAsset.safeTransfer(recipient, quoteAmount);
+        if (quoteAmount != 0) QuoteAssetLib.send(quoteAsset, recipient, quoteAmount);
         if (tokenAmount != 0) IERC20Minimal(address(worldToken)).safeTransfer(recipient, tokenAmount);
 
         emit ReservesSwept(recipient, quoteAmount, tokenAmount);
     }
 
     function surplusQuote() external view returns (uint256) {
-        uint256 balance = quoteAsset.balanceOf(address(this));
+        uint256 balance = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         return balance > trackedQuoteReserve ? balance - trackedQuoteReserve : 0;
     }
 
@@ -287,17 +291,13 @@ contract StockWorldBondingCurve {
     }
 
     function _depositFee(uint256 fee) private {
-        quoteAsset.forceApprove(address(rewardVault), fee);
-        rewardVault.depositFee(fee);
-    }
-
-    function _pullExact(IERC20Minimal asset, address from, uint256 amount) private {
-        if (amount == 0) revert ZeroAmount();
-        uint256 balanceBefore = asset.balanceOf(address(this));
-        asset.safeTransferFrom(from, address(this), amount);
-        uint256 balanceAfter = asset.balanceOf(address(this));
-        if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) {
-            revert UnsupportedTokenBehavior();
+        if (quoteAsset == address(0)) {
+            rewardVault.depositFee{value: fee}(fee);
+        } else {
+            IERC20Minimal quote = IERC20Minimal(quoteAsset);
+            quote.forceApprove(address(rewardVault), fee);
+            rewardVault.depositFee(fee);
+            quote.forceApprove(address(rewardVault), 0);
         }
     }
 

@@ -40,7 +40,7 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
     ) external returns (bytes32 marketId) {
         if (!completionAllowed) revert CompletionRejected();
         (uint256 receivedQuote, uint256 receivedTokens) =
-            StockWorldGraduationEscrow(graduationEscrow).releaseReserves();
+            StockWorldGraduationEscrow(payable(graduationEscrow)).releaseReserves();
         if (receivedQuote != quoteAmount || receivedTokens != tokenAmount) revert IncorrectReserves();
 
         lastQuoteAmount = quoteAmount;
@@ -50,7 +50,7 @@ contract MockGraduationCoordinator is IStockWorldGraduationCoordinator {
         lastMarketId = marketId;
     }
 
-    function onPostGraduationReserve(uint256 amount) external {
+    function onPostGraduationReserve(uint256 amount) external payable {
         postGraduationReserve += amount;
     }
 }

@@ -2,11 +2,12 @@
 pragma solidity ^0.8.24;
 
 import {FullMath} from "./libraries/FullMath.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
 interface ITokenRewardVault {
     function totalActiveStake() external view returns (uint256);
-    function depositReward(uint256 amount) external;
+    function depositReward(uint256 amount) external payable;
 }
 
 /**
@@ -27,7 +28,7 @@ contract WorldRewardVault {
         uint256 rewardDebt;
     }
 
-    IERC20Minimal public immutable quoteAsset;
+    address public immutable quoteAsset;
     ITokenRewardVault public immutable tokenRewardVault;
     address public immutable factory;
     address public immutable creator;
@@ -87,7 +88,7 @@ contract WorldRewardVault {
     event LiquidityReserveReleased(address indexed recipient, uint256 amount);
 
     constructor(
-        IERC20Minimal quoteAsset_,
+        address quoteAsset_,
         ITokenRewardVault tokenRewardVault_,
         address factory_,
         address creator_,
@@ -96,10 +97,9 @@ contract WorldRewardVault {
         uint16 creatorBps_
     ) {
         if (
-            address(quoteAsset_) == address(0) || address(tokenRewardVault_) == address(0)
-                || factory_ == address(0) || creator_ == address(0)
+            address(tokenRewardVault_) == address(0) || factory_ == address(0) || creator_ == address(0)
         ) revert ZeroAddress();
-        if (address(quoteAsset_).code.length == 0 || address(tokenRewardVault_).code.length == 0) {
+        if ((quoteAsset_ != address(0) && quoteAsset_.code.length == 0) || address(tokenRewardVault_).code.length == 0) {
             revert NotContract();
         }
         if (creatorBps_ > MAX_CREATOR_BPS) revert CreatorAllocationTooHigh();
@@ -135,9 +135,9 @@ contract WorldRewardVault {
         emit WorldModulesBound(nftController_, liquidityReserveRecipient_);
     }
 
-    function depositFee(uint256 amount) external nonReentrant {
+    function depositFee(uint256 amount) external payable nonReentrant {
         if (amount == 0) revert ZeroAmount();
-        _pullExact(msg.sender, amount);
+        QuoteAssetLib.pullExact(quoteAsset, msg.sender, amount);
 
         uint256 tokenAmount = FullMath.mulDiv(amount, tokenHolderBps, BPS_DENOMINATOR);
         uint256 nftAmount = FullMath.mulDiv(amount, nftHolderBps, BPS_DENOMINATOR);
@@ -152,8 +152,14 @@ contract WorldRewardVault {
             if (tokenRewardVault.totalActiveStake() == 0) {
                 unallocatedTokenReserve += tokenAmount;
             } else {
-                quoteAsset.forceApprove(address(tokenRewardVault), tokenAmount);
-                tokenRewardVault.depositReward(tokenAmount);
+                if (quoteAsset == address(0)) {
+                    tokenRewardVault.depositReward{value: tokenAmount}(tokenAmount);
+                } else {
+                    IERC20Minimal quote = IERC20Minimal(quoteAsset);
+                    quote.forceApprove(address(tokenRewardVault), tokenAmount);
+                    tokenRewardVault.depositReward(tokenAmount);
+                    quote.forceApprove(address(tokenRewardVault), 0);
+                }
             }
         }
 
@@ -212,7 +218,7 @@ contract WorldRewardVault {
 
         nftClaimable[msg.sender] = 0;
         totalNftRewardsClaimed += amount;
-        quoteAsset.safeTransfer(to, amount);
+        QuoteAssetLib.send(quoteAsset, to, amount);
         emit NftRewardClaimed(msg.sender, to, amount);
     }
 
@@ -224,7 +230,7 @@ contract WorldRewardVault {
 
         creatorClaimable = 0;
         totalCreatorRewardsClaimed += amount;
-        quoteAsset.safeTransfer(to, amount);
+        QuoteAssetLib.send(quoteAsset, to, amount);
         emit CreatorRewardClaimed(msg.sender, to, amount);
     }
 
@@ -245,7 +251,7 @@ contract WorldRewardVault {
         amount = reserve < maxAmount ? reserve : maxAmount;
         liquidityReserve = reserve - amount;
         totalLiquidityReserveReleased += amount;
-        quoteAsset.safeTransfer(msg.sender, amount);
+        QuoteAssetLib.send(quoteAsset, msg.sender, amount);
         emit LiquidityReserveReleased(msg.sender, amount);
     }
 
@@ -259,10 +265,4 @@ contract WorldRewardVault {
         return accumulated - position.rewardDebt;
     }
 
-    function _pullExact(address from, uint256 amount) private {
-        uint256 balanceBefore = quoteAsset.balanceOf(address(this));
-        quoteAsset.safeTransferFrom(from, address(this), amount);
-        uint256 balanceAfter = quoteAsset.balanceOf(address(this));
-        if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) revert UnsupportedTokenBehavior();
-    }
 }

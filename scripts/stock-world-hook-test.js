@@ -262,6 +262,65 @@ async function main() {
   );
   await rejects(() => hook.sweepPoolFees(market.marketId), "empty fee sweeps are rejected");
 
+  const nativeToken = await deploy("WorldToken", authority, ["Native Hook World", "NHOOK", authorityAddress]);
+  const nativeRewardVault = await deploy("MockV4RewardVault", authority, [ethers.ZeroAddress]);
+  const nativeEscrow = await deploy("MockV4GraduationEscrow", authority, [
+    await factory.getAddress(),
+    await coordinator.getAddress(),
+    await nativeToken.getAddress(),
+    ethers.ZeroAddress,
+    await nativeRewardVault.getAddress(),
+  ]);
+  const nativeQuoteAmount = ethers.parseEther("1");
+  await (await authority.sendTransaction({ to: await nativeEscrow.getAddress(), value: nativeQuoteAmount })).wait();
+  await (await nativeToken.transfer(await nativeEscrow.getAddress(), totalTokenAmount)).wait();
+  await (await nativeEscrow.arm(nativeQuoteAmount, totalTokenAmount)).wait();
+  await (await factory.setCanonicalWorld(8, await nativeToken.getAddress())).wait();
+  await (
+    await factory.callCreate(
+      8,
+      await nativeToken.getAddress(),
+      ethers.ZeroAddress,
+      await nativeEscrow.getAddress(),
+      nativeQuoteAmount,
+      totalTokenAmount,
+      poolTokenAmount,
+      { gasLimit: 20_000_000 },
+    )
+  ).wait();
+
+  const nativeMarket = await coordinator.getMarket(await factory.getAddress(), 8);
+  const nativePoolKey = [ethers.ZeroAddress, await nativeToken.getAddress(), 0, 60, await hook.getAddress()];
+  const nativePool = await hook.getPool(nativeMarket.marketId);
+  assert.equal(nativePool.registered, true, "native ETH pool is registered by graduation");
+  assert.equal(nativePool.quoteAsset, ethers.ZeroAddress, "native ETH pool stores the zero-address quote identity");
+
+  const nativeExactIn = { zeroForOne: true, amountSpecified: -10_000n, sqrtPriceLimitX96: 1 };
+  const nativeCoreDelta = swapDeltaFor({ quoteIsCurrency0: true, quoteDelta: -9_900n, otherDelta: 5_000n });
+  result = await poolManager.simulateSwap.staticCall(
+    await hook.getAddress(), swapper, nativePoolKey, nativeExactIn, nativeCoreDelta,
+  );
+  assert.equal(beforeSpecifiedDelta(result[0]), 100n, "native ETH exact-input swap charges the quote fee");
+  const nativeFeeReceipt = await (
+    await poolManager.simulateSwap(
+      await hook.getAddress(), swapper, nativePoolKey, nativeExactIn, nativeCoreDelta,
+    )
+  ).wait();
+  assert.equal(await hook.pendingQuote(nativeMarket.marketId), 100n, "native ETH fee is isolated by pool");
+  assert.equal(
+    await provider.getBalance(await hook.getAddress(), nativeFeeReceipt.blockNumber),
+    100n,
+    "hook receives the exact native ETH fee",
+  );
+  const nativeSweepReceipt = await (await hook.connect(outsider).sweepPoolFees(nativeMarket.marketId)).wait();
+  assert.equal(await nativeRewardVault.totalFeesDeposited(), 100n, "native ETH fee reaches the World reward vault");
+  assert.equal(
+    await provider.getBalance(await nativeRewardVault.getAddress(), nativeSweepReceipt.blockNumber),
+    100n,
+    "reward vault receives native ETH",
+  );
+  assert.equal(await hook.totalPendingQuoteByAsset(ethers.ZeroAddress), 0n, "native ETH fee liability clears after sweep");
+
   const publicFunctions = new Set(
     hookArtifact.abi.filter((item) => item.type === "function").map((item) => item.name),
   );

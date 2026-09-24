@@ -30,11 +30,9 @@ contract StockWorldCoreDeployer {
         )
     {
         WorldToken token = new WorldToken(config.name, config.symbol, factory);
-        TokenRewardVault tokenVault = new TokenRewardVault(
-            IERC20Minimal(address(token)), IERC20Minimal(config.quoteAsset)
-        );
+        TokenRewardVault tokenVault = new TokenRewardVault(IERC20Minimal(address(token)), config.quoteAsset);
         WorldRewardVault rewardVault = new WorldRewardVault(
-            IERC20Minimal(config.quoteAsset),
+            config.quoteAsset,
             ITokenRewardVault(address(tokenVault)),
             factory,
             config.creator,
@@ -43,7 +41,7 @@ contract StockWorldCoreDeployer {
             config.creatorBps
         );
         StockWorldBondingCurve curve = new StockWorldBondingCurve(
-            IERC20Minimal(config.quoteAsset),
+            config.quoteAsset,
             IWorldRewardVaultFeeSink(address(rewardVault)),
             factory,
             virtualQuoteReserve,

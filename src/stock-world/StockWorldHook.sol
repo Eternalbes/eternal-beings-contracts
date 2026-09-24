@@ -11,12 +11,13 @@ import {
     StockWorldV4SwapParams
 } from "./interfaces/StockWorldV4Interfaces.sol";
 import {FullMath} from "./libraries/FullMath.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
 /**
  * @title StockWorldHook
  * @notice Autonomous Uniswap v4 fee hook shared by every permanent Stock World.
- * @dev The hook charges only the World's ERC-20 quote asset. It never holds or
+ * @dev The hook charges only the World's native-ETH or ERC-20 quote asset. It never holds or
  *      converts World Token fees, so permissionless sweeps require no oracle,
  *      keeper-selected price, or administrator. Its CREATE2 address must encode
  *      beforeInitialize, beforeSwap, afterSwap, and both return-delta flags.
@@ -94,6 +95,8 @@ contract StockWorldHook {
         reentrancyState = 1;
     }
 
+    receive() external payable {}
+
     function bindCoordinator(address coordinator_) external {
         if (msg.sender != coordinatorBinder) revert NotCoordinatorBinder();
         if (coordinator != address(0)) revert CoordinatorAlreadyBound();
@@ -117,9 +120,9 @@ contract StockWorldHook {
     ) external {
         if (msg.sender != coordinator || coordinator == address(0)) revert NotCoordinator();
         if (
-            key.hooks != address(this) || key.currency0 == address(0) || key.currency0 >= key.currency1
-                || key.fee != 0 || worldToken == address(0) || quoteAsset == address(0)
-                || worldToken == quoteAsset || rewardVault == address(0) || rewardVault.code.length == 0
+            key.hooks != address(this) || key.currency1 == address(0) || key.currency0 >= key.currency1
+                || key.fee != 0 || worldToken == address(0) || worldToken == quoteAsset
+                || rewardVault == address(0) || rewardVault.code.length == 0
         ) revert InvalidPoolKey();
 
         bool worldTokenIsCurrency0 = key.currency0 == worldToken;
@@ -225,17 +228,23 @@ contract StockWorldHook {
         amount = pendingQuote[poolId];
         if (amount == 0) revert NothingToSweep();
 
-        IERC20Minimal quote = IERC20Minimal(pool.quoteAsset);
         uint256 totalPending = totalPendingQuoteByAsset[pool.quoteAsset];
-        uint256 balanceBefore = quote.balanceOf(address(this));
+        uint256 balanceBefore = QuoteAssetLib.balanceOf(pool.quoteAsset, address(this));
         if (balanceBefore < totalPending) revert UnsupportedTokenBehavior();
 
         pendingQuote[poolId] = 0;
         totalPendingQuoteByAsset[pool.quoteAsset] = totalPending - amount;
-        quote.forceApprove(pool.rewardVault, amount);
-        IStockWorldRewardVaultSink(pool.rewardVault).depositFee(amount);
-        quote.forceApprove(pool.rewardVault, 0);
-        if (quote.balanceOf(address(this)) != balanceBefore - amount) revert UnsupportedTokenBehavior();
+        if (pool.quoteAsset == address(0)) {
+            IStockWorldRewardVaultSink(pool.rewardVault).depositFee{value: amount}(amount);
+        } else {
+            IERC20Minimal quote = IERC20Minimal(pool.quoteAsset);
+            quote.forceApprove(pool.rewardVault, amount);
+            IStockWorldRewardVaultSink(pool.rewardVault).depositFee(amount);
+            quote.forceApprove(pool.rewardVault, 0);
+        }
+        if (QuoteAssetLib.balanceOf(pool.quoteAsset, address(this)) != balanceBefore - amount) {
+            revert UnsupportedTokenBehavior();
+        }
 
         emit QuoteFeesSwept(poolId, pool.rewardVault, amount);
     }
@@ -260,10 +269,9 @@ contract StockWorldHook {
     }
 
     function _takeAndRecord(bytes32 poolId, address quoteAsset, uint256 amount) private {
-        IERC20Minimal quote = IERC20Minimal(quoteAsset);
-        uint256 balanceBefore = quote.balanceOf(address(this));
+        uint256 balanceBefore = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         poolManager.take(quoteAsset, address(this), amount);
-        uint256 balanceAfter = quote.balanceOf(address(this));
+        uint256 balanceAfter = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         if (balanceAfter < balanceBefore || balanceAfter - balanceBefore != amount) {
             revert UnsupportedTokenBehavior();
         }

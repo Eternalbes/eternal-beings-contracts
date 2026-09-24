@@ -53,6 +53,7 @@ contract FairMintController {
     error WrongRevealPhase();
     error ZeroCommitment();
     error AlreadyCommitted();
+    error MaxSupplyReached();
     error InvalidSecret();
     error AlreadyRevealed();
     error EntropyBlockNotReady();
@@ -141,6 +142,9 @@ contract FairMintController {
         if (block.number < start || block.number >= start + commitBlocks) revert WrongCommitPhase();
         if (commitment == bytes32(0)) revert ZeroCommitment();
         if (commitments[epoch][msg.sender] != bytes32(0)) revert AlreadyCommitted();
+        if (uint256(totalMinted) + uint256(totalReserved) >= uint256(maxSupply)) {
+            revert MaxSupplyReached();
+        }
         if (mintedByWallet[msg.sender] >= walletLimit) revert WalletLimitReached();
 
         commitments[epoch][msg.sender] = commitment;

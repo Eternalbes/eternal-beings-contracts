@@ -14,6 +14,7 @@ import {
     IStockWorldV4PositionManager,
     StockWorldV4PoolKey
 } from "./interfaces/StockWorldV4Interfaces.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
 /**
@@ -138,6 +139,8 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
         reentrancyState = 1;
     }
 
+    receive() external payable {}
+
     function bindFactory(address factory_) external {
         if (msg.sender != factoryBinder) revert NotFactoryBinder();
         if (factory != address(0)) revert FactoryAlreadyBound();
@@ -189,12 +192,12 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
         (uint160 sqrtPriceX96, uint128 liquidity) = graduationGuard.assertSeedable(
             worldToken, quoteAsset, tickSpacing, quoteAmount, poolTokenAmount
         );
-        uint256 quoteBaseline = IERC20Minimal(quoteAsset).balanceOf(address(this));
+        uint256 quoteBaseline = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         uint256 tokenBaseline = IERC20Minimal(worldToken).balanceOf(address(this));
         (uint256 releasedQuote, uint256 releasedTokens) = escrow.releaseReserves();
         if (
             releasedQuote != quoteAmount || releasedTokens != totalTokenAmount
-                || IERC20Minimal(quoteAsset).balanceOf(address(this)) - quoteBaseline != quoteAmount
+                || QuoteAssetLib.balanceOf(quoteAsset, address(this)) - quoteBaseline != quoteAmount
                 || IERC20Minimal(worldToken).balanceOf(address(this)) - tokenBaseline != totalTokenAmount
         ) revert UnsupportedTokenBehavior();
 
@@ -211,9 +214,10 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
             ? (uint128(quoteAmount), uint128(poolTokenAmount))
             : (uint128(poolTokenAmount), uint128(quoteAmount));
         uint256 positionId = positionManager.nextTokenId();
-        IERC20Minimal(poolKey.currency0).forceApprove(address(executor), amount0);
+        bool nativeQuote = quoteAsset == address(0);
+        if (!nativeQuote) IERC20Minimal(poolKey.currency0).forceApprove(address(executor), amount0);
         IERC20Minimal(poolKey.currency1).forceApprove(address(executor), amount1);
-        executor.mintFullRangePosition(
+        executor.mintFullRangePosition{value: nativeQuote ? quoteAmount : 0}(
             StockWorldGraduationExecutor.MintRequest({
                 key: poolKey,
                 tickLower: (-887272 / tickSpacing) * tickSpacing,
@@ -224,7 +228,7 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
                 recipient: address(locker)
             })
         );
-        IERC20Minimal(poolKey.currency0).forceApprove(address(executor), 0);
+        if (!nativeQuote) IERC20Minimal(poolKey.currency0).forceApprove(address(executor), 0);
         IERC20Minimal(poolKey.currency1).forceApprove(address(executor), 0);
 
         locker.lockPosition(msg.sender, worldId, worldToken, positionId);
@@ -245,7 +249,7 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
         });
         worldKeyOfEscrow[graduationEscrow] = key;
 
-        uint256 quoteAfterMint = IERC20Minimal(quoteAsset).balanceOf(address(this));
+        uint256 quoteAfterMint = QuoteAssetLib.balanceOf(quoteAsset, address(this));
         if (quoteAfterMint < quoteBaseline) revert UnsupportedTokenBehavior();
         uint256 quoteDust = quoteAfterMint - quoteBaseline;
         if (quoteDust != 0) _recordPendingQuote(graduationEscrow, quoteAsset, quoteDust);
@@ -266,13 +270,19 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
         );
     }
 
-    function onPostGraduationReserve(uint256 amount) external nonReentrant {
+    function onPostGraduationReserve(uint256 amount) external payable nonReentrant {
         bytes32 key = worldKeyOfEscrow[msg.sender];
         MarketRecord storage market = markets[key];
         if (amount == 0 || market.graduationEscrow != msg.sender) revert UnregisteredEscrow();
-        IERC20Minimal quote = IERC20Minimal(market.quoteAsset);
+        if (market.quoteAsset == address(0)) {
+            if (msg.value != amount) revert UnsupportedTokenBehavior();
+        } else if (msg.value != 0) {
+            revert UnsupportedTokenBehavior();
+        }
         uint256 requiredBalance = totalPendingQuoteByAsset[market.quoteAsset] + amount;
-        if (quote.balanceOf(address(this)) < requiredBalance) revert UnsupportedTokenBehavior();
+        if (QuoteAssetLib.balanceOf(market.quoteAsset, address(this)) < requiredBalance) {
+            revert UnsupportedTokenBehavior();
+        }
         _recordPendingQuote(msg.sender, market.quoteAsset, amount);
     }
 

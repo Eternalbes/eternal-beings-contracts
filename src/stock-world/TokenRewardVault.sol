@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {FullMath} from "./libraries/FullMath.sol";
+import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
 /**
@@ -24,7 +25,7 @@ contract TokenRewardVault {
     }
 
     IERC20Minimal public immutable worldToken;
-    IERC20Minimal public immutable quoteAsset;
+    address public immutable quoteAsset;
 
     uint256 public totalActiveStake;
     uint256 public totalPendingStake;
@@ -57,12 +58,13 @@ contract TokenRewardVault {
     event RewardDeposited(address indexed source, uint256 amount, uint256 rewardPerShare);
     event RewardClaimed(address indexed account, address indexed to, uint256 amount);
 
-    constructor(IERC20Minimal worldToken_, IERC20Minimal quoteAsset_) {
+    constructor(IERC20Minimal worldToken_, address quoteAsset_) {
         address worldTokenAddress = address(worldToken_);
-        address quoteAssetAddress = address(quoteAsset_);
-        if (worldTokenAddress == address(0) || quoteAssetAddress == address(0)) revert ZeroAddress();
-        if (worldTokenAddress == quoteAssetAddress) revert IdenticalAssets();
-        if (worldTokenAddress.code.length == 0 || quoteAssetAddress.code.length == 0) revert NotContract();
+        if (worldTokenAddress == address(0)) revert ZeroAddress();
+        if (worldTokenAddress == quoteAsset_) revert IdenticalAssets();
+        if (worldTokenAddress.code.length == 0 || (quoteAsset_ != address(0) && quoteAsset_.code.length == 0)) {
+            revert NotContract();
+        }
 
         worldToken = worldToken_;
         quoteAsset = quoteAsset_;
@@ -143,12 +145,12 @@ contract TokenRewardVault {
         emit StakeWithdrawn(msg.sender, to, amount);
     }
 
-    function depositReward(uint256 amount) external nonReentrant {
+    function depositReward(uint256 amount) external payable nonReentrant {
         if (amount == 0) revert ZeroAmount();
         uint256 activeStake = totalActiveStake;
         if (activeStake == 0) revert NoActiveStake();
 
-        _pullExact(quoteAsset, msg.sender, amount);
+        QuoteAssetLib.pullExact(quoteAsset, msg.sender, amount);
 
         rewardPerShare += FullMath.mulDiv(amount, REWARD_SCALE, activeStake);
         totalRewardsDeposited += amount;
@@ -168,7 +170,7 @@ contract TokenRewardVault {
         position.claimable = 0;
         totalRewardsClaimed += amount;
 
-        quoteAsset.safeTransfer(to, amount);
+        QuoteAssetLib.send(quoteAsset, to, amount);
         emit RewardClaimed(msg.sender, to, amount);
     }
 

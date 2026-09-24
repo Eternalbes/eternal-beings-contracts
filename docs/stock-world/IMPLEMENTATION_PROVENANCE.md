@@ -17,7 +17,9 @@ The adapted market properties are:
 - graduation state committed before external reserve transfers.
 
 Stock World replaces the upstream fee destinations and launch policy with its
-own immutable Token/NFT/Creator reward vault and ERC-20 quote-asset registry.
+own immutable Token/NFT/Creator reward vault. Native ETH is the canonical
+default quote asset; additional ERC-20 quote assets must be admitted through
+the protocol registry.
 The upstream repository is used as an implementation reference, not as a
 runtime dependency or an administrative dependency.
 
@@ -34,15 +36,16 @@ post-graduation forwarding path instead of making graduation impossible.
 
 The isolated Permit2 approval sequence and PositionManager action encoding in
 `StockWorldGraduationExecutor` follow the upstream V2 graduation executor
-inspected at the same pinned commit. Stock World narrows this path to ERC-20
-quote assets, pulls only the current World's exact amounts, revokes both
-approval layers after minting, returns residuals to the coordinator, locks
-World Token dust, and records quote dust against its originating escrow.
+inspected at the same pinned commit. Stock World supports native ETH through
+Uniswap v4's native currency path and isolates Permit2 approvals to ERC-20
+assets. It pulls only the current World's exact amounts, revokes both approval
+layers after minting, returns residuals to the coordinator, locks World Token
+dust, and records quote dust against its originating escrow.
 
 `StockWorldHook` retains the pinned reference's Uniswap v4 return-delta fee
 mechanism and exact `PoolManager.take` balance checks. Stock World deliberately
-uses both before- and after-swap callbacks to charge only the ERC-20 quote leg
-in all four exact-input/output directions. This removes the reference design's
+uses both before- and after-swap callbacks to charge only the native-ETH or
+ERC-20 quote leg in all four exact-input/output directions. This removes the reference design's
 World Token conversion, privileged sweep operator, spot-price impact setting,
 and buyback path. The resulting fee ledger is pool-isolated, price-independent,
 and permissionlessly sweepable into each immutable `WorldRewardVault`.

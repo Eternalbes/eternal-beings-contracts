@@ -314,6 +314,58 @@ async function main() {
     "historical mints plus reservations stay under the immutable cap",
   );
 
+  const capNft = await deploy("MockFairMintNft", factory, [1]);
+  const capController = await deploy("FairMintController", factory, [
+    await capNft.getAddress(),
+    1,
+    3,
+    3,
+    3,
+    1,
+    1,
+  ]);
+  const capEpoch = Number(await capController.currentEpoch());
+  const capSecret = ethers.id("cap-reservation");
+  const capCommitment = await capController.computeCommitment(aliceAddress, capEpoch, capSecret);
+  await (await capController.connect(alice).commitMint(capCommitment)).wait();
+  await mineTo(
+    eip1193,
+    Number(await capController.epochStart(capEpoch)) + Number(await capController.commitBlocks()) + 1,
+  );
+  await (await capController.connect(alice).revealMint(capEpoch, capSecret)).wait();
+  await mineTo(eip1193, Number(await capController.entropyBlock(capEpoch)) + 1);
+  await (await capController.finalizeEpoch(capEpoch)).wait();
+  assert.equal(await capController.totalReserved(), 1n, "the only mint slot is reserved");
+
+  const fullEpoch = await nextCommitEpoch(capController, eip1193);
+  const fullCommitment = await capController.computeCommitment(
+    bobAddress,
+    fullEpoch,
+    ethers.id("blocked-while-full"),
+  );
+  await rejects(
+    () => capController.connect(bob).commitMint(fullCommitment),
+    "new commitments stop while all mint capacity is reserved",
+  );
+
+  const capState = await capController.epochState(capEpoch);
+  await mineTo(eip1193, Number(capState.claimDeadline) + 1);
+  await (await capController.expireEpoch(capEpoch)).wait();
+  assert.equal(await capController.totalReserved(), 0n, "expiry releases the final reserved slot");
+
+  const reopenedEpoch = await nextCommitEpoch(capController, eip1193);
+  const reopenedCommitment = await capController.computeCommitment(
+    bobAddress,
+    reopenedEpoch,
+    ethers.id("reopened-after-expiry"),
+  );
+  await (await capController.connect(bob).commitMint(reopenedCommitment)).wait();
+  assert.notEqual(
+    await capController.commitments(reopenedEpoch, bobAddress),
+    ethers.ZeroHash,
+    "commitments resume after stale capacity is released",
+  );
+
   await eip1193.disconnect();
   console.log("Stock World NFT, fair mint, transfer reward, and Fusion tests passed");
 }

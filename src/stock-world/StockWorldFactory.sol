@@ -215,7 +215,7 @@ contract StockWorldFactory {
             curve.sweepForGraduation(world.graduationEscrow);
         if (sweptQuote != curveQuote || sweptTokens != curveTokens) revert InvalidGraduationState();
 
-        StockWorldGraduationEscrow escrow = StockWorldGraduationEscrow(world.graduationEscrow);
+        StockWorldGraduationEscrow escrow = StockWorldGraduationEscrow(payable(world.graduationEscrow));
         escrow.recordCurveSweep(sweptQuote, sweptTokens);
         if (rewardQuote != 0 && escrow.collectRewardReserve(rewardQuote) != rewardQuote) {
             revert InvalidGraduationState();
@@ -233,7 +233,7 @@ contract StockWorldFactory {
         WorldRecord storage world = _world(worldId);
         if (world.phase != WorldPhase.GraduationPrepared) revert WrongWorldPhase();
 
-        StockWorldGraduationEscrow escrow = StockWorldGraduationEscrow(world.graduationEscrow);
+        StockWorldGraduationEscrow escrow = StockWorldGraduationEscrow(payable(world.graduationEscrow));
         uint256 quoteAmount = escrow.trackedQuote();
         uint256 tokenAmount = escrow.trackedTokens();
         escrow.armRelease();

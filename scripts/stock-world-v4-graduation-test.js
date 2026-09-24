@@ -342,6 +342,68 @@ async function main() {
   ).wait();
   assert.equal(await second.escrow.released(), true, "same World can retry after downstream recovery");
 
+  const nativeToken = await deploy("WorldToken", authority, ["Native World", "NATIVE", authorityAddress]);
+  const nativeRewardVault = await deploy("MockV4RewardVault", authority, [ethers.ZeroAddress]);
+  const nativeEscrow = await deploy("MockV4GraduationEscrow", authority, [
+    await factory.getAddress(),
+    await coordinator.getAddress(),
+    await nativeToken.getAddress(),
+    ethers.ZeroAddress,
+    await nativeRewardVault.getAddress(),
+  ]);
+  const nativeQuoteAmount = ethers.parseEther("1");
+  const nativeForwarded = 123_456n;
+  await (await authority.sendTransaction({ to: await nativeEscrow.getAddress(), value: nativeQuoteAmount })).wait();
+  await (await nativeToken.transfer(await nativeEscrow.getAddress(), totalTokenAmount)).wait();
+  await (await nativeEscrow.arm(nativeQuoteAmount, totalTokenAmount)).wait();
+  await (await factory.setCanonicalWorld(3, await nativeToken.getAddress())).wait();
+
+  const nativeGraduationReceipt = await (
+    await factory.callCreate(
+      3,
+      await nativeToken.getAddress(),
+      ethers.ZeroAddress,
+      await nativeEscrow.getAddress(),
+      nativeQuoteAmount,
+      totalTokenAmount,
+      poolTokenAmount,
+      { gasLimit: 20_000_000 },
+    )
+  ).wait();
+
+  const nativeMarket = await coordinator.getMarket(await factory.getAddress(), 3);
+  assert.equal(nativeMarket.quoteAsset, ethers.ZeroAddress, "native ETH remains the canonical quote identity");
+  assert.equal(nativeMarket.positionId, 3n, "native ETH graduation mints the next permanent LP position");
+  assert.equal(await positionManager.ownerOf(3), await locker.getAddress(), "native ETH LP is permanently locked");
+  assert.equal(
+    await provider.getBalance(await poolManager.getAddress(), nativeGraduationReceipt.blockNumber),
+    nativeQuoteAmount - 1n,
+    "native ETH is settled into the v4 pool and only deterministic mint dust is returned",
+  );
+  assert.equal(
+    await coordinator.pendingQuoteByEscrow(await nativeEscrow.getAddress()),
+    1n,
+    "native ETH mint dust is attributed to its World escrow",
+  );
+  assert.equal(
+    await provider.getBalance(executorAddress, nativeGraduationReceipt.blockNumber),
+    0n,
+    "executor retains no native ETH",
+  );
+
+  await (await authority.sendTransaction({ to: await nativeEscrow.getAddress(), value: nativeForwarded })).wait();
+  await (await nativeEscrow.forwardReserve(nativeForwarded)).wait();
+  assert.equal(
+    await coordinator.pendingQuoteByEscrow(await nativeEscrow.getAddress()),
+    1n + nativeForwarded,
+    "post-graduation native ETH remains attributed to the originating World",
+  );
+  assert.equal(
+    await coordinator.totalPendingQuoteByAsset(ethers.ZeroAddress),
+    1n + nativeForwarded,
+    "global native ETH liabilities remain conserved",
+  );
+
   const coordinatorFunctions = new Set(
     artifact("StockWorldGraduationCoordinator").abi
       .filter((item) => item.type === "function")

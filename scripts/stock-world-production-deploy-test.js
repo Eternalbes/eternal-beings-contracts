@@ -8,6 +8,7 @@ const rpcUrl = `http://127.0.0.1:${rpcPort}`;
 const configPath = "/tmp/stock-world.production-fork-test.json";
 const secretPath = "reports/secrets/stock-world-production-fork-test.secrets.json";
 const outputPath = "reports/deployment-stock-world-fork-test.json";
+const siteConfigPath = "/tmp/stock-world.site-config-fork-test.json";
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -55,6 +56,18 @@ async function main() {
     production.v4.productionApproved = true;
     production.quoteAssets = production.quoteAssets.slice(0, 1);
     fs.writeFileSync(configPath, `${JSON.stringify(production, null, 2)}\n`);
+    fs.writeFileSync(siteConfigPath, `${JSON.stringify({
+      chainId: 4663,
+      chainName: "Robinhood Chain",
+      rpcUrl: "",
+      explorerUrl: "",
+      nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+      factoryAddress: "",
+      factoryDeploymentBlock: 0,
+      indexerChunkSize: 10000,
+      activityScanBlocks: 50000,
+      confirmations: 1,
+    }, null, 2)}\n`);
     if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
 
     await server.listen(rpcPort, "127.0.0.1");
@@ -63,6 +76,7 @@ async function main() {
       "--config", configPath,
       "--secret", secretPath,
       "--output", outputPath,
+      "--site-config", siteConfigPath,
       "--broadcast",
       "--confirm", "DEPLOY-STOCK-WORLD-4663",
     ];
@@ -72,6 +86,16 @@ async function main() {
     const report = JSON.parse(fs.readFileSync(outputPath, "utf8"));
     if (report.status !== "deployed") throw new Error(`unexpected status: ${report.status}`);
     if (!report.contracts.factory?.address) throw new Error("factory address missing");
+    const siteConfig = JSON.parse(fs.readFileSync(siteConfigPath, "utf8"));
+    if (siteConfig.factoryAddress !== report.contracts.factory.address) {
+      throw new Error("site config Factory address mismatch");
+    }
+    if (siteConfig.factoryDeploymentBlock !== report.factoryDeploymentBlock) {
+      throw new Error("site config Factory deployment block mismatch");
+    }
+    if (siteConfig.quoteAssets.length !== 1 || siteConfig.quoteAssets[0].address !== production.quoteAssets[0]) {
+      throw new Error("site config quote assets mismatch");
+    }
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     if (await provider.getCode(report.contracts.factory.address) === "0x") {
       throw new Error("factory has no code after fork deployment");
@@ -84,7 +108,7 @@ async function main() {
     }, null, 2));
   } finally {
     if (server) await server.close();
-    for (const path of [secretPath, outputPath, configPath]) {
+    for (const path of [secretPath, outputPath, configPath, siteConfigPath]) {
       if (fs.existsSync(path)) fs.unlinkSync(path);
     }
   }

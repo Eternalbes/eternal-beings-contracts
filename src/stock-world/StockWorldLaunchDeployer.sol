@@ -47,7 +47,7 @@ contract StockWorldLaunchDeployer {
 
         modules.graduationEscrow = address(
             new StockWorldGraduationEscrow(
-                IERC20Minimal(config.quoteAsset),
+                config.quoteAsset,
                 IERC20Minimal(modules.worldToken),
                 IWorldRewardReserve(modules.worldRewardVault),
                 msg.sender,

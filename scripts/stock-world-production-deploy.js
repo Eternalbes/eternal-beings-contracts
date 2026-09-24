@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const { spawnSync } = require("child_process");
 const { ethers } = require("ethers");
 
@@ -12,6 +13,7 @@ function parseArgs(argv) {
     configPath: DEFAULT_CONFIG,
     secretPath: DEFAULT_SECRET,
     outputPath: DEFAULT_OUTPUT,
+    siteConfigPath: "",
     broadcast: false,
     confirm: "",
   };
@@ -20,6 +22,7 @@ function parseArgs(argv) {
     if (arg === "--config") args.configPath = argv[++i];
     else if (arg === "--secret") args.secretPath = argv[++i];
     else if (arg === "--output") args.outputPath = argv[++i];
+    else if (arg === "--site-config") args.siteConfigPath = argv[++i];
     else if (arg === "--confirm") args.confirm = argv[++i];
     else if (arg === "--broadcast") args.broadcast = true;
     else throw new Error(`unknown argument: ${arg}`);
@@ -90,6 +93,32 @@ function initialReport(configPath, configHash, config, readiness) {
   };
 }
 
+function writeSiteConfig(siteConfigPath, config, report) {
+  if (!siteConfigPath) return;
+  if (!fs.existsSync(siteConfigPath)) throw new Error(`missing site config: ${siteConfigPath}`);
+  const siteConfig = readJson(siteConfigPath);
+  if (siteConfig.chainId && String(siteConfig.chainId) !== String(config.chainId)) {
+    throw new Error(`site config chainId ${siteConfig.chainId} does not match ${config.chainId}`);
+  }
+  const factoryAddress = report.contracts.factory?.address;
+  if (!factoryAddress || !report.factoryDeploymentBlock) {
+    throw new Error("deployment report is missing the Factory address or deployment block");
+  }
+  siteConfig.chainId = Number(config.chainId);
+  siteConfig.chainName = siteConfig.chainName || "Robinhood Chain";
+  siteConfig.rpcUrl = config.rpcUrl;
+  siteConfig.explorerUrl = config.explorerUrl;
+  siteConfig.nativeCurrency = siteConfig.nativeCurrency || { name: "Ether", symbol: "ETH", decimals: 18 };
+  siteConfig.factoryAddress = ethers.getAddress(factoryAddress);
+  siteConfig.factoryDeploymentBlock = Number(report.factoryDeploymentBlock);
+  siteConfig.quoteAssets = config.quoteAssets.map((address) => ({ address: ethers.getAddress(address) }));
+  const serialized = `${JSON.stringify(siteConfig, null, 2)}\n`;
+  fs.mkdirSync(path.dirname(siteConfigPath), { recursive: true });
+  fs.writeFileSync(siteConfigPath, serialized);
+  report.siteConfigPath = siteConfigPath;
+  report.siteConfigHash = ethers.keccak256(ethers.toUtf8Bytes(serialized));
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const readiness = runReadiness(args.configPath);
@@ -157,7 +186,7 @@ async function main() {
 
   function checkpoint() {
     report.updatedAt = new Date().toISOString();
-    fs.mkdirSync(require("path").dirname(args.outputPath), { recursive: true });
+    fs.mkdirSync(path.dirname(args.outputPath), { recursive: true });
     fs.writeFileSync(args.outputPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 });
   }
 
@@ -371,6 +400,7 @@ async function main() {
 
   report.status = authorityIsDeployer ? "deployed" : "awaiting-quote-asset-authority";
   report.factoryDeploymentBlock = report.contracts.factory.blockNumber;
+  writeSiteConfig(args.siteConfigPath, config, report);
   checkpoint();
   console.log(JSON.stringify(report, null, 2));
 }

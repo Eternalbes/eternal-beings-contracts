@@ -54,22 +54,26 @@ contract StockWorldGraduationExecutor {
 
     function mintFullRangePosition(MintRequest calldata request)
         external
+        payable
         returns (uint256 residual0, uint256 residual1)
     {
         if (msg.sender != coordinator) revert NotCoordinator();
         if (
-            request.key.currency0 == address(0) || request.key.currency1 == address(0)
-                || request.key.currency0 >= request.key.currency1 || request.recipient == address(0)
+            request.key.currency1 == address(0) || request.key.currency0 >= request.key.currency1
+                || request.recipient == address(0)
                 || request.liquidity == 0 || request.amount0Max == 0 || request.amount1Max == 0
         ) revert InvalidMintRequest();
 
-        IERC20Minimal token0 = IERC20Minimal(request.key.currency0);
         IERC20Minimal token1 = IERC20Minimal(request.key.currency1);
-        uint256 baseline0 = _pullExact(token0, request.amount0Max);
+        bool native0 = request.key.currency0 == address(0);
+        if (native0 ? msg.value != request.amount0Max : msg.value != 0) revert InvalidMintRequest();
+
+        IERC20Minimal token0 = IERC20Minimal(request.key.currency0);
+        uint256 baseline0 = native0 ? address(this).balance - msg.value : _pullExact(token0, request.amount0Max);
         uint256 baseline1 = _pullExact(token1, request.amount1Max);
         uint48 expiration = uint48(block.timestamp + MINT_DEADLINE_WINDOW);
 
-        _approvePositionManager(token0, request.amount0Max, expiration);
+        if (!native0) _approvePositionManager(token0, request.amount0Max, expiration);
         _approvePositionManager(token1, request.amount1Max, expiration);
 
         bytes[] memory params = new bytes[](2);
@@ -84,13 +88,13 @@ contract StockWorldGraduationExecutor {
             bytes("")
         );
         params[1] = abi.encode(request.key.currency0, request.key.currency1);
-        positionManager.modifyLiquidities(
+        positionManager.modifyLiquidities{value: native0 ? request.amount0Max : 0}(
             abi.encode(abi.encodePacked(MINT_AND_SETTLE_PAIR), params), block.timestamp + MINT_DEADLINE_WINDOW
         );
 
-        _revokePositionManager(token0);
+        if (!native0) _revokePositionManager(token0);
         _revokePositionManager(token1);
-        residual0 = _returnResidual(token0, baseline0);
+        residual0 = native0 ? _returnNativeResidual(baseline0) : _returnResidual(token0, baseline0);
         residual1 = _returnResidual(token1, baseline1);
     }
 
@@ -117,4 +121,16 @@ contract StockWorldGraduationExecutor {
         amount = balance - baseline;
         if (amount != 0) token.safeTransfer(coordinator, amount);
     }
+
+    function _returnNativeResidual(uint256 baseline) private returns (uint256 amount) {
+        uint256 balance = address(this).balance;
+        if (balance < baseline) revert UnsupportedTokenBehavior();
+        amount = balance - baseline;
+        if (amount != 0) {
+            (bool success,) = coordinator.call{value: amount}("");
+            if (!success) revert UnsupportedTokenBehavior();
+        }
+    }
+
+    receive() external payable {}
 }

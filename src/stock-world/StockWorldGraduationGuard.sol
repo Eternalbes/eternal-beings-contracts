@@ -26,7 +26,7 @@ contract StockWorldGraduationGuard {
         uint256 quoteAmount,
         uint256 tokenAmount
     ) external pure returns (uint160 sqrtPriceX96, uint128 liquidity) {
-        if (worldToken == address(0) || quoteAsset == address(0) || worldToken == quoteAsset) {
+        if (worldToken == address(0) || worldToken == quoteAsset) {
             revert InvalidCurrencyPair();
         }
         if (tickSpacing < 1 || tickSpacing > type(int16).max) revert InvalidTickSpacing();

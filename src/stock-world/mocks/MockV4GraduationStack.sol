@@ -53,7 +53,12 @@ contract MockV4PoolManager {
 
     function take(address currency, address to, uint256 amount) external {
         require(msg.sender == callbackHook && callbackHook != address(0), "outside callback");
-        IERC20Minimal(currency).safeTransfer(to, amount);
+        if (currency == address(0)) {
+            (bool success,) = to.call{value: amount}("");
+            require(success, "native transfer");
+        } else {
+            IERC20Minimal(currency).safeTransfer(to, amount);
+        }
     }
 
     function callBeforeSwap(
@@ -96,6 +101,8 @@ contract MockV4PoolManager {
         callbackHook = address(0);
         return (collectedBefore, collectedAfter);
     }
+
+    receive() external payable {}
 }
 
 contract MockV4Permit2 is IStockWorldPermit2 {
@@ -172,7 +179,19 @@ contract MockV4PositionManager {
 
         uint160 amount0Used = uint160(amount0Max - (amount0Max > 1 ? 1 : 0));
         uint160 amount1Used = uint160(amount1Max - (amount1Max > 2 ? 2 : 0));
-        MockV4Permit2(permit2).transferFrom(msg.sender, poolManager, amount0Used, key.currency0);
+        if (key.currency0 == address(0)) {
+            require(msg.value == amount0Max, "native value");
+            (bool funded,) = poolManager.call{value: amount0Used}("");
+            require(funded, "native funding");
+            uint256 refund = amount0Max - amount0Used;
+            if (refund != 0) {
+                (bool refunded,) = msg.sender.call{value: refund}("");
+                require(refunded, "native refund");
+            }
+        } else {
+            require(msg.value == 0, "unexpected value");
+            MockV4Permit2(permit2).transferFrom(msg.sender, poolManager, amount0Used, key.currency0);
+        }
         MockV4Permit2(permit2).transferFrom(msg.sender, poolManager, amount1Used, key.currency1);
 
         uint256 tokenId = nextTokenId++;
@@ -261,11 +280,16 @@ contract MockV4RewardVault {
         quoteAsset = quoteAsset_;
     }
 
-    function depositFee(uint256 amount) external {
-        IERC20Minimal quote = IERC20Minimal(quoteAsset);
-        uint256 balanceBefore = quote.balanceOf(address(this));
-        quote.safeTransferFrom(msg.sender, address(this), amount);
-        require(quote.balanceOf(address(this)) - balanceBefore == amount, "inexact fee");
+    function depositFee(uint256 amount) external payable {
+        if (quoteAsset == address(0)) {
+            require(msg.value == amount, "native fee");
+        } else {
+            require(msg.value == 0, "unexpected value");
+            IERC20Minimal quote = IERC20Minimal(quoteAsset);
+            uint256 balanceBefore = quote.balanceOf(address(this));
+            quote.safeTransferFrom(msg.sender, address(this), amount);
+            require(quote.balanceOf(address(this)) - balanceBefore == amount, "inexact fee");
+        }
         totalFeesDeposited += amount;
     }
 }
@@ -303,7 +327,7 @@ contract MockV4GraduationEscrow {
     function arm(uint256 quoteAmount, uint256 tokenAmount) external {
         require(!released, "released");
         require(
-            IERC20Minimal(quoteAsset).balanceOf(address(this)) >= quoteAmount
+            _quoteBalance() >= quoteAmount
                 && IERC20Minimal(worldToken).balanceOf(address(this)) >= tokenAmount,
             "balance"
         );
@@ -318,13 +342,28 @@ contract MockV4GraduationEscrow {
         tokenAmount = trackedTokens;
         trackedQuote = 0;
         trackedTokens = 0;
-        IERC20Minimal(quoteAsset).safeTransfer(coordinator, quoteAmount);
+        if (quoteAsset == address(0)) {
+            (bool success,) = coordinator.call{value: quoteAmount}("");
+            require(success, "native release");
+        } else {
+            IERC20Minimal(quoteAsset).safeTransfer(coordinator, quoteAmount);
+        }
         IERC20Minimal(worldToken).safeTransfer(coordinator, tokenAmount);
     }
 
     function forwardReserve(uint256 amount) external {
         require(released && amount != 0, "forward");
-        IERC20Minimal(quoteAsset).safeTransfer(coordinator, amount);
-        IStockWorldGraduationCoordinator(coordinator).onPostGraduationReserve(amount);
+        if (quoteAsset == address(0)) {
+            IStockWorldGraduationCoordinator(coordinator).onPostGraduationReserve{value: amount}(amount);
+        } else {
+            IERC20Minimal(quoteAsset).safeTransfer(coordinator, amount);
+            IStockWorldGraduationCoordinator(coordinator).onPostGraduationReserve(amount);
+        }
     }
+
+    function _quoteBalance() private view returns (uint256) {
+        return quoteAsset == address(0) ? address(this).balance : IERC20Minimal(quoteAsset).balanceOf(address(this));
+    }
+
+    receive() external payable {}
 }

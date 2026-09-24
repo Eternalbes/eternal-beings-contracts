@@ -50,7 +50,7 @@ interface IStockWorldHookCoordinator {
 
 interface IStockWorldRewardVaultSink {
     function quoteAsset() external view returns (address);
-    function depositFee(uint256 amount) external;
+    function depositFee(uint256 amount) external payable;
 }
 
 interface IStockWorldCanonicalFactory {

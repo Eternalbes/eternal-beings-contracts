@@ -51,7 +51,11 @@ contract StockWorldConfigValidator {
         if (symbolLength == 0 || symbolLength > 12) revert InvalidSymbol();
 
         if (config.creator == address(0)) revert ZeroAddress();
-        if (!quoteAssetRegistry.isSupported(config.quoteAsset)) revert UnsupportedQuoteAsset();
+        // Native ETH is the canonical default quote asset. Every ERC-20 quote
+        // asset must still be explicitly enabled in the immutable registry.
+        if (config.quoteAsset != address(0) && !quoteAssetRegistry.isSupported(config.quoteAsset)) {
+            revert UnsupportedQuoteAsset();
+        }
         if (config.graduationTarget == 0) revert InvalidGraduationTarget();
         uint256 virtualQuoteReserve = config.graduationTarget / 9 + (config.graduationTarget % 9 == 0 ? 0 : 1);
         if (config.graduationTarget > type(uint256).max - virtualQuoteReserve) {
