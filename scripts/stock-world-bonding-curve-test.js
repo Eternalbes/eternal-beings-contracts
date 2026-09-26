@@ -73,8 +73,8 @@ async function main() {
   const supply = await token.totalSupply();
   assert.equal(await curve.phase(), 1n, "curve starts live after initialization");
   assert.equal(await curve.trackedTokenReserve(), supply, "entire fixed supply is tracked");
-  assert.equal(await curve.reservedTokens(), ethers.parseEther("100000"), "graduation allocation is reserved");
-  assert.equal(await curve.sellableTokens(), ethers.parseEther("900000"), "only market allocation is sellable");
+  assert.equal(await curve.reservedTokens(), ethers.parseEther("100000000"), "graduation allocation is reserved");
+  assert.equal(await curve.sellableTokens(), ethers.parseEther("900000000"), "only market allocation is sellable");
   await rejects(() => curve.initialize(tokenAddress), "curve initialization is one-time");
 
   const initialQuote = 20_000_000_000n;

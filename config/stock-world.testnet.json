@@ -1,0 +1,24 @@
+{
+  "status": "approved-for-testnet-deployment",
+  "network": "testnet",
+  "release": "creator-share-80-v3",
+  "chainId": 46630,
+  "chainName": "Robinhood Chain Testnet",
+  "rpcUrl": "https://rpc.testnet.chain.robinhood.com",
+  "explorerUrl": "https://explorer.testnet.chain.robinhood.com",
+  "deployer": "0x7eb7c0d2fe5b3c35b34cd4c512b119c2167bb749",
+  "quoteAssetAuthority": "0x7eb7c0d2fe5b3c35b34cd4c512b119c2167bb749",
+  "platformFeeRecipient": "0x7eb7c0d2fe5b3c35b34cd4c512b119c2167bb749",
+  "permanentMarket": {
+    "poolFee": 0,
+    "tickSpacing": 60
+  },
+  "mockQuoteAsset": {
+    "name": "Stock World Test USD",
+    "symbol": "swUSD",
+    "decimals": 6,
+    "phantomQuote": "1.68",
+    "graduationThreshold": "4.2"
+  },
+  "launchSmokeWorld": true
+}

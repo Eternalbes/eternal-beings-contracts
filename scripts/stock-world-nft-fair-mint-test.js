@@ -71,12 +71,42 @@ async function main() {
     4_000,
     2_000,
   ]);
+  const renderer = await deploy("StockWorldRenderer", factory);
+  const visualSeed = {
+    imageHash: ethers.id("nft-image"),
+    vectorHash: ethers.id("nft-vector"),
+    paletteHash: ethers.id("nft-palette"),
+    styleHash: ethers.id("nft-style"),
+    imageURI: `seed://${ethers.id("nft-image").slice(2)}`,
+    renderMode: 1,
+  };
+  for (let index = 0; index < 24; index += 1) {
+    const sampleSeed = {
+      imageHash: ethers.id(`sample-image-${index}`),
+      vectorHash: ethers.id(`sample-vector-${index}`),
+      paletteHash: ethers.id(`sample-palette-${index}`),
+      styleHash: ethers.id(`sample-style-${index}`),
+      imageURI: `seed://${ethers.id(`sample-image-${index}`).slice(2)}`,
+      renderMode: 1,
+    };
+    const sampleSvg = await renderer.renderSVG(
+      index + 1,
+      1n << BigInt(index % 20),
+      BigInt(index * index),
+      ethers.id(`sample-genome-${index}`),
+      sampleSeed,
+    );
+    assert(sampleSvg.startsWith("<svg"), `seed sample ${index} renders without arithmetic failure`);
+    assert(sampleSvg.endsWith("</svg>"), `seed sample ${index} returns complete SVG`);
+  }
   const worldNft = await deploy("WorldNFT", factory, [
     "NFT World Beings",
     "NBEING",
     100,
     factoryAddress,
     await worldVault.getAddress(),
+    await renderer.getAddress(),
+    visualSeed,
   ]);
   const worldNftAddress = await worldNft.getAddress();
   await rejects(
@@ -102,6 +132,11 @@ async function main() {
     2,
   ]);
   const controllerAddress = await controller.getAddress();
+  assert.equal(
+    Number(await controller.protocolBlockNumber()),
+    await blockNumber(eip1193),
+    "controller exposes the same protocol clock used by local epoch rules",
+  );
   const modules = await deploy("MockWorldModules", factory, [await worldVault.getAddress()]);
 
   await rejects(
@@ -236,7 +271,14 @@ async function main() {
     "fused weight receives future rewards except one indivisible index unit",
   );
   assert.equal(await controller.mintedByWallet(firstOwner), 1n, "transfer and Fusion do not restore wallet mint use");
-  assert((await worldNft.tokenURI(1)).startsWith("data:application/json;base64,"), "metadata is fully on-chain");
+  const tokenUri = await worldNft.tokenURI(1);
+  assert(tokenUri.startsWith("data:application/json;base64,"), "metadata is fully on-chain");
+  const metadata = JSON.parse(Buffer.from(tokenUri.split(",")[1], "base64").toString("utf8"));
+  assert(metadata.image.startsWith("data:image/svg+xml;base64,"), "image is fully on-chain SVG");
+  const svg = Buffer.from(metadata.image.split(",")[1], "base64").toString("utf8");
+  assert(svg.includes("WORLD BEING #1"), "renderer identifies the minted Being");
+  assert(svg.includes("<path"), "renderer uses the uploaded vector and style seeds");
+  assert.equal((await worldNft.visualSeed()).imageHash, visualSeed.imageHash, "visual seed is immutable collection state");
 
   const expiryEpoch = await nextCommitEpoch(controller, eip1193);
   const expirySecret = ethers.id("expiry-secret");
@@ -269,11 +311,12 @@ async function main() {
     await controller.connect(source).revealMint(lateEpoch, lateSecret, { gasLimit: 500_000 })
   ).wait();
   await mineTo(eip1193, Number(await controller.entropyBlock(lateEpoch)) + 257);
-  await (await controller.finalizeEpoch(lateEpoch)).wait();
-  const lateState = await controller.epochState(lateEpoch);
-  assert.equal(lateState.usedLateEntropy, true, "late finalization remains live after blockhash expiry");
-  assert.equal(await controller.isWinner(lateEpoch, sourceAddress), true, "single late revealer remains eligible");
+  assert.equal((await controller.epochState(lateEpoch)).finalized, false, "late epoch starts unsettled");
   await (await controller.connect(source).claimMint(lateEpoch)).wait();
+  const lateState = await controller.epochState(lateEpoch);
+  assert.equal(lateState.finalized, true, "Claim automatically finalizes an unsettled epoch");
+  assert.equal(lateState.usedLateEntropy, true, "automatic late finalization remains live after blockhash expiry");
+  assert.equal(await controller.isWinner(lateEpoch, sourceAddress), true, "single late revealer remains eligible");
   assert.equal(await worldNft.totalMinted(), 3n, "late entropy path can still mint normally");
   assert.equal(await controller.totalReserved(), 0n, "late claim consumes its reservation");
 
@@ -295,8 +338,9 @@ async function main() {
       .revealMint(secondSourceEpoch, secondSourceSecret, { gasLimit: 500_000 })
   ).wait();
   await mineTo(eip1193, Number(await controller.entropyBlock(secondSourceEpoch)) + 1);
-  await (await controller.finalizeEpoch(secondSourceEpoch)).wait();
+  assert.equal((await controller.epochState(secondSourceEpoch)).finalized, false, "normal epoch starts unsettled");
   await (await controller.connect(source).claimMint(secondSourceEpoch)).wait();
+  assert.equal((await controller.epochState(secondSourceEpoch)).finalized, true, "Claim settles and mints in one transaction");
   assert.equal(await controller.mintedByWallet(sourceAddress), 2n, "wallet may use exactly its two allocations");
 
   const blockedEpoch = await nextCommitEpoch(controller, eip1193);

@@ -21,7 +21,7 @@ contract WorldRewardVault {
 
     uint256 public constant REWARD_SCALE = 1e27;
     uint256 public constant BPS_DENOMINATOR = 10_000;
-    uint256 public constant MAX_CREATOR_BPS = 3_000;
+    uint256 public constant MAX_CREATOR_BPS = 8_000;
 
     struct NftPosition {
         uint256 weight;

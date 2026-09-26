@@ -49,11 +49,23 @@ async function main() {
     symbol: "ETHER",
     quoteAsset: ethers.ZeroAddress,
     creator: creatorAddress,
-    graduationTarget: ethers.parseEther("9"),
+    graduationTarget: ethers.parseEther("4.2"),
     nftMaxSupply: 1_000,
     tokenHolderBps: 4_000,
     nftHolderBps: 4_000,
     creatorBps: 2_000,
+    mintConfig: {
+      difficulty: 0,
+      customSchedule: { commitBlocks: 0, revealBlocks: 0, claimBlocks: 0, epochCapacity: 0, walletLimit: 0 },
+    },
+    visualSeed: {
+      imageHash: ethers.id("native-image"),
+      vectorHash: ethers.id("native-vector"),
+      paletteHash: ethers.id("native-palette"),
+      styleHash: ethers.id("native-style"),
+      imageURI: `seed://${ethers.id("native-image").slice(2)}`,
+      renderMode: 1,
+    },
   };
   assert.notEqual(await validator.validateConfig(nativeConfig), ethers.ZeroHash, "native ETH is a canonical quote without registry enrollment");
 
@@ -73,7 +85,7 @@ async function main() {
     ethers.ZeroAddress,
     await worldVault.getAddress(),
     factoryAddress,
-    ethers.parseEther("1"),
+    ethers.parseEther("1.68"),
     nativeConfig.graduationTarget,
   ]);
   const curveAddress = await curve.getAddress();

@@ -6,6 +6,11 @@ interface IWorldNftMinter {
     function mintFromController(address to, bytes32 genome) external returns (uint256 tokenId);
 }
 
+interface IArbSysBlockClock {
+    function arbBlockNumber() external view returns (uint256);
+    function arbBlockHash(uint256 blockNumber) external view returns (bytes32);
+}
+
 /**
  * @title FairMintController
  * @notice Gas-only repeating commit/reveal distribution for one WorldNFT.
@@ -13,6 +18,8 @@ interface IWorldNftMinter {
  *      avoiding holder iteration and first-claim races between valid winners.
  */
 contract FairMintController {
+    address private constant ARB_SYS = address(100);
+
     struct EpochState {
         bytes32 revealEntropy;
         bytes32 finalSeed;
@@ -101,7 +108,7 @@ contract FairMintController {
 
         worldNft = worldNft_;
         maxSupply = maxSupply_;
-        startBlock = uint64(block.number);
+        startBlock = uint64(_protocolBlockNumber());
         commitBlocks = commitBlocks_;
         revealBlocks = revealBlocks_;
         claimBlocks = claimBlocks_;
@@ -117,7 +124,11 @@ contract FairMintController {
     }
 
     function currentEpoch() public view returns (uint256) {
-        return (block.number - uint256(startBlock)) / epochLength();
+        return (_protocolBlockNumber() - uint256(startBlock)) / epochLength();
+    }
+
+    function protocolBlockNumber() external view returns (uint256) {
+        return _protocolBlockNumber();
     }
 
     function epochLength() public view returns (uint256) {
@@ -139,7 +150,8 @@ contract FairMintController {
     function commitMint(bytes32 commitment) external {
         uint256 epoch = currentEpoch();
         uint256 start = epochStart(epoch);
-        if (block.number < start || block.number >= start + commitBlocks) revert WrongCommitPhase();
+        uint256 currentBlock = _protocolBlockNumber();
+        if (currentBlock < start || currentBlock >= start + commitBlocks) revert WrongCommitPhase();
         if (commitment == bytes32(0)) revert ZeroCommitment();
         if (commitments[epoch][msg.sender] != bytes32(0)) revert AlreadyCommitted();
         if (uint256(totalMinted) + uint256(totalReserved) >= uint256(maxSupply)) {
@@ -154,7 +166,8 @@ contract FairMintController {
     function revealMint(uint256 epoch, bytes32 secret) external {
         uint256 start = epochStart(epoch);
         uint256 revealStart = start + commitBlocks;
-        if (block.number < revealStart || block.number >= entropyBlock(epoch)) revert WrongRevealPhase();
+        uint256 currentBlock = _protocolBlockNumber();
+        if (currentBlock < revealStart || currentBlock >= entropyBlock(epoch)) revert WrongRevealPhase();
         if (revealerIndex[epoch][msg.sender] != 0) revert AlreadyRevealed();
         if (commitments[epoch][msg.sender] != computeCommitment(msg.sender, epoch, secret)) {
             revert InvalidSecret();
@@ -168,13 +181,18 @@ contract FairMintController {
     }
 
     function finalizeEpoch(uint256 epoch) external {
+        _finalizeEpoch(epoch);
+    }
+
+    function _finalizeEpoch(uint256 epoch) internal {
         EpochState storage state = epochs[epoch];
         if (state.finalized) revert AlreadyFinalized();
 
         uint256 targetBlock = entropyBlock(epoch);
-        if (block.number <= targetBlock) revert EntropyBlockNotReady();
+        uint256 currentBlock = _protocolBlockNumber();
+        if (currentBlock <= targetBlock) revert EntropyBlockNotReady();
 
-        bytes32 futureHash = blockhash(targetBlock);
+        bytes32 futureHash = _protocolBlockHash(targetBlock);
         bool late = futureHash == bytes32(0);
         bytes32 seed = late
             ? keccak256(
@@ -182,8 +200,8 @@ contract FairMintController {
                     state.revealEntropy,
                     epoch,
                     address(this),
-                    block.prevrandao,
-                    blockhash(block.number - 1),
+                    block.chainid,
+                    targetBlock,
                     "LATE_ENTROPY"
                 )
             )
@@ -197,7 +215,7 @@ contract FairMintController {
         state.finalSeed = seed;
         state.winnerCount = uint32(winners);
         state.winnerStartIndex = state.revealedCount == 0 ? 0 : uint32(uint256(seed) % state.revealedCount);
-        state.claimDeadline = uint64(block.number + claimBlocks);
+        state.claimDeadline = uint64(currentBlock + claimBlocks);
         state.finalized = true;
         state.usedLateEntropy = late;
         totalReserved += uint32(winners);
@@ -215,10 +233,10 @@ contract FairMintController {
 
     function claimMint(uint256 epoch) external nonReentrant returns (uint256 tokenId) {
         EpochState storage state = epochs[epoch];
-        if (!state.finalized) revert EpochNotFinalized();
-        if (state.expired || block.number > state.claimDeadline) revert EpochExpired();
         if (revealerIndex[epoch][msg.sender] == 0) revert NotRevealed();
         if (claimed[epoch][msg.sender]) revert AlreadyClaimed();
+        if (!state.finalized) _finalizeEpoch(epoch);
+        if (state.expired || _protocolBlockNumber() > state.claimDeadline) revert EpochExpired();
         if (!isWinner(epoch, msg.sender)) revert NotWinner();
         if (mintedByWallet[msg.sender] >= walletLimit) revert WalletLimitReached();
 
@@ -239,7 +257,7 @@ contract FairMintController {
         EpochState storage state = epochs[epoch];
         if (!state.finalized) revert EpochNotFinalized();
         if (state.expired) revert EpochExpired();
-        if (block.number <= state.claimDeadline) revert ClaimWindowOpen();
+        if (_protocolBlockNumber() <= state.claimDeadline) revert ClaimWindowOpen();
 
         state.expired = true;
         releasedReservations = state.winnerCount - state.claimedCount;
@@ -259,5 +277,21 @@ contract FairMintController {
 
     function epochState(uint256 epoch) external view returns (EpochState memory) {
         return epochs[epoch];
+    }
+
+    function _protocolBlockNumber() internal view returns (uint256 currentBlock) {
+        (bool success, bytes memory result) = ARB_SYS.staticcall(
+            abi.encodeCall(IArbSysBlockClock.arbBlockNumber, ())
+        );
+        if (success && result.length >= 32) return abi.decode(result, (uint256));
+        return block.number;
+    }
+
+    function _protocolBlockHash(uint256 blockNumber) internal view returns (bytes32 blockHash) {
+        (bool success, bytes memory result) = ARB_SYS.staticcall(
+            abi.encodeCall(IArbSysBlockClock.arbBlockHash, (blockNumber))
+        );
+        if (success && result.length >= 32) return abi.decode(result, (bytes32));
+        return blockhash(blockNumber);
     }
 }

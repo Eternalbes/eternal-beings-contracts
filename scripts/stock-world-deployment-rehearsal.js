@@ -122,7 +122,8 @@ async function main() {
   const quoteRegistry = await deploy("QuoteAssetRegistry", deployer, [deployerAddress]);
   const validator = await deploy("StockWorldConfigValidator", deployer, [await quoteRegistry.getAddress()]);
   const coreDeployer = await deploy("StockWorldCoreDeployer", deployer);
-  const nftDeployer = await deploy("StockWorldNftDeployer", deployer);
+  const renderer = await deploy("StockWorldRenderer", deployer);
+  const nftDeployer = await deploy("StockWorldNftDeployer", deployer, [await renderer.getAddress()]);
   const launchDeployer = await deploy("StockWorldLaunchDeployer", deployer, [
     await coreDeployer.getAddress(),
     await nftDeployer.getAddress(),
@@ -132,9 +133,6 @@ async function main() {
     await launchDeployer.getAddress(),
     await coordinator.getAddress(),
     deployerAddress,
-    12,
-    8,
-    40,
   ]);
   const factoryDeploymentBlock = Number(
     (await provider.getTransactionReceipt(factory.deploymentTransaction().hash)).blockNumber,
@@ -148,7 +146,7 @@ async function main() {
 
   const quoteAsset = await deploy("MockQuoteAsset", deployer, ["Rehearsal USD", "rUSD", 6]);
   await send("register:quoteAsset", async () =>
-    quoteRegistry.registerQuoteAsset(await quoteAsset.getAddress())
+    quoteRegistry.registerQuoteAsset(await quoteAsset.getAddress(), 1_680_000n, 4_200_000n)
   );
   const launchFee = ethers.parseEther("0.0003");
   await send("launch:firstWorld", async () =>
@@ -158,11 +156,20 @@ async function main() {
         "RWRLD",
         await quoteAsset.getAddress(),
         deployerAddress,
-        900_000_000n,
+        4_200_000n,
         9_999,
         4_500,
         4_500,
         1_000,
+        [0, [0, 0, 0, 0, 0]],
+        [
+          ethers.id("rehearsal-image"),
+          ethers.id("rehearsal-vector"),
+          ethers.id("rehearsal-palette"),
+          ethers.id("rehearsal-style"),
+          `seed://${ethers.id("rehearsal-image").slice(2)}`,
+          1,
+        ],
       ],
       { value: launchFee, gasLimit: 50_000_000 },
     )
@@ -191,6 +198,7 @@ async function main() {
     "deploy:QuoteAssetRegistry",
     "deploy:StockWorldConfigValidator",
     "deploy:StockWorldCoreDeployer",
+    "deploy:StockWorldRenderer",
     "deploy:StockWorldNftDeployer",
     "deploy:StockWorldLaunchDeployer",
     "deploy:StockWorldFactory",
@@ -224,6 +232,7 @@ async function main() {
       quoteAssetRegistry: await quoteRegistry.getAddress(),
       configValidator: await validator.getAddress(),
       coreDeployer: await coreDeployer.getAddress(),
+      renderer: await renderer.getAddress(),
       nftDeployer: await nftDeployer.getAddress(),
       launchDeployer: await launchDeployer.getAddress(),
       factory: await factory.getAddress(),

@@ -53,55 +53,82 @@ async function main() {
   const registry = await deploy(registryArtifact, authority, [authorityAddress]);
   const quote = await deploy(quoteArtifact, authority, ["Mock USD", "mUSD", 6]);
   const quoteAddress = await quote.getAddress();
+  const phantomQuote = 1_680_000n;
+  const graduationThreshold = 4_200_000n;
 
   assert.equal(await registry.authority(), authorityAddress, "registry authority is immutable constructor input");
   await assertRejects(
-    () => registry.connect(alice).registerQuoteAsset(quoteAddress),
+    () => registry.connect(alice).registerQuoteAsset(quoteAddress, phantomQuote, graduationThreshold),
     "non-authority cannot register quote assets",
   );
   await assertRejects(
-    () => registry.registerQuoteAsset(aliceAddress),
+    () => registry.registerQuoteAsset(aliceAddress, phantomQuote, graduationThreshold),
     "EOA cannot be registered as a quote asset",
   );
+  await assertRejects(
+    () => registry.registerQuoteAsset(quoteAddress, phantomQuote, graduationThreshold + 10n),
+    "quote economics that change the canonical PONS reserve ratio are rejected",
+  );
 
-  await (await registry.registerQuoteAsset(quoteAddress)).wait();
+  await (await registry.registerQuoteAsset(quoteAddress, phantomQuote, graduationThreshold)).wait();
   assert.equal(await registry.isSupported(quoteAddress), true, "registered quote asset starts enabled");
   assert.equal(await registry.decimalsOf(quoteAddress), 6n, "quote asset decimals are read from contract");
-  await assertRejects(() => registry.registerQuoteAsset(quoteAddress), "duplicate registration rejected");
+  assert.deepEqual(
+    [...await registry.economicsOf(quoteAddress)],
+    [phantomQuote, graduationThreshold],
+    "registry fixes PONS-style economics per quote asset",
+  );
+  assert.deepEqual(
+    [...await registry.economicsOf(ethers.ZeroAddress)],
+    [ethers.parseEther("1.68"), ethers.parseEther("4.2")],
+    "native ETH uses the canonical PONS economics",
+  );
+  await assertRejects(
+    () => registry.registerQuoteAsset(quoteAddress, phantomQuote, graduationThreshold),
+    "duplicate registration rejected",
+  );
 
   const validator = await deploy(validatorArtifact, authority, [await registry.getAddress()]);
+  const visualSeed = {
+    imageHash: ethers.id("alpha-image"),
+    vectorHash: ethers.id("alpha-vector"),
+    paletteHash: ethers.id("alpha-palette"),
+    styleHash: ethers.id("alpha-style"),
+    imageURI: `seed://${ethers.id("alpha-image").slice(2)}`,
+    renderMode: 1,
+  };
   const validConfig = {
     name: "Alpha World",
     symbol: "ALPHA",
     quoteAsset: quoteAddress,
     creator: aliceAddress,
-    graduationTarget: 1_000_000_000n,
+    graduationTarget: graduationThreshold,
     nftMaxSupply: 10_000,
     tokenHolderBps: 4_000,
     nftHolderBps: 4_000,
     creatorBps: 2_000,
+    mintConfig: {
+      difficulty: 0,
+      customSchedule: { commitBlocks: 0, revealBlocks: 0, claimBlocks: 0, epochCapacity: 0, walletLimit: 0 },
+    },
+    visualSeed,
   };
 
   const configHash = await validator.validateConfig(validConfig);
   assert.notEqual(configHash, ethers.ZeroHash, "valid configuration returns deterministic hash");
   assert.equal(configHash, await validator.hashConfig(validConfig), "validation and public hash agree");
-  assert.equal(await validator.WORLD_TOKEN_SUPPLY(), ethers.parseEther("1000000"), "fixed token supply exposed");
+  assert.equal(await validator.WORLD_TOKEN_SUPPLY(), ethers.parseEther("1000000000"), "PONS fixed token supply exposed");
   assert.equal(await validator.PLATFORM_LAUNCH_FEE(), ethers.parseEther("0.0003"), "launch fee exposed");
   assert.equal(await validator.BASE_TRADING_FEE_BPS(), 100n, "base trading fee is one percent");
   const maxGraduationTarget = await validator.MAX_GRADUATION_TARGET();
   assert.equal(
     maxGraduationTarget,
-    ((1n << 127n) - 1n) * 9n / 10n,
-    "graduation target leaves room for the maximum liquidity-reserve contribution",
-  );
-  assert.notEqual(
-    await validator.validateConfig({ ...validConfig, graduationTarget: maxGraduationTarget }),
-    ethers.ZeroHash,
-    "largest permanently seedable graduation target is accepted",
+    (1n << 127n) - 1n,
+    "graduation seed amount exposes the signed V4 delta boundary",
   );
   await assertRejects(
-    () => validator.validateConfig({ ...validConfig, graduationTarget: maxGraduationTarget + 1n }),
-    "graduation target above the permanent-market seed limit is rejected",
+    () => validator.validateConfig({ ...validConfig, graduationTarget: graduationThreshold + 1n }),
+    "creator cannot override protocol graduation economics",
   );
 
   await assertRejects(
@@ -113,22 +140,90 @@ async function main() {
     "NFT supply above maximum rejected",
   );
   await assertRejects(
+    () => validator.validateConfig({
+      ...validConfig,
+      mintConfig: { ...validConfig.mintConfig, difficulty: 4 },
+    }),
+    "unknown Mint difficulty rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({
+      ...validConfig,
+      mintConfig: {
+        difficulty: 0,
+        customSchedule: { commitBlocks: 300, revealBlocks: 300, claimBlocks: 1_200, epochCapacity: 100, walletLimit: 1 },
+      },
+    }),
+    "preset difficulty cannot hide custom Mint parameters",
+  );
+  const customConfig = {
+    ...validConfig,
+    mintConfig: {
+      difficulty: 3,
+      customSchedule: { commitBlocks: 300, revealBlocks: 600, claimBlocks: 1_200, epochCapacity: 777, walletLimit: 3 },
+    },
+  };
+  assert.notEqual(await validator.validateConfig(customConfig), ethers.ZeroHash, "bounded custom Mint schedule accepted");
+  await assertRejects(
+    () => validator.validateConfig({
+      ...customConfig,
+      mintConfig: { ...customConfig.mintConfig, customSchedule: { ...customConfig.mintConfig.customSchedule, commitBlocks: 299 } },
+    }),
+    "custom commit phase below protocol minimum rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({
+      ...customConfig,
+      mintConfig: { ...customConfig.mintConfig, customSchedule: { ...customConfig.mintConfig.customSchedule, epochCapacity: 10_001 } },
+    }),
+    "custom epoch capacity above NFT supply rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({
+      ...customConfig,
+      mintConfig: { ...customConfig.mintConfig, customSchedule: { ...customConfig.mintConfig.customSchedule, walletLimit: 11 } },
+    }),
+    "custom wallet limit above protocol maximum rejected",
+  );
+  await assertRejects(
     () => validator.validateConfig({ ...validConfig, tokenHolderBps: 4_001 }),
     "fee allocation not totaling 100 percent rejected",
+  );
+  assert.notEqual(
+    await validator.validateConfig({
+      ...validConfig,
+      tokenHolderBps: 1_000,
+      nftHolderBps: 1_000,
+      creatorBps: 8_000,
+    }),
+    ethers.ZeroHash,
+    "creator allocation at 80 percent accepted",
   );
   await assertRejects(
     () =>
       validator.validateConfig({
         ...validConfig,
-        tokenHolderBps: 3_000,
-        nftHolderBps: 3_000,
-        creatorBps: 4_000,
+        tokenHolderBps: 999,
+        nftHolderBps: 1_000,
+        creatorBps: 8_001,
       }),
-    "creator allocation above 30 percent rejected",
+    "creator allocation above 80 percent rejected",
   );
   await assertRejects(
     () => validator.validateConfig({ ...validConfig, tokenHolderBps: 0, nftHolderBps: 8_000 }),
     "empty token-holder reward allocation rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({ ...validConfig, visualSeed: { ...visualSeed, imageHash: ethers.ZeroHash } }),
+    "empty visual seed hash rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({ ...validConfig, visualSeed: { ...visualSeed, renderMode: 2 } }),
+    "unknown render mode rejected",
+  );
+  await assertRejects(
+    () => validator.validateConfig({ ...validConfig, visualSeed: { ...visualSeed, imageURI: "seed://bad\"uri" } }),
+    "unsafe visual seed URI rejected",
   );
 
   await (await registry.setQuoteAssetEnabled(quoteAddress, false)).wait();
@@ -144,7 +239,7 @@ async function main() {
   await (await registry.setQuoteAssetEnabled(quoteAddress, true)).wait();
 
   const token = await deploy(tokenArtifact, authority, [validConfig.name, validConfig.symbol, aliceAddress]);
-  const fixedSupply = ethers.parseEther("1000000");
+  const fixedSupply = ethers.parseEther("1000000000");
   assert.equal(await token.name(), validConfig.name, "token name set at construction");
   assert.equal(await token.symbol(), validConfig.symbol, "token symbol set at construction");
   assert.equal(await token.decimals(), 18n, "token uses 18 decimals");

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {StockWorldBase64} from "./libraries/StockWorldBase64.sol";
-import {StockWorldConstants} from "./StockWorldTypes.sol";
+import {StockWorldConstants, StockWorldTypes} from "./StockWorldTypes.sol";
+import {StockWorldRenderer} from "./StockWorldRenderer.sol";
 
 interface IWorldNftRewardVault {
     function checkpointNftWeight(uint256 tokenId, address beneficiary, uint256 newWeight) external;
@@ -32,7 +32,10 @@ contract WorldNFT {
 
     address public immutable factory;
     IWorldNftRewardVault public immutable rewardVault;
+    StockWorldRenderer public immutable renderer;
     uint32 public immutable maxSupply;
+
+    StockWorldTypes.VisualSeed private worldVisualSeed;
 
     address public mintController;
     uint32 public totalMinted;
@@ -82,7 +85,9 @@ contract WorldNFT {
         string memory symbol_,
         uint32 maxSupply_,
         address factory_,
-        IWorldNftRewardVault rewardVault_
+        IWorldNftRewardVault rewardVault_,
+        StockWorldRenderer renderer_,
+        StockWorldTypes.VisualSeed memory visualSeed_
     ) {
         uint256 nameLength = bytes(name_).length;
         uint256 symbolLength = bytes(symbol_).length;
@@ -93,14 +98,18 @@ contract WorldNFT {
         if (maxSupply_ < StockWorldConstants.MIN_NFT_SUPPLY || maxSupply_ > StockWorldConstants.MAX_NFT_SUPPLY) {
             revert InvalidSupply();
         }
-        if (factory_ == address(0) || address(rewardVault_) == address(0)) revert ZeroAddress();
-        if (address(rewardVault_).code.length == 0) revert NotContract();
+        if (factory_ == address(0) || address(rewardVault_) == address(0) || address(renderer_) == address(0)) {
+            revert ZeroAddress();
+        }
+        if (address(rewardVault_).code.length == 0 || address(renderer_).code.length == 0) revert NotContract();
 
         name = name_;
         symbol = symbol_;
         maxSupply = maxSupply_;
         factory = factory_;
         rewardVault = rewardVault_;
+        renderer = renderer_;
+        worldVisualSeed = visualSeed_;
     }
 
     modifier nonReentrant() {
@@ -231,36 +240,21 @@ contract WorldNFT {
         return uint256(totalMinted) - uint256(totalBurned);
     }
 
+    function visualSeed() external view returns (StockWorldTypes.VisualSeed memory) {
+        return worldVisualSeed;
+    }
+
     function tokenURI(uint256 tokenId) external view returns (string memory) {
         if (owners[tokenId] == address(0)) revert TokenDoesNotExist();
         WorldBeing memory being = beings[tokenId];
-        string memory id = _toString(tokenId);
-        string memory color = _color(being.genome);
-        string memory svg = string.concat(
-            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>",
-            "<rect width='512' height='512' fill='#080b10'/>",
-            "<circle cx='256' cy='238' r='",
-            _toString(54 + uint256(being.fusionCount % 9) * 9),
-            "' fill='none' stroke='",
-            color,
-            "' stroke-width='8'/>",
-            "<path d='M256 78L416 370L96 370Z' fill='none' stroke='#f4f7ff' stroke-width='3'/>",
-            "<text x='256' y='438' fill='#f4f7ff' font-family='monospace' font-size='22' text-anchor='middle'>WORLD #",
-            id,
-            "</text></svg>"
+        return renderer.tokenURI(
+            name,
+            tokenId,
+            being.weight,
+            being.fusionCount,
+            being.genome,
+            worldVisualSeed
         );
-        string memory json = string.concat(
-            "{\"name\":\"Stock World #",
-            id,
-            "\",\"description\":\"An evolving on-chain Stock World position.\",\"image\":\"data:image/svg+xml;base64,",
-            StockWorldBase64.encode(bytes(svg)),
-            "\",\"attributes\":[{\"trait_type\":\"Weight\",\"value\":",
-            _toString(being.weight),
-            "},{\"trait_type\":\"Fusion Count\",\"value\":",
-            _toString(being.fusionCount),
-            "}]}"
-        );
-        return string.concat("data:application/json;base64,", StockWorldBase64.encode(bytes(json)));
     }
 
     function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
@@ -306,32 +300,4 @@ contract WorldNFT {
         }
     }
 
-    function _color(bytes32 genome) private pure returns (string memory) {
-        bytes memory out = new bytes(7);
-        bytes16 symbols = "0123456789abcdef";
-        out[0] = "#";
-        for (uint256 i = 0; i < 3; i++) {
-            uint8 value = uint8(genome[i]);
-            out[1 + i * 2] = symbols[value >> 4];
-            out[2 + i * 2] = symbols[value & 0x0f];
-        }
-        return string(out);
-    }
-
-    function _toString(uint256 value) private pure returns (string memory) {
-        if (value == 0) return "0";
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + value % 10));
-            value /= 10;
-        }
-        return string(buffer);
-    }
 }

@@ -93,7 +93,7 @@ async function main() {
     if (siteConfig.factoryDeploymentBlock !== report.factoryDeploymentBlock) {
       throw new Error("site config Factory deployment block mismatch");
     }
-    if (siteConfig.quoteAssets.length !== 1 || siteConfig.quoteAssets[0].address !== production.quoteAssets[0]) {
+    if (siteConfig.quoteAssets.length !== 1 || siteConfig.quoteAssets[0].address !== production.quoteAssets[0].address) {
       throw new Error("site config quote assets mismatch");
     }
     const provider = new ethers.JsonRpcProvider(rpcUrl);

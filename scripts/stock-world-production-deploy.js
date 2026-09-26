@@ -7,6 +7,7 @@ const DEFAULT_CONFIG = "config/stock-world.production.json";
 const DEFAULT_SECRET = "reports/secrets/deployer.secrets.json";
 const DEFAULT_OUTPUT = "reports/deployment-stock-world-mainnet.json";
 const REQUIRED_HOOK_FLAGS = 0x20ccn;
+const DEPLOYMENT_SCHEMA_VERSION = 4;
 
 function parseArgs(argv) {
   const args = {
@@ -78,7 +79,7 @@ function mineHookSalt(deployer, initCode) {
 
 function initialReport(configPath, configHash, config, readiness) {
   return {
-    schemaVersion: 1,
+    schemaVersion: DEPLOYMENT_SCHEMA_VERSION,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     status: "deploying",
@@ -111,7 +112,7 @@ function writeSiteConfig(siteConfigPath, config, report) {
   siteConfig.nativeCurrency = siteConfig.nativeCurrency || { name: "Ether", symbol: "ETH", decimals: 18 };
   siteConfig.factoryAddress = ethers.getAddress(factoryAddress);
   siteConfig.factoryDeploymentBlock = Number(report.factoryDeploymentBlock);
-  siteConfig.quoteAssets = config.quoteAssets.map((address) => ({ address: ethers.getAddress(address) }));
+  siteConfig.quoteAssets = config.quoteAssets.map((entry) => ({ address: ethers.getAddress(entry.address) }));
   const serialized = `${JSON.stringify(siteConfig, null, 2)}\n`;
   fs.mkdirSync(path.dirname(siteConfigPath), { recursive: true });
   fs.writeFileSync(siteConfigPath, serialized);
@@ -159,6 +160,7 @@ async function main() {
     "QuoteAssetRegistry",
     "StockWorldConfigValidator",
     "StockWorldCoreDeployer",
+    "StockWorldRenderer",
     "StockWorldNftDeployer",
     "StockWorldLaunchDeployer",
     "StockWorldFactory",
@@ -174,6 +176,9 @@ async function main() {
   let report;
   if (fs.existsSync(args.outputPath)) {
     report = readJson(args.outputPath);
+    if (report.schemaVersion !== DEPLOYMENT_SCHEMA_VERSION) {
+      throw new Error(`deployment report schema ${report.schemaVersion || 1} cannot resume Mint-difficulty schema ${DEPLOYMENT_SCHEMA_VERSION}; use a new output path`);
+    }
     if (report.configHash !== configHash) {
       throw new Error("existing deployment report belongs to a different production manifest");
     }
@@ -310,7 +315,8 @@ async function main() {
   const quoteRegistry = await deploy("quoteAssetRegistry", "QuoteAssetRegistry", [config.quoteAssetAuthority]);
   const validator = await deploy("configValidator", "StockWorldConfigValidator", [await quoteRegistry.getAddress()]);
   const coreDeployer = await deploy("coreDeployer", "StockWorldCoreDeployer");
-  const nftDeployer = await deploy("nftDeployer", "StockWorldNftDeployer");
+  const renderer = await deploy("renderer", "StockWorldRenderer");
+  const nftDeployer = await deploy("nftDeployer", "StockWorldNftDeployer", [await renderer.getAddress()]);
   const launchDeployer = await deploy("launchDeployer", "StockWorldLaunchDeployer", [
     await coreDeployer.getAddress(),
     await nftDeployer.getAddress(),
@@ -320,9 +326,6 @@ async function main() {
     await launchDeployer.getAddress(),
     await coordinator.getAddress(),
     config.platformFeeRecipient,
-    config.mintSchedule.commitBlocks,
-    config.mintSchedule.revealBlocks,
-    config.mintSchedule.claimBlocks,
   ]);
   if (await coordinator.factory() === ethers.ZeroAddress) {
     await transact("bind:coordinator.factory", async () => coordinator.bindFactory(await factory.getAddress()));
@@ -336,21 +339,50 @@ async function main() {
     if (index === -1) report.quoteAssets.push(entry);
     else report.quoteAssets[index] = entry;
   }
-  for (const address of config.quoteAssets) {
-    const asset = ethers.getAddress(address);
+  for (const entry of config.quoteAssets) {
+    const asset = ethers.getAddress(entry.address);
+    const quoteContract = new ethers.Contract(
+      asset,
+      ["function decimals() view returns (uint8)"],
+      signer,
+    );
+    const decimals = Number(await quoteContract.decimals());
+    const phantomQuote = ethers.parseUnits(entry.phantomQuote, decimals);
+    const graduationThreshold = ethers.parseUnits(entry.graduationThreshold, decimals);
     const info = await quoteRegistry.getQuoteAsset(asset);
     if (info.registered) {
-      recordQuoteAsset({ address: asset, status: info.enabled ? "enabled" : "disabled" });
+      if (info.phantomQuote !== phantomQuote || info.graduationThreshold !== graduationThreshold) {
+        throw new Error(`registered graduation economics mismatch for ${asset}`);
+      }
+      recordQuoteAsset({
+        address: asset,
+        status: info.enabled ? "enabled" : "disabled",
+        phantomQuote: phantomQuote.toString(),
+        graduationThreshold: graduationThreshold.toString(),
+      });
       continue;
     }
     if (authorityIsDeployer) {
-      await transact(`register:quoteAsset:${asset}`, () => quoteRegistry.registerQuoteAsset(asset));
-      recordQuoteAsset({ address: asset, status: "enabled" });
+      await transact(`register:quoteAsset:${asset}`, () =>
+        quoteRegistry.registerQuoteAsset(asset, phantomQuote, graduationThreshold)
+      );
+      recordQuoteAsset({
+        address: asset,
+        status: "enabled",
+        phantomQuote: phantomQuote.toString(),
+        graduationThreshold: graduationThreshold.toString(),
+      });
     } else {
       recordQuoteAsset({
         address: asset,
         status: "awaiting-authority",
-        calldata: quoteRegistry.interface.encodeFunctionData("registerQuoteAsset", [asset]),
+        phantomQuote: phantomQuote.toString(),
+        graduationThreshold: graduationThreshold.toString(),
+        calldata: quoteRegistry.interface.encodeFunctionData("registerQuoteAsset", [
+          asset,
+          phantomQuote,
+          graduationThreshold,
+        ]),
       });
     }
     checkpoint();
@@ -383,21 +415,19 @@ async function main() {
     throw new Error("Coordinator.tickSpacing mismatch");
   }
   await assertAddress("Registry.authority", quoteRegistry.authority(), config.quoteAssetAuthority);
+  const nativeEconomics = await quoteRegistry.economicsOf(ethers.ZeroAddress);
+  if (
+    nativeEconomics.phantomQuote !== ethers.parseEther("1.68")
+      || nativeEconomics.graduationThreshold !== ethers.parseEther("4.2")
+  ) throw new Error("Registry native ETH graduation economics mismatch");
   await assertAddress("Validator.quoteAssetRegistry", validator.quoteAssetRegistry(), await quoteRegistry.getAddress());
+  await assertAddress("NftDeployer.renderer", nftDeployer.renderer(), await renderer.getAddress());
   await assertAddress("LaunchDeployer.coreDeployer", launchDeployer.coreDeployer(), await coreDeployer.getAddress());
   await assertAddress("LaunchDeployer.nftDeployer", launchDeployer.nftDeployer(), await nftDeployer.getAddress());
   await assertAddress("Factory.configValidator", factory.configValidator(), await validator.getAddress());
   await assertAddress("Factory.launchDeployer", factory.launchDeployer(), await launchDeployer.getAddress());
   await assertAddress("Factory.graduationCoordinator", factory.graduationCoordinator(), await coordinator.getAddress());
   await assertAddress("Factory.platformFeeRecipient", factory.platformFeeRecipient(), config.platformFeeRecipient);
-  for (const [field, expected] of [
-    ["commitBlocks", config.mintSchedule.commitBlocks],
-    ["revealBlocks", config.mintSchedule.revealBlocks],
-    ["claimBlocks", config.mintSchedule.claimBlocks],
-  ]) {
-    if (Number(await factory[field]()) !== expected) throw new Error(`Factory.${field} mismatch`);
-  }
-
   report.status = authorityIsDeployer ? "deployed" : "awaiting-quote-asset-authority";
   report.factoryDeploymentBlock = report.contracts.factory.blockNumber;
   writeSiteConfig(args.siteConfigPath, config, report);

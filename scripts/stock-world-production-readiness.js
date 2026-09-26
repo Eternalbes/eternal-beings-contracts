@@ -27,6 +27,12 @@ function hours(blocks, secondsPerBlock) {
   return Number(((Number(blocks) * secondsPerBlock) / 3600).toFixed(2));
 }
 
+const MINT_PRESETS = Object.freeze({
+  easy: { commitBlocks: 158_400, revealBlocks: 79_200, claimBlocks: 237_600, epochCapacity: 999, walletLimit: 1 },
+  hard: { commitBlocks: 316_800, revealBlocks: 158_400, claimBlocks: 475_200, epochCapacity: 666, walletLimit: 1 },
+  hell: { commitBlocks: 633_600, revealBlocks: 316_800, claimBlocks: 950_400, epochCapacity: 333, walletLimit: 1 },
+});
+
 async function inspectQuoteAsset(provider, asset) {
   const address = normalized(asset);
   const code = await provider.getCode(address);
@@ -77,20 +83,14 @@ async function main() {
     if (!validAddress(config[field])) blockers.push(`${field} must be a non-zero address`);
   }
 
-  const schedule = config.mintSchedule || {};
-  for (const field of ["commitBlocks", "revealBlocks", "claimBlocks"]) {
-    if (!Number.isSafeInteger(schedule[field]) || schedule[field] <= 0 || schedule[field] > 0xffffffff) {
-      blockers.push(`mintSchedule.${field} must be a positive uint32 value`);
-    }
-  }
-  const scheduleHours = {
-    commit: hours(schedule.commitBlocks || 0, secondsPerBlock),
-    reveal: hours(schedule.revealBlocks || 0, secondsPerBlock),
-    claim: hours(schedule.claimBlocks || 0, secondsPerBlock),
-  };
-  if (scheduleHours.commit < 1) blockers.push("commit window is shorter than one sampled hour");
-  if (scheduleHours.reveal < 1) blockers.push("reveal window is shorter than one sampled hour");
-  if (scheduleHours.claim < 4) blockers.push("claim window is shorter than four sampled hours");
+  const mintPresetHours = Object.fromEntries(Object.entries(MINT_PRESETS).map(([name, preset]) => [name, {
+    commit: hours(preset.commitBlocks, secondsPerBlock),
+    reveal: hours(preset.revealBlocks, secondsPerBlock),
+    epoch: hours(preset.commitBlocks + preset.revealBlocks, secondsPerBlock),
+    claim: hours(preset.claimBlocks, secondsPerBlock),
+    epochCapacity: preset.epochCapacity,
+    walletLimit: preset.walletLimit,
+  }]));
   warnings.push(
     `A 256-block blockhash capture window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds; permissionless finalization must be monitored.`,
   );
@@ -154,17 +154,39 @@ async function main() {
     blockers.push("at least one production quote asset must be selected and verified");
   } else {
     const uniqueAssets = new Set();
-    for (const asset of config.quoteAssets) {
+    for (const entry of config.quoteAssets) {
       try {
-        const key = normalized(asset).toLowerCase();
+        if (!entry || typeof entry !== "object") throw new Error("entry must include address and economics");
+        const key = normalized(entry.address).toLowerCase();
         if (uniqueAssets.has(key)) {
-          blockers.push(`duplicate quote asset ${asset}`);
+          blockers.push(`duplicate quote asset ${entry.address}`);
           continue;
         }
         uniqueAssets.add(key);
-        quoteAssets.push(await inspectQuoteAsset(provider, asset));
+        const metadata = await inspectQuoteAsset(provider, entry.address);
+        const phantomQuote = ethers.parseUnits(String(entry.phantomQuote), metadata.decimals);
+        const graduationThreshold = ethers.parseUnits(
+          String(entry.graduationThreshold),
+          metadata.decimals,
+        );
+        if (phantomQuote <= 0n || graduationThreshold <= 0n) {
+          throw new Error("graduation economics must be positive");
+        }
+        const scaledPhantom = phantomQuote * 5n;
+        const scaledThreshold = graduationThreshold * 2n;
+        const ratioRounding = scaledPhantom > scaledThreshold
+          ? scaledPhantom - scaledThreshold
+          : scaledThreshold - scaledPhantom;
+        if (ratioRounding > 5n) {
+          throw new Error("graduation economics must preserve the canonical PONS 2:5 ratio");
+        }
+        quoteAssets.push({
+          ...metadata,
+          phantomQuote: phantomQuote.toString(),
+          graduationThreshold: graduationThreshold.toString(),
+        });
       } catch (error) {
-        blockers.push(`quote asset ${asset}: ${error.message}`);
+        blockers.push(`quote asset ${entry?.address || "unknown"}: ${error.message}`);
       }
     }
   }
@@ -210,7 +232,7 @@ async function main() {
     chainId: network.chainId.toString(),
     latestBlock,
     sampledBlockCadence: { sampleBlocks, sampledSeconds, secondsPerBlock },
-    mintScheduleHours: scheduleHours,
+    mintPresetHours,
     deployerBalanceEth: deployerBalance === null ? null : ethers.formatEther(deployerBalance),
     deploymentCost,
     quoteAssets,

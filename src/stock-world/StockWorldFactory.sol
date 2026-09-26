@@ -11,6 +11,7 @@ import {WorldNFT} from "./WorldNFT.sol";
 import {WorldRewardVault} from "./WorldRewardVault.sol";
 import {WorldToken} from "./WorldToken.sol";
 import {StockWorldGraduationMath} from "./libraries/StockWorldGraduationMath.sol";
+import {IQuoteAssetRegistry} from "./IQuoteAssetRegistry.sol";
 
 /**
  * @title StockWorldFactory
@@ -46,26 +47,24 @@ contract StockWorldFactory {
     StockWorldLaunchDeployer public immutable launchDeployer;
     IStockWorldGraduationCoordinator public immutable graduationCoordinator;
     address public immutable platformFeeRecipient;
-    uint32 public immutable commitBlocks;
-    uint32 public immutable revealBlocks;
-    uint32 public immutable claimBlocks;
-
     uint256 public worldCount;
     mapping(uint256 worldId => WorldRecord world) private worlds;
     mapping(address worldToken => uint256 oneBasedWorldId) public worldIdOfToken;
     mapping(address worldNft => uint256 oneBasedWorldId) public worldIdOfNft;
+    mapping(address bondingCurve => uint256 oneBasedWorldId) public worldIdOfCurve;
 
     uint256 private reentrancyState = 1;
 
     error ZeroAddress();
     error NotContract();
-    error InvalidMintSchedule();
+    error InvalidMintDifficulty();
     error IncorrectLaunchFee();
     error FeeTransferFailed();
     error WorldDoesNotExist();
     error WrongWorldPhase();
     error InvalidGraduationState();
     error InvalidMarketId();
+    error NotWorldCurve();
     error ReentrantCall();
 
     event WorldLaunched(
@@ -89,10 +88,7 @@ contract StockWorldFactory {
         StockWorldConfigValidator configValidator_,
         StockWorldLaunchDeployer launchDeployer_,
         IStockWorldGraduationCoordinator graduationCoordinator_,
-        address platformFeeRecipient_,
-        uint32 commitBlocks_,
-        uint32 revealBlocks_,
-        uint32 claimBlocks_
+        address platformFeeRecipient_
     ) {
         if (
             address(configValidator_) == address(0) || address(launchDeployer_) == address(0)
@@ -102,15 +98,10 @@ contract StockWorldFactory {
             address(configValidator_).code.length == 0 || address(launchDeployer_).code.length == 0
                 || address(graduationCoordinator_).code.length == 0
         ) revert NotContract();
-        if (commitBlocks_ == 0 || revealBlocks_ == 0 || claimBlocks_ == 0) revert InvalidMintSchedule();
-
         configValidator = configValidator_;
         launchDeployer = launchDeployer_;
         graduationCoordinator = graduationCoordinator_;
         platformFeeRecipient = platformFeeRecipient_;
-        commitBlocks = commitBlocks_;
-        revealBlocks = revealBlocks_;
-        claimBlocks = claimBlocks_;
     }
 
     modifier nonReentrant() {
@@ -129,14 +120,10 @@ contract StockWorldFactory {
         if (msg.value != StockWorldConstants.PLATFORM_LAUNCH_FEE) revert IncorrectLaunchFee();
         bytes32 configHash = configValidator.validateConfig(config);
 
-        uint256 virtualQuoteReserve = calculateVirtualQuoteReserve(config.graduationTarget);
-        StockWorldTypes.MintSchedule memory schedule = StockWorldTypes.MintSchedule({
-            commitBlocks: commitBlocks,
-            revealBlocks: revealBlocks,
-            claimBlocks: claimBlocks,
-            epochCapacity: calculateEpochCapacity(config.nftMaxSupply),
-            walletLimit: StockWorldConstants.DEFAULT_NFT_WALLET_LIMIT
-        });
+        (uint256 virtualQuoteReserve,) = IQuoteAssetRegistry(
+            address(configValidator.quoteAssetRegistry())
+        ).economicsOf(config.quoteAsset);
+        StockWorldTypes.MintSchedule memory schedule = mintScheduleFor(config);
 
         modules = launchDeployer.deployWorld(
             config, schedule, address(graduationCoordinator), virtualQuoteReserve
@@ -169,6 +156,7 @@ contract StockWorldFactory {
         });
         worldIdOfToken[modules.worldToken] = worldId + 1;
         worldIdOfNft[modules.worldNft] = worldId + 1;
+        worldIdOfCurve[modules.bondingCurve] = worldId + 1;
 
         (bool paid,) = platformFeeRecipient.call{value: msg.value}("");
         if (!paid) revert FeeTransferFailed();
@@ -188,6 +176,18 @@ contract StockWorldFactory {
     }
 
     function prepareGraduation(uint256 worldId) external nonReentrant {
+        _prepareGraduation(worldId);
+    }
+
+    function autoGraduate() external nonReentrant {
+        uint256 oneBasedWorldId = worldIdOfCurve[msg.sender];
+        if (oneBasedWorldId == 0) revert NotWorldCurve();
+        uint256 worldId = oneBasedWorldId - 1;
+        _prepareGraduation(worldId);
+        _completeGraduation(worldId);
+    }
+
+    function _prepareGraduation(uint256 worldId) private {
         WorldRecord storage world = _world(worldId);
         if (world.phase != WorldPhase.CurveLive) revert WrongWorldPhase();
 
@@ -230,6 +230,10 @@ contract StockWorldFactory {
     }
 
     function completeGraduation(uint256 worldId) external nonReentrant returns (bytes32 marketId) {
+        return _completeGraduation(worldId);
+    }
+
+    function _completeGraduation(uint256 worldId) private returns (bytes32 marketId) {
         WorldRecord storage world = _world(worldId);
         if (world.phase != WorldPhase.GraduationPrepared) revert WrongWorldPhase();
 
@@ -265,14 +269,45 @@ contract StockWorldFactory {
         return worldId < worldCount && worlds[worldId].worldToken == worldToken;
     }
 
-    function calculateVirtualQuoteReserve(uint256 graduationTarget) public pure returns (uint256) {
-        if (graduationTarget == 0) return 0;
-        return graduationTarget / 9 + (graduationTarget % 9 == 0 ? 0 : 1);
+    function graduationEconomics(address quoteAsset)
+        external
+        view
+        returns (uint256 phantomQuote, uint256 graduationThreshold)
+    {
+        return IQuoteAssetRegistry(address(configValidator.quoteAssetRegistry())).economicsOf(quoteAsset);
     }
 
-    function calculateEpochCapacity(uint32 nftMaxSupply) public pure returns (uint32) {
-        uint32 epochs = StockWorldConstants.MINT_DISTRIBUTION_EPOCHS;
-        return nftMaxSupply / epochs + (nftMaxSupply % epochs == 0 ? 0 : 1);
+    function mintScheduleFor(StockWorldTypes.WorldConfig calldata config)
+        public
+        pure
+        returns (StockWorldTypes.MintSchedule memory schedule)
+    {
+        uint8 difficulty = config.mintConfig.difficulty;
+        if (difficulty == StockWorldConstants.MINT_DIFFICULTY_CUSTOM) {
+            return config.mintConfig.customSchedule;
+        }
+
+        uint32 capacity;
+        if (difficulty == StockWorldConstants.MINT_DIFFICULTY_EASY) {
+            schedule.commitBlocks = StockWorldConstants.EASY_COMMIT_BLOCKS;
+            schedule.revealBlocks = StockWorldConstants.EASY_REVEAL_BLOCKS;
+            schedule.claimBlocks = StockWorldConstants.EASY_CLAIM_BLOCKS;
+            capacity = StockWorldConstants.EASY_EPOCH_CAPACITY;
+        } else if (difficulty == StockWorldConstants.MINT_DIFFICULTY_HARD) {
+            schedule.commitBlocks = StockWorldConstants.HARD_COMMIT_BLOCKS;
+            schedule.revealBlocks = StockWorldConstants.HARD_REVEAL_BLOCKS;
+            schedule.claimBlocks = StockWorldConstants.HARD_CLAIM_BLOCKS;
+            capacity = StockWorldConstants.HARD_EPOCH_CAPACITY;
+        } else if (difficulty == StockWorldConstants.MINT_DIFFICULTY_HELL) {
+            schedule.commitBlocks = StockWorldConstants.HELL_COMMIT_BLOCKS;
+            schedule.revealBlocks = StockWorldConstants.HELL_REVEAL_BLOCKS;
+            schedule.claimBlocks = StockWorldConstants.HELL_CLAIM_BLOCKS;
+            capacity = StockWorldConstants.HELL_EPOCH_CAPACITY;
+        } else {
+            revert InvalidMintDifficulty();
+        }
+        schedule.epochCapacity = capacity > config.nftMaxSupply ? config.nftMaxSupply : capacity;
+        schedule.walletLimit = StockWorldConstants.PRESET_NFT_WALLET_LIMIT;
     }
 
     function _world(uint256 worldId) private view returns (WorldRecord storage world) {

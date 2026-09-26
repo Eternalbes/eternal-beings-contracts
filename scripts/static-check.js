@@ -36,7 +36,7 @@ for (const pattern of forbidden) {
 }
 
 if (fs.existsSync("artifacts")) {
-  for (const name of ["EternalBeings", "EternalRenderer"]) {
+  for (const name of ["EternalBeings", "EternalRenderer", "WorldNFT", "StockWorldRenderer", "StockWorldNftDeployer"]) {
     const artifactPath = `artifacts/${name}.json`;
     if (!fs.existsSync(artifactPath)) continue;
     const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));

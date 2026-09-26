@@ -16,6 +16,10 @@ interface IWorldRewardVaultFeeSink {
     function depositFee(uint256 amount) external payable;
 }
 
+interface IStockWorldAutoGraduationFactory {
+    function autoGraduate() external;
+}
+
 /**
  * @title StockWorldBondingCurve
  * @notice Immutable pre-graduation constant-product market for one Stock World.
@@ -82,6 +86,7 @@ contract StockWorldBondingCurve {
         address indexed seller, address indexed recipient, uint256 tokensIn, uint256 quoteOut, uint256 fee
     );
     event GraduationBecameReady(uint256 realQuoteReserve, uint256 tokenReserve);
+    event AutoGraduationFailed();
     event ReservesSwept(address indexed recipient, uint256 quoteAmount, uint256 tokenAmount);
 
     constructor(
@@ -231,6 +236,12 @@ contract StockWorldBondingCurve {
         if (refund != 0) QuoteAssetLib.send(quoteAsset, msg.sender, refund);
 
         emit CurveBuy(msg.sender, recipient, quoteSpent, tokensOut, fee, refund);
+
+        if (phase == Phase.GraduationReady && factory.code.length != 0) {
+            try IStockWorldAutoGraduationFactory(factory).autoGraduate() {} catch {
+                emit AutoGraduationFailed();
+            }
+        }
     }
 
     function sell(uint256 tokensIn, uint256 minQuoteOut, address recipient, uint256 deadline)
@@ -261,11 +272,16 @@ contract StockWorldBondingCurve {
     function sweepForGraduation(address recipient)
         external
         onlyFactory
-        nonReentrant
         returns (uint256 quoteAmount, uint256 tokenAmount)
     {
         if (phase != Phase.GraduationReady) revert NotReadyToGraduate();
         if (recipient == address(0)) revert ZeroAddress();
+
+        // Auto-graduation intentionally calls back from a terminal buy while
+        // that buy holds the lock. A manual graduation acquires the same lock
+        // here so an approved quote token still cannot reenter curve trading.
+        bool nestedTerminalBuy = reentrancyState == 2;
+        if (!nestedTerminalBuy) reentrancyState = 2;
 
         phase = Phase.ReservesSwept;
         quoteAmount = trackedQuoteReserve;
@@ -277,6 +293,7 @@ contract StockWorldBondingCurve {
         if (tokenAmount != 0) IERC20Minimal(address(worldToken)).safeTransfer(recipient, tokenAmount);
 
         emit ReservesSwept(recipient, quoteAmount, tokenAmount);
+        if (!nestedTerminalBuy) reentrancyState = 1;
     }
 
     function surplusQuote() external view returns (uint256) {

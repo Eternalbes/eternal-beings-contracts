@@ -115,7 +115,7 @@
 
   <rect x="90" y="517" width="265" height="112" rx="6" fill="#19170e" stroke="#e8bd55"/>
   <text x="222" y="546" text-anchor="middle" class="box-title">WorldToken</text>
-  <text x="222" y="568" text-anchor="middle" class="box-copy">Fixed 1,000,000 supply</text>
+    <text x="222" y="568" text-anchor="middle" class="box-copy">Fixed 1,000,000,000 supply</text>
   <text x="222" y="586" text-anchor="middle" class="box-copy">No mint, freeze, or confiscation</text>
   <rect x="116" y="601" width="212" height="4" rx="2" fill="#e8bd55" opacity="0.75"/>
 

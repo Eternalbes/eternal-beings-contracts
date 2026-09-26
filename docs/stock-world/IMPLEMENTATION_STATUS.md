@@ -13,7 +13,7 @@ Implemented:
 - `StockWorldTypes`: canonical immutable launch configuration and protocol constants.
 - `QuoteAssetRegistry`: authority-controlled approval for assets available to future Worlds.
 - `StockWorldConfigValidator`: validation and deterministic hashing of launch configuration.
-- `WorldToken`: fixed supply of 1,000,000 units with standard ERC-20 transfer and allowance behavior.
+- `WorldToken`: PONS-compatible fixed supply of 1,000,000,000 units with standard ERC-20 transfer and allowance behavior.
 - `TokenRewardVault`: next-block stake activation and cumulative quote-asset reward accounting.
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
@@ -21,7 +21,9 @@ Implemented:
 - An immutable graduation-target ceiling that guarantees the curve target plus its maximum reward-liquidity contribution remains representable by the permanent v4 seed path.
 - `WorldNFT`: fixed historical supply, reward-aware transfers, on-chain metadata, and single-pair Fusion with permanent sacrifice burn.
 - `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, and expiring reservations.
-- `StockWorldCoreDeployer` and `StockWorldNftDeployer`: stateless bytecode shards that keep deployer runtimes below EIP-170 limits.
+- Immutable V1-compatible Mint difficulty selection: Easy (`999` per 237,600-block epoch), Hard (`666` per 475,200-block epoch), Hell (`333` per 950,400-block epoch), and contract-bounded Custom schedules. Stock World does not include Hunt settings; displayed wall-clock estimates are derived from live chain cadence.
+- `StockWorldCoreDeployer` and `StockWorldNftDeployer`: bytecode shards that keep deployer runtimes below EIP-170 limits. The NFT deployer is permanently bound to the shared `StockWorldRenderer`.
+- `StockWorldRenderer`: combines each World's immutable image/vector/palette/style seed with each NFT genome and Fusion state into fully on-chain SVG metadata.
 - `StockWorldLaunchDeployer`: creates every per-World module as one atomic launch operation.
 - `StockWorldFactory`: exact-fee launch, canonical World records, deterministic curve and mint parameters, module binding, and permissionless graduation coordination.
 - `StockWorldGraduationEscrow`: per-World reserve custody with no owner withdrawal, atomic coordinator release, and post-graduation reserve forwarding.
@@ -82,7 +84,7 @@ The production manifest remains intentionally blocked until the V4 dependency de
 npm run stock-world:production-readiness
 ```
 
-`config/stock-world.production.json` converts the block-based Mint schedule using a live block-cadence sample. This prevents local-test values such as `12 / 8 / 40` from reaching a fast production chain as unusably short Commit, Reveal, and Claim windows. The readiness check is read-only and never loads a private key or sends a transaction.
+Mint presets are protocol constants rather than deployment-manifest values, preventing a deployment operator from silently changing a named difficulty. Production readiness converts all three block-based presets using a live block-cadence sample and reports their observed durations. The readiness check is read-only and never loads a private key or sends a transaction.
 
 The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `17,944,015 gas`, quote-asset registration is `50,901 gas` per asset, and the first World launch is approximately `7,967,506 gas` paid by that World's creator. Production readiness combines the shared and registry estimates with live `maxFeePerGas` and a configurable safety multiplier instead of relying on a fixed ETH threshold.
 

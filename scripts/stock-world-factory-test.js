@@ -48,11 +48,16 @@ async function main() {
 
   const quote = await deploy("MockQuoteAsset", authority, ["Mock USD", "mUSD", 6]);
   const registry = await deploy("QuoteAssetRegistry", authority, [authorityAddress]);
-  await (await registry.registerQuoteAsset(await quote.getAddress())).wait();
+  const phantomQuote = 1_680_000n;
+  const graduationThreshold = 4_200_000n;
+  await (
+    await registry.registerQuoteAsset(await quote.getAddress(), phantomQuote, graduationThreshold)
+  ).wait();
   const validator = await deploy("StockWorldConfigValidator", authority, [await registry.getAddress()]);
   const coordinator = await deploy("MockGraduationCoordinator", authority);
   const coreDeployer = await deploy("StockWorldCoreDeployer", authority);
-  const nftDeployer = await deploy("StockWorldNftDeployer", authority);
+  const renderer = await deploy("StockWorldRenderer", authority);
+  const nftDeployer = await deploy("StockWorldNftDeployer", authority, [await renderer.getAddress()]);
   const launchDeployer = await deploy("StockWorldLaunchDeployer", authority, [
     await coreDeployer.getAddress(),
     await nftDeployer.getAddress(),
@@ -62,9 +67,6 @@ async function main() {
     await launchDeployer.getAddress(),
     await coordinator.getAddress(),
     feeRecipientAddress,
-    12,
-    8,
-    40,
   ]);
 
   const config = {
@@ -72,11 +74,23 @@ async function main() {
     symbol: "SYMBOL123456",
     quoteAsset: await quote.getAddress(),
     creator: creatorAddress,
-    graduationTarget: 900_000_000n,
+    graduationTarget: graduationThreshold,
     nftMaxSupply: 100,
     tokenHolderBps: 4_000,
     nftHolderBps: 4_000,
     creatorBps: 2_000,
+    mintConfig: {
+      difficulty: 0,
+      customSchedule: { commitBlocks: 0, revealBlocks: 0, claimBlocks: 0, epochCapacity: 0, walletLimit: 0 },
+    },
+    visualSeed: {
+      imageHash: ethers.id("factory-image"),
+      vectorHash: ethers.id("factory-vector"),
+      paletteHash: ethers.id("factory-palette"),
+      styleHash: ethers.id("factory-style"),
+      imageURI: `seed://${ethers.id("factory-image").slice(2)}`,
+      renderMode: 1,
+    },
   };
   const launchFee = ethers.parseEther("0.0003");
 
@@ -110,6 +124,10 @@ async function main() {
   assert.equal(world.phase, 1n, "new World starts on the bonding curve");
   assert.equal(await factory.worldIdOfToken(world.worldToken), 1n, "token reverse lookup uses one-based id");
   assert.equal(await factory.worldIdOfNft(world.worldNft), 1n, "NFT reverse lookup uses one-based id");
+  assert.equal(await nftDeployer.renderer(), await renderer.getAddress(), "NFT deployer uses shared renderer");
+  const launchedNft = new ethers.Contract(world.worldNft, artifact("WorldNFT").abi, provider);
+  const storedSeed = await launchedNft.visualSeed();
+  assert.equal(storedSeed.imageHash, config.visualSeed.imageHash, "World NFT freezes visual seed");
 
   for (const address of [
     world.worldToken,
@@ -134,12 +152,16 @@ async function main() {
     provider,
   );
 
-  const fixedSupply = ethers.parseEther("1000000");
+  const fixedSupply = ethers.parseEther("1000000000");
   assert.equal(await token.balanceOf(world.bondingCurve), fixedSupply, "entire token supply enters curve");
   assert.equal(await token.balanceOf(await factory.getAddress()), 0n, "factory keeps no World tokens");
   assert.equal(await curve.phase(), 1n, "curve was initialized atomically");
-  assert.equal(await curve.virtualQuoteReserve(), 100_000_000n, "virtual reserve derives from target");
-  assert.equal(await curve.reservedTokens(), ethers.parseEther("100000"), "ten percent reserved for graduation");
+  assert.equal(await curve.virtualQuoteReserve(), phantomQuote, "virtual reserve comes from protocol registry");
+  assert.equal(
+    await curve.reservedTokens(),
+    ethers.parseEther("285714285.714285714285714285"),
+    "PONS reserve ratio is held for graduation",
+  );
   assert.equal(await nft.name(), `${config.name} Beings`, "NFT name is deterministically derived");
   assert.equal(await nft.symbol(), `${config.symbol}-NFT`, "NFT symbol is deterministically derived");
   assert.equal(await nft.mintController(), world.fairMintController, "mint controller bound once");
@@ -149,21 +171,32 @@ async function main() {
     world.graduationEscrow,
     "liquidity reserve can only reach per-World escrow",
   );
-  assert.equal(await mint.epochCapacity(), 4n, "NFT supply is spread across thirty epochs");
-  assert.equal(await mint.walletLimit(), 2n, "fair mint wallet cap is fixed by factory");
-  assert.equal(await mint.commitBlocks(), 12n, "factory commit duration applied");
-  assert.equal(await mint.revealBlocks(), 8n, "factory reveal duration applied");
-  assert.equal(await mint.claimBlocks(), 40n, "factory claim duration applied");
+  assert.equal(await mint.epochCapacity(), 100n, "Easy capacity is capped by the World NFT supply");
+  assert.equal(await mint.walletLimit(), 1n, "preset fair mint allows one NFT per wallet");
+  assert.equal(await mint.commitBlocks(), 158_400n, "Easy commit duration applied");
+  assert.equal(await mint.revealBlocks(), 79_200n, "Easy reveal duration applied");
+  assert.equal(await mint.claimBlocks(), 237_600n, "Easy claim duration applied");
+
+  const zeroSchedule = config.mintConfig.customSchedule;
+  const hard = await factory.mintScheduleFor({ ...config, nftMaxSupply: 9_999, mintConfig: { difficulty: 1, customSchedule: zeroSchedule } });
+  assert.deepEqual([...hard], [316_800n, 158_400n, 475_200n, 666n, 1n], "Hard preset is immutable");
+  const hell = await factory.mintScheduleFor({ ...config, nftMaxSupply: 9_999, mintConfig: { difficulty: 2, customSchedule: zeroSchedule } });
+  assert.deepEqual([...hell], [633_600n, 316_800n, 950_400n, 333n, 1n], "Hell preset is immutable");
+  const customSchedule = { commitBlocks: 300, revealBlocks: 450, claimBlocks: 1_200, epochCapacity: 75, walletLimit: 3 };
+  const custom = await factory.mintScheduleFor({ ...config, mintConfig: { difficulty: 3, customSchedule } });
+  assert.deepEqual([...custom], [300n, 450n, 1_200n, 75n, 3n], "Custom schedule is preserved exactly");
 
   await rejects(() => factory.getWorld(1), "unknown World id rejected");
   await rejects(() => factory.prepareGraduation(0), "live curve cannot be swept early");
+  await rejects(() => factory.connect(trader).autoGraduate(), "only a canonical World curve can auto-graduate");
   await rejects(
     () => validator.validateConfig({ ...config, graduationTarget: ethers.MaxUint256 }),
-    "overflowing graduation economics rejected during validation",
+    "creator-supplied graduation override rejected during validation",
   );
 
   await (await quote.mint(traderAddress, 10_000_000_000n)).wait();
   await (await quote.connect(trader).approve(world.bondingCurve, 10_000_000_000n)).wait();
+  await (await coordinator.setPreflightAllowed(false)).wait();
   const finalPreview = await curve.previewBuy(10_000_000_000n);
   await (
     await curve
@@ -239,6 +272,31 @@ async function main() {
     "coordinator receives the price-preserving pool allocation",
   );
   await rejects(() => factory.completeGraduation(0), "graduation cannot execute twice");
+
+  const autoConfig = { ...config, name: "Automatic Graduation World", symbol: "AUTOGRAD" };
+  await (
+    await factory.connect(launcher).launchWorld(autoConfig, { value: launchFee, gasLimit: 70_000_000 })
+  ).wait();
+  const autoWorld = await factory.getWorld(1);
+  const autoCurve = new ethers.Contract(
+    autoWorld.bondingCurve,
+    artifact("StockWorldBondingCurve").abi,
+    provider,
+  );
+  await (await quote.mint(traderAddress, 10_000_000_000n)).wait();
+  await (await quote.connect(trader).approve(autoWorld.bondingCurve, 10_000_000_000n)).wait();
+  const autoPreview = await autoCurve.previewBuy(10_000_000_000n);
+  await (
+    await autoCurve.connect(trader).buy(
+      10_000_000_000n,
+      autoPreview.tokensOut,
+      traderAddress,
+      await deadline(provider),
+      { gasLimit: 20_000_000 },
+    )
+  ).wait();
+  assert.equal((await factory.getWorld(1)).phase, 3n, "terminal purchase automatically completes graduation");
+  assert.equal(await autoCurve.phase(), 3n, "automatically graduated curve permanently closes");
 
   const laterFee = 10_003n;
   await (await quote.mint(traderAddress, laterFee)).wait();
