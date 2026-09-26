@@ -5,15 +5,20 @@ import {FullMath} from "./libraries/FullMath.sol";
 import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
+interface IArbSysRewardClock {
+    function arbBlockNumber() external view returns (uint256);
+}
+
 /**
  * @title TokenRewardVault
  * @notice Stakes one World Token and distributes future quote-asset fees.
- * @dev A queued stake must be activated in a later block. Activation records
- *      the current reward index, so newly active stake cannot claim history.
+ * @dev A queued stake must be activated in a later protocol block. Activation
+ *      records the current reward index, so newly active stake cannot claim history.
  */
 contract TokenRewardVault {
     using SafeERC20 for IERC20Minimal;
 
+    address private constant ARB_SYS = address(100);
     uint256 public constant REWARD_SCALE = 1e27;
 
     struct Position {
@@ -81,14 +86,15 @@ contract TokenRewardVault {
         if (amount == 0) revert ZeroAmount();
 
         Position storage position = positions[msg.sender];
-        if (position.pendingStake != 0 && block.number >= position.activationBlock) {
+        uint256 currentBlock = _protocolBlockNumber();
+        if (position.pendingStake != 0 && currentBlock >= position.activationBlock) {
             revert PendingStakeMustBeActivated();
         }
 
         _settle(position);
         _pullExact(worldToken, msg.sender, amount);
 
-        if (position.pendingStake == 0) position.activationBlock = block.number + 1;
+        if (position.pendingStake == 0) position.activationBlock = currentBlock + 1;
         position.pendingStake += amount;
         totalPendingStake += amount;
 
@@ -99,7 +105,7 @@ contract TokenRewardVault {
         Position storage position = positions[msg.sender];
         amount = position.pendingStake;
         if (amount == 0) revert NothingPending();
-        if (block.number < position.activationBlock) revert ActivationNotReady();
+        if (_protocolBlockNumber() < position.activationBlock) revert ActivationNotReady();
 
         _settle(position);
 
@@ -188,6 +194,14 @@ contract TokenRewardVault {
         uint256 accumulated = FullMath.mulDiv(position.activeStake, rewardPerShare, REWARD_SCALE);
         if (accumulated > position.rewardDebt) position.claimable += accumulated - position.rewardDebt;
         position.rewardDebt = accumulated;
+    }
+
+    function _protocolBlockNumber() private view returns (uint256 currentBlock) {
+        (bool success, bytes memory result) = ARB_SYS.staticcall(
+            abi.encodeCall(IArbSysRewardClock.arbBlockNumber, ())
+        );
+        if (success && result.length >= 32) return abi.decode(result, (uint256));
+        return block.number;
     }
 
     function _pullExact(IERC20Minimal token, address from, uint256 amount) private {

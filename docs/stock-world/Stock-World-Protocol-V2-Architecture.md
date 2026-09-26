@@ -163,9 +163,9 @@ Custom mode lets the creator set Commit, Reveal, Claim, epoch capacity, and wall
 
 Each revealer receives a sequential index. Finalization derives a random starting index and selects one circular interval containing exactly the smaller of the epoch capacity, revealed count, and globally unreserved supply. Winner status is therefore independent of claim order and requires no loop over participants.
 
-Finalized winners reserve supply only for the immutable claim window. Anyone may expire an unclaimed epoch afterward, returning unused reservations to later epochs. The controller enforces the historical wallet allocation limit, rejects duplicate commitments, naturally expires unrevealed entries, and never restores mint capacity when an NFT is later burned in Fusion.
+Finalized winners reserve supply only until the epoch-fixed deadline at `entropyBlock + claimBlocks`. Delaying finalization cannot extend or reopen that window. Anyone may expire an unclaimed epoch afterward, returning unused reservations to later epochs. The controller enforces the historical wallet allocation limit, rejects duplicate commitments, naturally expires unrevealed entries, and never restores mint capacity when an NFT is later burned in Fusion.
 
-If no one finalizes within the 256-block blockhash window, the epoch remains live through a visibly flagged late-entropy fallback based on the reveal aggregate and later chain entropy. This fallback protects permanent liveness but provides weaker unpredictability than on-time finalization. Neither path should be described as cryptographic or gambling-grade randomness, and block producers retain limited influence over public chain entropy.
+If no one finalizes within the 256-block blockhash window, the epoch remains live through a visibly flagged deterministic fallback derived from the reveal aggregate and epoch domain. This fallback protects permanent liveness but is predictable once reveals close and provides weaker unpredictability than on-time finalization. Neither path should be described as cryptographic or gambling-grade randomness, and block producers retain limited influence over the on-time blockhash path.
 
 ### 6.5 WorldRewardVault
 

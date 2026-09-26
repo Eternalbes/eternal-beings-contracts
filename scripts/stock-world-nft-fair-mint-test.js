@@ -116,7 +116,7 @@ async function main() {
         99,
         12,
         8,
-        6,
+        400,
         2,
         2,
       ]),
@@ -127,7 +127,7 @@ async function main() {
     100,
     12,
     8,
-    6,
+    400,
     2,
     2,
   ]);
@@ -206,6 +206,11 @@ async function main() {
   assert.equal(epochState.revealedCount, 3n, "all reveals are counted");
   assert.equal(epochState.winnerCount, 2n, "exact epoch capacity is selected");
   assert.equal(epochState.usedLateEntropy, false, "future blockhash path is used on time");
+  assert.equal(
+    epochState.claimDeadline,
+    (await controller.entropyBlock(epoch)) + 400n,
+    "claim deadline is fixed by the epoch rather than finalization timing",
+  );
   assert.equal(await controller.totalReserved(), 2n, "winner supply is reserved until claim or expiry");
 
   const winners = [];
@@ -319,6 +324,37 @@ async function main() {
   assert.equal(await controller.isWinner(lateEpoch, sourceAddress), true, "single late revealer remains eligible");
   assert.equal(await worldNft.totalMinted(), 3n, "late entropy path can still mint normally");
   assert.equal(await controller.totalReserved(), 0n, "late claim consumes its reservation");
+
+  const staleEpoch = await nextCommitEpoch(controller, eip1193);
+  const staleSecret = ethers.id("stale-epoch-secret");
+  const staleCommitment = await controller.computeCommitment(sourceAddress, staleEpoch, staleSecret);
+  await (await controller.connect(source).commitMint(staleCommitment)).wait();
+  await mineTo(
+    eip1193,
+    Number(await controller.epochStart(staleEpoch)) + Number(await controller.commitBlocks()) + 1,
+  );
+  await (
+    await controller.connect(source).revealMint(staleEpoch, staleSecret, { gasLimit: 500_000 })
+  ).wait();
+  const staleEntropy = await controller.entropyBlock(staleEpoch);
+  await mineTo(eip1193, Number(staleEntropy) + Number(await controller.claimBlocks()) + 1);
+  await rejects(
+    () => controller.connect(source).claimMint(staleEpoch),
+    "late finalization cannot reopen an epoch after its fixed claim window",
+  );
+  await (await controller.finalizeEpoch(staleEpoch)).wait();
+  const staleState = await controller.epochState(staleEpoch);
+  assert.equal(
+    staleState.claimDeadline,
+    staleEntropy + 400n,
+    "delayed finalization preserves the original epoch deadline",
+  );
+  assert.equal(staleState.expired, true, "an epoch finalized after its deadline closes immediately");
+  assert.equal(await controller.totalReserved(), 0n, "stale finalization never reserves current supply");
+  await rejects(
+    () => controller.expireEpoch(staleEpoch),
+    "an automatically expired epoch cannot be expired twice",
+  );
 
   const secondSourceEpoch = await nextCommitEpoch(controller, eip1193);
   const secondSourceSecret = ethers.id("second-source-mint");

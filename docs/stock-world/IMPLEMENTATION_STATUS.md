@@ -14,13 +14,13 @@ Implemented:
 - `QuoteAssetRegistry`: authority-controlled approval for assets available to future Worlds.
 - `StockWorldConfigValidator`: validation and deterministic hashing of launch configuration.
 - `WorldToken`: PONS-compatible fixed supply of 1,000,000,000 units with standard ERC-20 transfer and allowance behavior.
-- `TokenRewardVault`: next-block stake activation and cumulative quote-asset reward accounting.
+- `TokenRewardVault`: next-L2-block stake activation through ArbSys with a standard-EVM fallback, plus cumulative quote-asset reward accounting.
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
 - Native ETH as the default quote asset (`address(0)`), with registry-approved ERC-20 Stock Tokens and other assets remaining selectable alternatives.
 - An immutable graduation-target ceiling that guarantees the curve target plus its maximum reward-liquidity contribution remains representable by the permanent v4 seed path.
 - `WorldNFT`: fixed historical supply, reward-aware transfers, on-chain metadata, and single-pair Fusion with permanent sacrifice burn.
-- `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, and expiring reservations.
+- `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, epoch-anchored claim deadlines, and expiring reservations. Delayed finalization cannot reopen a stale epoch or reserve future supply.
 - Immutable V1-compatible Mint difficulty selection: Easy (`999` per 237,600-block epoch), Hard (`666` per 475,200-block epoch), Hell (`333` per 950,400-block epoch), and contract-bounded Custom schedules. Stock World does not include Hunt settings; displayed wall-clock estimates are derived from live chain cadence.
 - `StockWorldCoreDeployer` and `StockWorldNftDeployer`: bytecode shards that keep deployer runtimes below EIP-170 limits. The NFT deployer is permanently bound to the shared `StockWorldRenderer`.
 - `StockWorldRenderer`: combines each World's immutable image/vector/palette/style seed with each NFT genome and Fusion state into fully on-chain SVG metadata.
@@ -40,7 +40,7 @@ Implemented:
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 - Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
-- Local Ganache tests for exact fair-mint winner counts, claim-order independence, reservation expiry, late entropy, transfer settlement, and Fusion burn invariants.
+- Local Ganache tests for exact fair-mint winner counts, claim-order independence, delayed-finalization expiry, reservation release, late entropy, transfer settlement, and Fusion burn invariants.
 - Local Ganache tests for atomic stack deployment, exact launch-fee forwarding, canonical address records, failed-launch rollback, preflight-before-sweep, retryable graduation, and escrow conservation.
 - Local Ganache tests for price-preserving graduation allocation, seed rejection boundaries, coordinator authentication, and irreversible locker custody.
 - Local Ganache v4-stack tests for constructor wiring, pool initialization, action encoding, approval revocation, Hook registration, LP custody, dust attribution, full rollback, and retry.

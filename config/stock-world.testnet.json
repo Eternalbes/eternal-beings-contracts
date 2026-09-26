@@ -1,7 +1,7 @@
 {
   "status": "approved-for-testnet-deployment",
   "network": "testnet",
-  "release": "creator-share-80-v3",
+  "release": "fair-mint-l2-clock-v4",
   "chainId": 46630,
   "chainName": "Robinhood Chain Testnet",
   "rpcUrl": "https://rpc.testnet.chain.robinhood.com",

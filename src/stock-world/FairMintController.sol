@@ -215,10 +215,20 @@ contract FairMintController {
         state.finalSeed = seed;
         state.winnerCount = uint32(winners);
         state.winnerStartIndex = state.revealedCount == 0 ? 0 : uint32(uint256(seed) % state.revealedCount);
-        state.claimDeadline = uint64(currentBlock + claimBlocks);
+        // The claim window belongs to the epoch, not to whoever happens to
+        // finalize it. Otherwise an old reveal can be kept alive indefinitely
+        // and finalized later to compete for supply from a future epoch.
+        state.claimDeadline = uint64(targetBlock + uint256(claimBlocks));
         state.finalized = true;
         state.usedLateEntropy = late;
-        totalReserved += uint32(winners);
+        // A stale epoch may still be finalized for deterministic historical
+        // state, but it must never reserve current supply after its own claim
+        // window has already closed.
+        if (currentBlock > state.claimDeadline) {
+            state.expired = true;
+        } else {
+            totalReserved += uint32(winners);
+        }
 
         emit EpochFinalized(
             epoch,
