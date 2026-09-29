@@ -139,8 +139,9 @@ contract StockWorldGraduationEscrow {
     }
 
     /**
-     * @notice Sends later rounding reserves from permanent-market fees to the
-     *         same immutable coordinator. Anyone may keep this maintenance path live.
+     * @notice Sends later quote-only reserves to the coordinator's permanent sink.
+     * @dev Anyone may keep this maintenance path live. Once forwarded, the reserve
+     *      remains attributed to this World but can never be withdrawn or traded.
      */
     function forwardPostGraduationReserve() external returns (uint256 amount) {
         if (!released) revert NotReleased();

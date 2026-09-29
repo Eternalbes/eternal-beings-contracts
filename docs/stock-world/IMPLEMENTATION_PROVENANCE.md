@@ -33,6 +33,10 @@ Tokens not needed at that price are sent to the ownerless permanent locker.
 Reward quote used by the initial seed is capped at the virtual quote reserve;
 larger accumulated reserves remain in the World reward vault for the public
 post-graduation forwarding path instead of making graduation impossible.
+After forwarding, quote-only reserves enter an explicitly permanent coordinator
+sink. They stay attributable to the originating World but expose no conversion,
+distribution, withdrawal, rescue, or upgrade path. This avoids both same-pool
+spot-price manipulation and windfalls based on when a later account arrives.
 
 The isolated Permit2 approval sequence and PositionManager action encoding in
 `StockWorldGraduationExecutor` follow the upstream V2 graduation executor

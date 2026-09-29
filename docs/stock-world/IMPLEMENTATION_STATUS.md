@@ -26,13 +26,13 @@ Implemented:
 - `StockWorldRenderer`: combines each World's immutable image/vector/palette/style seed with each NFT genome and Fusion state into fully on-chain SVG metadata.
 - `StockWorldLaunchDeployer`: creates every per-World module as one atomic launch operation.
 - `StockWorldFactory`: exact-fee launch, canonical World records, deterministic curve and mint parameters, module binding, and permissionless graduation coordination.
-- `StockWorldGraduationEscrow`: per-World reserve custody with no owner withdrawal, atomic coordinator release, and post-graduation reserve forwarding.
+- `StockWorldGraduationEscrow`: per-World reserve custody with no owner withdrawal, atomic coordinator release, and post-graduation quote-reserve forwarding into the permanent sink.
 - `IStockWorldGraduationCoordinator`: fixed integration boundary for preflight and permanent-market creation.
 - `StockWorldGraduationMath`: terminal-price-preserving pool allocation and deterministic V4 sqrt-price math.
 - Graduation reserve capping: the initial pool absorbs at most the virtual quote reserve, so fee churn cannot make a World permanently ungradable; excess quote remains forwardable after graduation.
 - `StockWorldGraduationGuard`: exact full-range tick/liquidity preflight and signed V4 amount bounds.
 - `StockWorldLiquidityLocker`: ownerless permanent custody for position NFTs and virtual-reserve token remainder.
-- `StockWorldGraduationCoordinator`: one-time canonical Factory binding, immutable v4 wiring, pool creation, World registration, reserve attribution, and permanent custody finalization.
+- `StockWorldGraduationCoordinator`: one-time canonical Factory binding, immutable v4 wiring, pool creation, World registration, permanent quote-reserve attribution, and permanent custody finalization. The public lock-policy constant and absence of withdrawal, swap, claim, rescue, or upgrade entry points make the terminal reserve state explicit.
 - `StockWorldGraduationExecutor`: exact per-graduation asset pulls, Permit2 action encoding, expiring approvals, explicit revocation, and residual return.
 - `StockWorldHookDeployer`: ownerless CREATE2 deployment and address prediction for the permission-encoded Hook, with no withdrawal or mutation path.
 - `StockWorldHook`: CREATE2 permission-bit enforcement, one-time Coordinator binding, canonical pool registration, pre-initialization protection, quote-only swap fees, pool-isolated accounting, and permissionless reward-vault sweeps.
@@ -51,7 +51,6 @@ Implemented:
 
 Not implemented in this milestone:
 
-- Manipulation-resistant use of attributed post-graduation quote reserves currently conserved by the coordinator. A quote-only reserve cannot safely be swapped and added to the same pool from a caller-selected or same-block spot price.
 - Robinhood Chain testnet execution against a source-matched V4 stack. The observed mainnet candidates are not available at the same addresses on testnet.
 - An explicit production governance decision on using the source-matched third-party v4 deployment; attestation does not make it an official Uniswap deployment.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.

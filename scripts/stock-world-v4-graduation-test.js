@@ -128,6 +128,11 @@ async function main() {
     0,
     60,
   ]);
+  assert.equal(
+    await coordinator.POST_GRADUATION_QUOTE_PERMANENTLY_LOCKED(),
+    true,
+    "post-graduation quote policy is explicitly permanent",
+  );
   const factory = await deploy("MockV4CanonicalFactory", authority, [await coordinator.getAddress()]);
 
   await rejects(
@@ -414,7 +419,18 @@ async function main() {
       .filter((item) => item.type === "function")
       .map((item) => item.name),
   );
-  for (const forbidden of ["owner", "withdraw", "rescue", "upgradeTo", "setPoolManager", "setExecutor"]) {
+  for (const forbidden of [
+    "owner",
+    "withdraw",
+    "withdrawPendingQuote",
+    "claimPendingQuote",
+    "sweepPendingQuote",
+    "execute",
+    "rescue",
+    "upgradeTo",
+    "setPoolManager",
+    "setExecutor",
+  ]) {
     assert.equal(coordinatorFunctions.has(forbidden), false, `coordinator must not expose ${forbidden}()`);
     assert.equal(executorFunctions.has(forbidden), false, `executor must not expose ${forbidden}()`);
   }

@@ -223,7 +223,7 @@ If trading begins before any World NFT exists, the NFT fee allocation enters a v
 
 Before the first mint, anyone may permanently commit the reserve to the World's locked-liquidity allocation. If the first NFT is minted while the reserve is nonzero, the mint transaction commits it automatically. The first NFT participates only in fees deposited after its reward-index checkpoint.
 
-After graduation, committed quote reserves remain attributed to their originating World in the immutable graduation coordinator. They must not be converted against the same pool using a caller-selected minimum output or a same-block spot price: that would make a permissionless maintenance call sandwichable. A future liquidity-addition path must provide either independently sourced paired World Tokens or a manipulation-resistant price mechanism. Until then, the reserve remains conserved and no account can withdraw it.
+After graduation, committed quote reserves remain attributed to their originating World in the immutable graduation coordinator as a permanent reserve sink. They are never converted, distributed, claimable, or withdrawable. Converting them against the same pool using a caller-selected minimum output or a same-block spot price would make a permissionless maintenance call sandwichable; assigning them to later Token or NFT holders would instead create a timing windfall. The on-chain constant `POST_GRADUATION_QUOTE_PERMANENTLY_LOCKED` exposes this terminal policy to interfaces and indexers. The historical `pendingQuoteByEscrow` ABI name is retained for compatibility, but it records locked attribution rather than a future claim.
 
 ## 11. Fee Flow
 
@@ -340,12 +340,12 @@ The system is separated into multiple contracts to preserve ownership boundaries
 5. Integrate pre-graduation fee deposits.
 6. Integrate the v4 hook.
 7. Integrate the guard, executor, and permanent locker.
-8. Specify and implement manipulation-resistant use of post-graduation quote reserves.
+8. Permanently lock quote-only post-graduation reserves with attributable accounting and no conversion or withdrawal path.
 9. Add the platform revenue vault without enabling an undefined buyback policy.
 10. Run unit, fuzz, invariant, adversarial-token, reentrancy, rounding, and lifecycle tests.
-10. Deploy a fast-parameter test instance on Robinhood Chain.
-11. Exercise launch, trading, mint, transfer, Fusion, claims, graduation, v4 trading, and failed-graduation recovery.
-12. Freeze production parameters and deploy a new immutable production factory.
+11. Deploy a fast-parameter test instance on Robinhood Chain.
+12. Exercise launch, trading, mint, transfer, Fusion, claims, graduation, v4 trading, and failed-graduation recovery.
+13. Freeze production parameters and deploy a new immutable production factory.
 
 ## 18. Release Boundary
 

@@ -27,6 +27,13 @@ import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
     using SafeERC20 for IERC20Minimal;
 
+    /// @notice Quote-only reserves received after graduation are an irreversible sink.
+    /// @dev There is deliberately no withdrawal, swap, distribution, or upgrade path.
+    ///      Using the graduated pool's spot price would make autonomous conversion
+    ///      sandwichable, while assigning the reserve to later holders would create
+    ///      a claim-timing windfall.
+    bool public constant POST_GRADUATION_QUOTE_PERMANENTLY_LOCKED = true;
+
     struct MarketRecord {
         bytes32 marketId;
         address factory;
@@ -52,6 +59,8 @@ contract StockWorldGraduationCoordinator is IStockWorldGraduationCoordinator {
     address public factory;
     mapping(bytes32 worldKey => MarketRecord market) private markets;
     mapping(address escrow => bytes32 worldKey) public worldKeyOfEscrow;
+    // The legacy `pending` ABI names are retained for indexer compatibility. These
+    // balances are final locked-reserve accounting, not a future claim liability.
     mapping(address escrow => uint256 amount) public pendingQuoteByEscrow;
     mapping(address quoteAsset => uint256 amount) public totalPendingQuoteByAsset;
 
