@@ -92,7 +92,7 @@ async function main() {
     walletLimit: preset.walletLimit,
   }]));
   warnings.push(
-    `A 256-block blockhash capture window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds; permissionless finalization must be monitored.`,
+    `The on-time 256-block entropy-hash window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds; if nobody finalizes inside it, the deterministic late fallback preserves liveness with weaker unpredictability.`,
   );
 
   const market = config.permanentMarket || {};

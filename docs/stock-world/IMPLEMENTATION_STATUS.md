@@ -1,6 +1,6 @@
 # Stock World Protocol V2 Implementation Status
 
-Status: Autonomous v4 hook milestone, not a production deployment
+Status: Production manifest passes live readiness; no production deployment has been sent
 
 Target network: Robinhood Chain
 
@@ -52,10 +52,9 @@ Implemented:
 Not implemented in this milestone:
 
 - Robinhood Chain testnet execution against a source-matched V4 stack. The observed mainnet candidates are not available at the same addresses on testnet.
-- An explicit production governance decision on using the source-matched third-party v4 deployment; attestation does not make it an official Uniswap deployment.
 - A production platform revenue vault and any fully specified ENDSZ buyback policy.
 
-The factory is complete enough for local lifecycle testing, but its production constructor must never receive the included mock coordinator. The missing components are required before any World can be launched on Robinhood Chain. None of the current contracts should be represented as a complete production deployment.
+The approved production manifest uses the source-matched third-party v4 deployment recorded in `config/robinhood-chain.v4-observed.json`; attestation does not make it an official Uniswap deployment. The factory and production coordinator pass local lifecycle, deployment-rehearsal, live dependency-attestation, quote-asset, balance, and dynamic gas-budget checks. Testnet Worlds use an explicitly mocked v4 stack and must not be represented as production markets. Mainnet deployment still requires a separate explicit transaction approval.
 
 ## Network Boundary
 
@@ -64,7 +63,7 @@ The factory is complete enough for local lifecycle testing, but its production c
 - Native gas currency: `ETH` on both environments.
 - Canonical network values are stored in `config/robinhood-chain.json`.
 - Ethereum mainnet and Sepolia contract addresses must never be reused as Robinhood Chain addresses.
-- External protocol addresses remain unset until their Robinhood Chain deployments are independently verified.
+- Generic network configuration leaves external protocol addresses unset. The approved production manifest pins independently verified addresses and must pass live attestation immediately before deployment.
 - On-chain candidates, bytecode hashes, and pinned Sourcify source records are stored separately in `config/robinhood-chain.v4-observed.json`; they are not production configuration.
 - `stock-world:attest-v4` verifies the live code size, code hash, chain ID, PositionManager wiring, contract identity, compiler version, and Sourcify runtime match. A successful result is evidence of consistency, not official Uniswap deployment approval.
 
@@ -77,7 +76,7 @@ npm run stock-world:deployment-rehearsal
 npm run stock-world:production-deploy-test
 ```
 
-The production manifest remains intentionally blocked until the V4 dependency decision, immutable/multisig quote-asset authority, platform fee recipient, first quote assets, and deployment funding are finalized:
+The production manifest contains the approved V4 dependency decision, authority, platform recipient, initial quote assets, and gas budget. Re-run the read-only live check immediately before any explicit deployment approval:
 
 ```bash
 npm run stock-world:production-readiness
@@ -85,7 +84,7 @@ npm run stock-world:production-readiness
 
 Mint presets are protocol constants rather than deployment-manifest values, preventing a deployment operator from silently changing a named difficulty. Production readiness converts all three block-based presets using a live block-cadence sample and reports their observed durations. The readiness check is read-only and never loads a private key or sends a transaction.
 
-The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `17,944,015 gas`, quote-asset registration is `50,901 gas` per asset, and the first World launch is approximately `7,967,506 gas` paid by that World's creator. Production readiness combines the shared and registry estimates with live `maxFeePerGas` and a configurable safety multiplier instead of relying on a fixed ETH threshold.
+The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `20,486,092 gas`, quote-asset registration is `96,639 gas` per asset, and the first World launch is approximately `8,192,393 gas` paid by that World's creator. Production readiness uses a rounded `21,000,000 gas` shared budget, a `110,000 gas` per-asset budget, live `maxFeePerGas`, and a 1.5x safety multiplier instead of relying on a fixed ETH threshold.
 
 The draft production manifest starts with ten quote assets from Robinhood's official token-contract page and `/rhj/assets` registry: USDG, SPY, QQQ, MSFT, META, AMZN, GOOGL, NVDA, AAPL, and TSLA. Readiness still checks live bytecode and ERC-20 metadata for every configured address. Inclusion means only that a World may use the token as its curve quote asset; it is not an endorsement, price guarantee, or representation of legal ownership in an underlying company.
 
