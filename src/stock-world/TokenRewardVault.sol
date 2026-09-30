@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {FullMath} from "./libraries/FullMath.sol";
+import {StockWorldRewardMath} from "./libraries/StockWorldRewardMath.sol";
 import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
@@ -25,7 +26,7 @@ contract TokenRewardVault {
         uint256 activeStake;
         uint256 pendingStake;
         uint256 activationBlock;
-        uint256 rewardDebt;
+        uint256 rewardDebt; // Last settled reward index; ABI name retained.
         uint256 claimable;
     }
 
@@ -39,6 +40,7 @@ contract TokenRewardVault {
     uint256 public totalRewardsClaimed;
 
     mapping(address account => Position position) private positions;
+    mapping(address account => uint256 fraction) public rewardRemainder;
 
     uint256 private reentrancyState = 1;
 
@@ -115,7 +117,7 @@ contract TokenRewardVault {
 
         position.activeStake += amount;
         totalActiveStake += amount;
-        position.rewardDebt = FullMath.mulDiv(position.activeStake, rewardPerShare, REWARD_SCALE);
+        position.rewardDebt = rewardPerShare;
 
         emit StakeActivated(msg.sender, amount, totalActiveStake);
     }
@@ -145,7 +147,7 @@ contract TokenRewardVault {
         _settle(position);
         position.activeStake -= amount;
         totalActiveStake -= amount;
-        position.rewardDebt = FullMath.mulDiv(position.activeStake, rewardPerShare, REWARD_SCALE);
+        position.rewardDebt = rewardPerShare;
 
         worldToken.safeTransfer(to, amount);
         emit StakeWithdrawn(msg.sender, to, amount);
@@ -186,14 +188,19 @@ contract TokenRewardVault {
 
     function pendingRewards(address account) external view returns (uint256) {
         Position memory position = positions[account];
-        uint256 accumulated = FullMath.mulDiv(position.activeStake, rewardPerShare, REWARD_SCALE);
-        return position.claimable + accumulated - position.rewardDebt;
+        (uint256 earned,) = StockWorldRewardMath.accrue(
+            position.activeStake, rewardPerShare - position.rewardDebt, rewardRemainder[account]
+        );
+        return position.claimable + earned;
     }
 
     function _settle(Position storage position) private {
-        uint256 accumulated = FullMath.mulDiv(position.activeStake, rewardPerShare, REWARD_SCALE);
-        if (accumulated > position.rewardDebt) position.claimable += accumulated - position.rewardDebt;
-        position.rewardDebt = accumulated;
+        (uint256 earned, uint256 remainder) = StockWorldRewardMath.accrue(
+            position.activeStake, rewardPerShare - position.rewardDebt, rewardRemainder[msg.sender]
+        );
+        position.claimable += earned;
+        rewardRemainder[msg.sender] = remainder;
+        position.rewardDebt = rewardPerShare;
     }
 
     function _protocolBlockNumber() private view returns (uint256 currentBlock) {

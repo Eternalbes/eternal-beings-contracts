@@ -2,6 +2,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const ganache = require("ganache");
 const { ethers } = require("ethers");
+const assert = require("assert/strict");
 
 const rpcPort = 18546;
 const rpcUrl = `http://127.0.0.1:${rpcPort}`;
@@ -35,6 +36,7 @@ async function main() {
   const wallet = ethers.Wallet.createRandom();
   let server;
   let serverListening = false;
+  let provider;
 
   try {
     server = ganache.server({
@@ -89,7 +91,23 @@ async function main() {
       "--confirm", "DEPLOY-STOCK-WORLD-4663",
     ];
     await run(process.execPath, args);
+    provider = new ethers.JsonRpcProvider(rpcUrl);
+    const original = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+    const nonceBefore = await provider.getTransactionCount(wallet.address);
+    fs.writeFileSync(outputPath, JSON.stringify({ ...original, buildId: ethers.ZeroHash }));
+    await assert.rejects(() => run(process.execPath, args), /deployment build mismatch/);
+    assert.equal(await provider.getTransactionCount(wallet.address), nonceBefore, "mismatched build sends no transactions");
+    // Simulate a mined Factory whose receipt was not checkpointed before exit.
+    const factoryHash = original.contracts.factory.transactionHash;
+    original.contracts.factory.status = "pending";
+    delete original.contracts.factory.blockNumber;
+    delete original.contracts.factory.gasUsed;
+    delete original.contracts.factory.runtimeCodeHash;
+    delete original.factoryDeploymentBlock;
+    original.transactions = original.transactions.filter((entry) => entry.hash !== factoryHash);
+    fs.writeFileSync(outputPath, JSON.stringify(original));
     await run(process.execPath, args);
+    assert.equal(await provider.getTransactionCount(wallet.address), nonceBefore, "resume repairs reports without duplicate deployments");
 
     const report = JSON.parse(fs.readFileSync(outputPath, "utf8"));
     if (report.status !== "deployed") throw new Error(`unexpected status: ${report.status}`);
@@ -104,7 +122,6 @@ async function main() {
     if (siteConfig.quoteAssets.length !== 1 || siteConfig.quoteAssets[0].address !== production.quoteAssets[0].address) {
       throw new Error("site config quote assets mismatch");
     }
-    const provider = new ethers.JsonRpcProvider(rpcUrl);
     if (await provider.getCode(report.contracts.factory.address) === "0x") {
       throw new Error("factory has no code after fork deployment");
     }
@@ -113,8 +130,11 @@ async function main() {
       factory: report.contracts.factory.address,
       transactionCount: report.transactions.length,
       resumeRunPassed: true,
+      buildMismatchRejected: true,
+      minedPendingReceiptRecovered: true,
     }, null, 2));
   } finally {
+    if (provider) provider.destroy();
     try {
       if (server && serverListening) await server.close();
     } catch (_) {

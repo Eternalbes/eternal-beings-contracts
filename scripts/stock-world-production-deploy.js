@@ -2,12 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { ethers } = require("ethers");
+const { loadBuild, assertBuild, verifyDeployment } = require("./deployment-build");
 
 const DEFAULT_CONFIG = "config/stock-world.production.json";
 const DEFAULT_SECRET = "reports/secrets/deployer.secrets.json";
 const DEFAULT_OUTPUT = "reports/deployment-stock-world-mainnet.json";
 const REQUIRED_HOOK_FLAGS = 0x20ccn;
-const DEPLOYMENT_SCHEMA_VERSION = 4;
+const DEPLOYMENT_SCHEMA_VERSION = 5;
 
 function parseArgs(argv) {
   const args = {
@@ -34,10 +35,6 @@ function parseArgs(argv) {
 function readJson(path) {
   if (!fs.existsSync(path)) throw new Error(`missing file: ${path}`);
   return JSON.parse(fs.readFileSync(path, "utf8"));
-}
-
-function artifact(name) {
-  return readJson(`artifacts/${name}.json`);
 }
 
 function isIgnored(path) {
@@ -151,7 +148,7 @@ async function main() {
     throw new Error(`private key resolves to ${rawWallet.address}, expected ${config.deployer}`);
   }
 
-  for (const name of [
+  const build = loadBuild([
     "StockWorldHookDeployer",
     "StockWorldHook",
     "StockWorldGraduationGuard",
@@ -164,9 +161,9 @@ async function main() {
     "StockWorldNftDeployer",
     "StockWorldLaunchDeployer",
     "StockWorldFactory",
-  ]) artifact(name);
+  ]);
 
-  const provider = new ethers.JsonRpcProvider(config.rpcUrl, undefined, { staticNetwork: false });
+  const provider = new ethers.JsonRpcProvider(config.rpcUrl, undefined, { staticNetwork: false, cacheTimeout: -1 });
   const network = await provider.getNetwork();
   if (network.chainId !== BigInt(config.chainId)) {
     throw new Error(`wrong chain: expected ${config.chainId}, received ${network.chainId}`);
@@ -177,8 +174,9 @@ async function main() {
   if (fs.existsSync(args.outputPath)) {
     report = readJson(args.outputPath);
     if (report.schemaVersion !== DEPLOYMENT_SCHEMA_VERSION) {
-      throw new Error(`deployment report schema ${report.schemaVersion || 1} cannot resume Mint-difficulty schema ${DEPLOYMENT_SCHEMA_VERSION}; use a new output path`);
+      throw new Error(`deployment report schema ${report.schemaVersion || 1} cannot resume build-bound schema ${DEPLOYMENT_SCHEMA_VERSION}; use a new output path`);
     }
+    assertBuild(report, build.buildId);
     if (report.configHash !== configHash) {
       throw new Error("existing deployment report belongs to a different production manifest");
     }
@@ -187,6 +185,7 @@ async function main() {
     }
   } else {
     report = initialReport(args.configPath, configHash, config, readiness);
+    report.buildId = build.buildId;
   }
 
   function checkpoint() {
@@ -200,29 +199,31 @@ async function main() {
   }
 
   async function deploy(key, name, constructorArgs = []) {
+    const item = build.artifacts[name];
+    const factory = new ethers.ContractFactory(item.abi, item.bytecode, signer);
+    const initCode = (await factory.getDeployTransaction(...constructorArgs)).data;
     const saved = report.contracts[key];
     if (saved?.address) {
-      if (!(await codeExists(saved.address))) {
-        if (!saved.transactionHash) throw new Error(`${key} checkpoint has no code or transaction hash`);
-        const receipt = await provider.waitForTransaction(saved.transactionHash, 1, 120_000);
-        if (!receipt || receipt.status !== 1) throw new Error(`${key} deployment transaction failed`);
-        if (!(await codeExists(saved.address))) throw new Error(`${key} has no code after receipt`);
-        saved.status = "mined";
-        saved.blockNumber = receipt.blockNumber;
-        saved.gasUsed = receipt.gasUsed.toString();
-        checkpoint();
+      const { receipt, runtimeCodeHash } = await verifyDeployment(provider, saved, initCode, rawWallet.address);
+      saved.status = "mined";
+      saved.blockNumber = receipt.blockNumber;
+      saved.gasUsed = receipt.gasUsed.toString();
+      saved.runtimeCodeHash = runtimeCodeHash;
+      if (!report.transactions.some((entry) => entry.hash === receipt.hash)) {
+        report.transactions.push({ label: `deploy:${key}`, hash: receipt.hash, status: "mined",
+          blockNumber: receipt.blockNumber, gasUsed: receipt.gasUsed.toString() });
       }
-      return new ethers.Contract(saved.address, artifact(name).abi, signer);
+      checkpoint();
+      return new ethers.Contract(saved.address, item.abi, signer);
     }
 
-    const item = artifact(name);
-    const factory = new ethers.ContractFactory(item.abi, item.bytecode, signer);
     const contract = await factory.deploy(...constructorArgs);
     const transaction = contract.deploymentTransaction();
     report.contracts[key] = {
       contractName: name,
       address: await contract.getAddress(),
       transactionHash: transaction.hash,
+      initCodeHash: ethers.keccak256(initCode),
       status: "pending",
     };
     checkpoint();
@@ -233,6 +234,7 @@ async function main() {
       status: "mined",
       blockNumber: receipt.blockNumber,
       gasUsed: receipt.gasUsed.toString(),
+      runtimeCodeHash: ethers.keccak256(await provider.getCode(await contract.getAddress())),
     };
     report.transactions.push({
       label: `deploy:${key}`,
@@ -270,7 +272,7 @@ async function main() {
 
   const deployerAddress = ethers.getAddress(config.deployer);
   const hookDeployer = await deploy("hookDeployer", "StockWorldHookDeployer");
-  const hookArtifact = artifact("StockWorldHook");
+  const hookArtifact = build.artifacts.StockWorldHook;
   const hookArgs = ethers.AbiCoder.defaultAbiCoder().encode(
     ["address", "address"],
     [config.v4.poolManager, deployerAddress],
@@ -285,12 +287,17 @@ async function main() {
       hookDeployer.deploy(minedHook.salt, hookInitCode, { gasLimit: 12_000_000 })
     );
   }
+  const hookRuntimeCodeHash = ethers.keccak256(await provider.getCode(minedHook.predicted));
+  if (report.contracts.hook?.runtimeCodeHash && report.contracts.hook.runtimeCodeHash !== hookRuntimeCodeHash) {
+    throw new Error("checkpointed Hook runtime code mismatch");
+  }
   report.contracts.hook = {
     contractName: "StockWorldHook",
     address: minedHook.predicted,
     status: "mined",
     salt: minedHook.salt,
     initCodeHash: minedHook.initCodeHash,
+    runtimeCodeHash: hookRuntimeCodeHash,
   };
   checkpoint();
   const hook = new ethers.Contract(minedHook.predicted, hookArtifact.abi, signer);

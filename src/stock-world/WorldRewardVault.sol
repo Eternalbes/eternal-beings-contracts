@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {FullMath} from "./libraries/FullMath.sol";
+import {StockWorldRewardMath} from "./libraries/StockWorldRewardMath.sol";
 import {QuoteAssetLib} from "./libraries/QuoteAssetLib.sol";
 import {IERC20Minimal, SafeERC20} from "./libraries/SafeERC20.sol";
 
@@ -25,7 +26,7 @@ contract WorldRewardVault {
 
     struct NftPosition {
         uint256 weight;
-        uint256 rewardDebt;
+        uint256 rewardDebt; // Last settled reward index; ABI name retained.
     }
 
     address public immutable quoteAsset;
@@ -52,6 +53,7 @@ contract WorldRewardVault {
 
     mapping(uint256 tokenId => NftPosition position) private nftPositions;
     mapping(address account => uint256 amount) public nftClaimable;
+    mapping(address account => uint256 fraction) public rewardRemainder;
 
     uint256 private reentrancyState = 1;
 
@@ -180,10 +182,11 @@ contract WorldRewardVault {
 
         NftPosition storage position = nftPositions[tokenId];
         uint256 previousWeight = position.weight;
-        uint256 accumulated = FullMath.mulDiv(previousWeight, rewardPerNftWeight, REWARD_SCALE);
-        if (accumulated > position.rewardDebt) {
-            nftClaimable[beneficiary] += accumulated - position.rewardDebt;
-        }
+        (uint256 earned, uint256 remainder) = StockWorldRewardMath.accrue(
+            previousWeight, rewardPerNftWeight - position.rewardDebt, rewardRemainder[beneficiary]
+        );
+        nftClaimable[beneficiary] += earned;
+        rewardRemainder[beneficiary] = remainder;
 
         if (previousWeight == 0 && totalNftWeight == 0 && newWeight != 0 && unallocatedNftReserve != 0) {
             uint256 reserve = unallocatedNftReserve;
@@ -194,7 +197,7 @@ contract WorldRewardVault {
 
         totalNftWeight = totalNftWeight - previousWeight + newWeight;
         position.weight = newWeight;
-        position.rewardDebt = FullMath.mulDiv(newWeight, rewardPerNftWeight, REWARD_SCALE);
+        position.rewardDebt = rewardPerNftWeight;
 
         emit NftWeightCheckpointed(tokenId, beneficiary, previousWeight, newWeight);
     }
@@ -261,8 +264,7 @@ contract WorldRewardVault {
 
     function pendingNftReward(uint256 tokenId) external view returns (uint256) {
         NftPosition memory position = nftPositions[tokenId];
-        uint256 accumulated = FullMath.mulDiv(position.weight, rewardPerNftWeight, REWARD_SCALE);
-        return accumulated - position.rewardDebt;
+        return FullMath.mulDiv(position.weight, rewardPerNftWeight - position.rewardDebt, REWARD_SCALE);
     }
 
 }

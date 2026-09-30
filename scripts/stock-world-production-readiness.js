@@ -92,7 +92,7 @@ async function main() {
     walletLimit: preset.walletLimit,
   }]));
   warnings.push(
-    `The on-time 256-block entropy-hash window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds; if nobody finalizes inside it, the deterministic late fallback preserves liveness with weaker unpredictability.`,
+    `The target block's 256-block entropy-hash window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds. If nobody finalizes inside it, epochs requiring a lottery expire without minting; late claims remain possible only when all revealers fit within available supply.`,
   );
 
   const market = config.permanentMarket || {};

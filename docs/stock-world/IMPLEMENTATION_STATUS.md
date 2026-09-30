@@ -1,6 +1,6 @@
 # Stock World Protocol V2 Implementation Status
 
-Status: Production manifest passes live readiness; no production deployment has been sent
+Status: Security fixes require a new deployment; existing immutable deployments are not updated by source changes
 
 Target network: Robinhood Chain
 
@@ -14,13 +14,13 @@ Implemented:
 - `QuoteAssetRegistry`: authority-controlled approval for assets available to future Worlds.
 - `StockWorldConfigValidator`: validation and deterministic hashing of launch configuration.
 - `WorldToken`: PONS-compatible fixed supply of 1,000,000,000 units with standard ERC-20 transfer and allowance behavior.
-- `TokenRewardVault`: next-L2-block stake activation through ArbSys with a standard-EVM fallback, plus cumulative quote-asset reward accounting.
+- `TokenRewardVault`: next-L2-block stake activation through ArbSys with a standard-EVM fallback, plus index-delta reward accounting and beneficiary-owned fractional remainders.
 - `WorldRewardVault`: immutable Token/NFT/Creator fee splitting, NFT weight accounting, and zero-weight reserves.
 - `StockWorldBondingCurve`: tracked-reserve constant-product trading, quote-leg fees, partial final fills, and one-way graduation sweep.
 - Native ETH as the default quote asset (`address(0)`), with registry-approved ERC-20 Stock Tokens and other assets remaining selectable alternatives.
 - An immutable graduation-target ceiling that guarantees the curve target plus its maximum reward-liquidity contribution remains representable by the permanent v4 seed path.
 - `WorldNFT`: fixed historical supply, reward-aware transfers, on-chain metadata, and single-pair Fusion with permanent sacrifice burn.
-- `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, epoch-anchored claim deadlines, and expiring reservations. Delayed finalization cannot reopen a stale epoch or reserve future supply.
+- `FairMintController`: repeating gas-only commit/reveal epochs, exact winner intervals, wallet limits, epoch-anchored claim deadlines, and expiring reservations. Delayed finalization cannot reopen a stale epoch or reserve future supply. A missed entropy hash expires any epoch requiring winner selection; predictable late seeds are restricted to all-revealer allocations.
 - Immutable V1-compatible Mint difficulty selection: Easy (`999` per 237,600-block epoch), Hard (`666` per 475,200-block epoch), Hell (`333` per 950,400-block epoch), and contract-bounded Custom schedules. Stock World does not include Hunt settings; displayed wall-clock estimates are derived from live chain cadence.
 - `StockWorldCoreDeployer` and `StockWorldNftDeployer`: bytecode shards that keep deployer runtimes below EIP-170 limits. The NFT deployer is permanently bound to the shared `StockWorldRenderer`.
 - `StockWorldRenderer`: combines each World's immutable image/vector/palette/style seed with each NFT genome and Fusion state into fully on-chain SVG metadata.
@@ -40,7 +40,7 @@ Implemented:
 - Local Ganache tests for registry permissions, configuration boundaries, fixed supply, transfers, and allowances.
 - Local Ganache tests proving that pending stake and newly activated stake cannot claim historical rewards.
 - Local Ganache tests for fee conservation, NFT reward checkpoints, tracked curve reserves, partial fills, slippage, and one-way graduation.
-- Local Ganache tests for exact fair-mint winner counts, claim-order independence, delayed-finalization expiry, reservation release, late entropy, transfer settlement, and Fusion burn invariants.
+- Local Ganache tests for exact fair-mint winner counts, claim-order independence, delayed-finalization expiry, reservation release, late all-revealer allocation, transfer settlement, and Fusion burn invariants.
 - Local Ganache tests for atomic stack deployment, exact launch-fee forwarding, canonical address records, failed-launch rollback, preflight-before-sweep, retryable graduation, and escrow conservation.
 - Local Ganache tests for price-preserving graduation allocation, seed rejection boundaries, coordinator authentication, and irreversible locker custody.
 - Local Ganache v4-stack tests for constructor wiring, pool initialization, action encoding, approval revocation, Hook registration, LP custody, dust attribution, full rollback, and retry.
@@ -48,6 +48,8 @@ Implemented:
 - Offline v4 attestation guard tests for missing code, code-size drift, bytecode-hash drift, malformed ABI responses, and invalid addresses.
 - A local deployment rehearsal that mines the Hook permission address, deploys every shared production contract in dependency order, completes both one-time bindings, registers a quote asset, and launches the first complete World.
 - A Robinhood mainnet-fork production-deployer test that uses live V4 and quote-asset code, completes the checkpointed deployment, verifies every immutable dependency, and reruns from the same report without duplicate deployment.
+- Security regressions for selective-reveal late-seed grinding, reward rounding insolvency, and beneficiary fractions across stake changes and NFT transfers.
+- Build-bound production and testnet deployment reports, including constructor/creation-transaction checks, runtime hashes, and recovery of mined transactions that were still checkpointed as pending.
 
 Not implemented in this milestone:
 
@@ -84,11 +86,13 @@ npm run stock-world:production-readiness
 
 Mint presets are protocol constants rather than deployment-manifest values, preventing a deployment operator from silently changing a named difficulty. Production readiness converts all three block-based presets using a live block-cadence sample and reports their observed durations. The readiness check is read-only and never loads a private key or sends a transaction.
 
-The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `20,486,092 gas`, quote-asset registration is `96,639 gas` per asset, and the first World launch is approximately `8,192,393 gas` paid by that World's creator. Production readiness uses a rounded `21,000,000 gas` shared budget, a `110,000 gas` per-asset budget, live `maxFeePerGas`, and a 1.5x safety multiplier instead of relying on a fixed ETH threshold.
+The deployment rehearsal also reports gas per transaction. The current measured shared deployment is `20,554,718 gas`, quote-asset registration is `96,639 gas` per asset, and the first World launch is approximately `8,255,932 gas` paid by that World's creator. Production readiness uses a rounded `21,000,000 gas` shared budget, a `110,000 gas` per-asset budget, live `maxFeePerGas`, and a 1.5x safety multiplier instead of relying on a fixed ETH threshold.
 
 The draft production manifest starts with ten quote assets from Robinhood's official token-contract page and `/rhj/assets` registry: USDG, SPY, QQQ, MSFT, META, AMZN, GOOGL, NVDA, AAPL, and TSLA. Readiness still checks live bytecode and ERC-20 metadata for every configured address. Inclusion means only that a World may use the token as its curve quote asset; it is not an endorsement, price guarantee, or representation of legal ownership in an underlying company.
 
 The production deployer is checkpointed and resumable. Its default mode only runs the read-only readiness gate. Broadcasting requires the ignored deployer secret, `--broadcast`, and the exact chain-specific confirmation phrase; every mined address and transaction hash is written to an ignored deployment report before the next step begins:
+
+Both deployment scripts reject stale artifacts and reports from a different build. Compile first with `WRITE_ARTIFACTS=1 npm run compile`. Older reports without build binding cannot be reused for this release: retain the historical report and choose a new `--output` path for an explicitly approved new deployment. Do not manually edit an old report to bypass this check. New code does not patch immutable contracts already on-chain.
 
 ```bash
 npm run stock-world:production-deploy
@@ -106,6 +110,8 @@ npm run test:stock-world
 ```
 
 The command compiles all Solidity sources, deploys an atomic World stack to an ephemeral Ganache chain, and runs positive and negative lifecycle checks.
+
+After compilation, `npm run stock-world:testnet-deploy-test` exercises the testnet deployment script on localhost only. It verifies build-mismatch rejection, recovery of an already-mined Factory, and unchanged transaction count on resume. It uses an ephemeral random key and removes temporary files; it does not deploy to the public testnet. `npm run stock-world:production-deploy-test` runs equivalent recovery checks on a local mainnet fork.
 
 For browser integration work, keep the same rehearsal deployment available over a loopback-only JSON-RPC endpoint:
 

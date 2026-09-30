@@ -212,6 +212,14 @@ contract FairMintController {
         if (winners > epochCapacity) winners = epochCapacity;
         if (winners > available) winners = available;
 
+        // A predictable fallback must never decide who wins scarce supply.
+        // Late epochs may mint only when every revealer can receive a token.
+        bool missedLottery = late && state.revealedCount > winners;
+        if (missedLottery) {
+            winners = 0;
+            seed = bytes32(0);
+        }
+
         state.finalSeed = seed;
         state.winnerCount = uint32(winners);
         state.winnerStartIndex = state.revealedCount == 0 ? 0 : uint32(uint256(seed) % state.revealedCount);
@@ -224,7 +232,7 @@ contract FairMintController {
         // A stale epoch may still be finalized for deterministic historical
         // state, but it must never reserve current supply after its own claim
         // window has already closed.
-        if (currentBlock > state.claimDeadline) {
+        if (missedLottery || currentBlock > state.claimDeadline) {
             state.expired = true;
         } else {
             totalReserved += uint32(winners);

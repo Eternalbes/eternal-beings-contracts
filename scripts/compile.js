@@ -1,5 +1,6 @@
 const fs = require("fs");
 const solc = require("solc");
+const { sourceFingerprint } = require("./deployment-build");
 
 function findSolidityFiles(directory) {
   return fs
@@ -42,6 +43,7 @@ const input = {
   },
 };
 
+const fingerprint = process.env.WRITE_ARTIFACTS === "1" ? sourceFingerprint(sources) : undefined;
 const output = JSON.parse(solc.compile(JSON.stringify(input)));
 const errors = output.errors || [];
 
@@ -71,6 +73,7 @@ if (process.env.WRITE_ARTIFACTS === "1") {
           {
             contractName: name,
             sourceName: file,
+            sourceFingerprint: fingerprint,
             abi: artifact.abi,
             bytecode: `0x${artifact.evm.bytecode.object}`,
             deployedBytecode: `0x${artifact.evm.deployedBytecode.object}`,
