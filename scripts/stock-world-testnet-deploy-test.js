@@ -18,17 +18,20 @@ function run(args) {
 }
 
 async function main() {
+  const securitySmoke = process.argv.includes("--security-smoke");
   const wallet = ethers.Wallet.createRandom();
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "stock-world-deploy-test-"));
   fs.mkdirSync("reports/secrets", { recursive: true });
   const secret = path.join("reports/secrets", `local-${path.basename(temporary)}.json`);
   const output = path.join("reports", `deployment-${path.basename(temporary)}.json`);
+  const smokeOutput = `${output}.smoke.json`;
+  const mintSecret = `${secret}.mint.json`;
   const configPath = path.join(temporary, "config.json");
   const sitePath = path.join(temporary, "site.json");
   const server = ganache.server({
     logging: { quiet: true },
     chain: { chainId: 46630, hardfork: "shanghai" },
-    miner: { blockGasLimit: 120_000_000 },
+    miner: { blockGasLimit: 120_000_000, blockTime: securitySmoke ? 0.1 : 0 },
     wallet: { accounts: [{ secretKey: wallet.privateKey, balance: ethers.toBeHex(ethers.parseEther("10")) }] },
   });
   let provider;
@@ -40,13 +43,22 @@ async function main() {
     provider = new ethers.JsonRpcProvider(rpcUrl, undefined, { cacheTimeout: -1 });
     const config = JSON.parse(fs.readFileSync("config/stock-world.testnet.json", "utf8"));
     Object.assign(config, { rpcUrl, deployer: wallet.address, quoteAssetAuthority: wallet.address,
-      platformFeeRecipient: wallet.address, launchSmokeWorld: false });
+      platformFeeRecipient: wallet.address, launchSmokeWorld: securitySmoke });
     fs.writeFileSync(configPath, JSON.stringify(config));
     fs.writeFileSync(secret, JSON.stringify({ wallets: [{ address: wallet.address, privateKey: wallet.privateKey }] }), { mode: 0o600 });
     const args = ["scripts/stock-world-testnet-deploy.js", "--config", configPath,
       "--secret", secret, "--output", output, "--site-config", sitePath,
       "--broadcast", "--confirm", "DEPLOY-STOCK-WORLD-46630"];
     await run(args);
+    if (securitySmoke) {
+      await run(["scripts/stock-world-testnet-security-smoke.js", "--config", configPath,
+        "--deployment", output, "--secret", secret, "--output", smokeOutput,
+        "--mint-secret", mintSecret, "--budget", "0.02", "--broadcast", "--confirm", "TEST-STOCK-WORLD-SECURITY-46630"]);
+      const smoke = JSON.parse(fs.readFileSync(smokeOutput, "utf8"));
+      assert.equal(smoke.status, "passed");
+      assert.equal(smoke.transactions.length, 14);
+      console.log(`Security lifecycle smoke passed locally: ${smoke.checks.length} checks, ${smoke.transactions.length} transactions.`);
+    }
     const report = JSON.parse(fs.readFileSync(output, "utf8"));
     const nonce = await provider.getTransactionCount(wallet.address);
     fs.writeFileSync(output, JSON.stringify({ ...report, buildId: ethers.ZeroHash }));
@@ -72,7 +84,7 @@ async function main() {
   } finally {
     provider?.destroy();
     if (listening) await server.close();
-    for (const file of [secret, output]) fs.rmSync(file, { force: true });
+    for (const file of [secret, output, smokeOutput, mintSecret]) fs.rmSync(file, { force: true });
     fs.rmSync(temporary, { recursive: true, force: true });
   }
 }

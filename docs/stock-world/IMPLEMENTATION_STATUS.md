@@ -1,6 +1,6 @@
 # Stock World Protocol V2 Implementation Status
 
-Status: Security fixes require a new deployment; existing immutable deployments are not updated by source changes
+Status: Security fixes deployed and lifecycle-tested on a new Robinhood testnet stack; existing immutable deployments are not updated by source changes
 
 Target network: Robinhood Chain
 
@@ -112,6 +112,10 @@ npm run test:stock-world
 The command compiles all Solidity sources, deploys an atomic World stack to an ephemeral Ganache chain, and runs positive and negative lifecycle checks.
 
 After compilation, `npm run stock-world:testnet-deploy-test` exercises the testnet deployment script on localhost only. It verifies build-mismatch rejection, recovery of an already-mined Factory, and unchanged transaction count on resume. It uses an ephemeral random key and removes temporary files; it does not deploy to the public testnet. `npm run stock-world:production-deploy-test` runs equivalent recovery checks on a local mainnet fork.
+
+`npm run stock-world:testnet-security-smoke-test` additionally runs the public-testnet lifecycle runner against an ephemeral localhost chain with timed blocks. It covers three-step Mint, invalid/repeated actions, on-chain metadata decoding, a small buy/sell, exact-amount approvals, activation of stake, rewards for Token/NFT/Creator beneficiaries, and full withdrawal of the test stake.
+
+`npm run stock-world:testnet-security-smoke` is plan-only by default. Broadcasting requires `--broadcast --confirm TEST-STOCK-WORLD-SECURITY-46630` and prior authorization for the listed actions. It accepts an explicit build-bound `--deployment` report, restricts the network to `46630`, caps transaction spend (default `0.001` test ETH), and stores Mint secrets separately from transaction reports under ignored paths. It does not burn NFTs, grant unlimited approvals, or publish website configuration. If interrupted, inspect the saved report and Mint secret before attempting any recovery; the runner rejects existing output paths rather than blindly repeating trades.
 
 For browser integration work, keep the same rehearsal deployment available over a loopback-only JSON-RPC endpoint:
 

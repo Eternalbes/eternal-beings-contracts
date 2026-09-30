@@ -42,6 +42,8 @@
     "stock-world:testnet-trade-smoke": "node scripts/stock-world-testnet-trade-smoke.js",
     "stock-world:production-deploy-test": "node scripts/stock-world-production-deploy-test.js",
     "stock-world:testnet-deploy-test": "node scripts/stock-world-testnet-deploy-test.js",
+    "stock-world:testnet-security-smoke": "node scripts/stock-world-testnet-security-smoke.js",
+    "stock-world:testnet-security-smoke-test": "node scripts/stock-world-testnet-deploy-test.js --security-smoke",
     "stock-world:production-readiness": "node scripts/stock-world-production-readiness.js",
     "stock-world:ui-rehearsal": "STOCK_WORLD_REHEARSAL_RPC_PORT=8545 node scripts/stock-world-deployment-rehearsal.js",
     "token-metadata": "node scripts/token-metadata.js",
