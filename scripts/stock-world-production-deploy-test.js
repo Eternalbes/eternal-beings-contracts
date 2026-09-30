@@ -9,6 +9,12 @@ const configPath = "/tmp/stock-world.production-fork-test.json";
 const secretPath = "reports/secrets/stock-world-production-fork-test.secrets.json";
 const outputPath = "reports/deployment-stock-world-fork-test.json";
 const siteConfigPath = "/tmp/stock-world.site-config-fork-test.json";
+const upstreamRpcUrl = process.env.STOCK_WORLD_MAINNET_RPC_URL || "https://rpc.mainnet.chain.robinhood.com";
+const forkRequestsPerSecond = Number(process.env.STOCK_WORLD_FORK_RPS || 4);
+
+if (!Number.isInteger(forkRequestsPerSecond) || forkRequestsPerSecond < 1 || forkRequestsPerSecond > 100) {
+  throw new Error("STOCK_WORLD_FORK_RPS must be an integer between 1 and 100");
+}
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -28,12 +34,13 @@ function run(command, args) {
 async function main() {
   const wallet = ethers.Wallet.createRandom();
   let server;
+  let serverListening = false;
 
   try {
     server = ganache.server({
       logging: { quiet: true },
       chain: { chainId: 4663, networkId: 4663, hardfork: "shanghai" },
-      fork: { url: "https://rpc.mainnet.chain.robinhood.com" },
+      fork: { url: upstreamRpcUrl, requestsPerSecond: forkRequestsPerSecond },
       miner: { blockGasLimit: 120_000_000 },
       wallet: {
         accounts: [{
@@ -71,6 +78,7 @@ async function main() {
     if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
 
     await server.listen(rpcPort, "127.0.0.1");
+    serverListening = true;
     const args = [
       "scripts/stock-world-production-deploy.js",
       "--config", configPath,
@@ -107,7 +115,12 @@ async function main() {
       resumeRunPassed: true,
     }, null, 2));
   } finally {
-    if (server) await server.close();
+    try {
+      if (server && serverListening) await server.close();
+    } catch (_) {
+      // The fork may already be closed after an upstream RPC failure. Cleanup
+      // must still run and the original deployment-test error must survive.
+    }
     for (const path of [secretPath, outputPath, configPath, siteConfigPath]) {
       if (fs.existsSync(path)) fs.unlinkSync(path);
     }
