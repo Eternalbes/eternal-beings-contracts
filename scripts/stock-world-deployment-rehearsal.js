@@ -68,6 +68,9 @@ async function main() {
     eip1193 = ganache.provider(ganacheOptions);
   }
   const provider = new ethers.BrowserProvider(eip1193);
+  if (chainId === 4663 || chainId === 46630) {
+    await require("./stock-world-block-history").installLocalBlockClock(eip1193);
+  }
   const deployer = await provider.getSigner(0);
   const deployerAddress = await deployer.getAddress();
 

@@ -39,6 +39,7 @@ async function main() {
   try {
     await server.listen(0, "127.0.0.1");
     listening = true;
+    await require("./stock-world-block-history").installLocalBlockClock(server.provider);
     const rpcUrl = `http://127.0.0.1:${server.address().port}`;
     provider = new ethers.JsonRpcProvider(rpcUrl, undefined, { cacheTimeout: -1 });
     const config = JSON.parse(fs.readFileSync("config/stock-world.testnet.json", "utf8"));

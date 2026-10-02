@@ -1,5 +1,7 @@
 const fs = require("fs");
 const { ethers } = require("ethers");
+const { loadBuild } = require("./deployment-build");
+const { attestBlockHistory, MAX_CLAIM_BLOCKS } = require("./stock-world-block-history");
 const {
   attestCode,
   attestSource,
@@ -29,8 +31,8 @@ function hours(blocks, secondsPerBlock) {
 
 const MINT_PRESETS = Object.freeze({
   easy: { commitBlocks: 158_400, revealBlocks: 79_200, claimBlocks: 237_600, epochCapacity: 999, walletLimit: 1 },
-  hard: { commitBlocks: 316_800, revealBlocks: 158_400, claimBlocks: 475_200, epochCapacity: 666, walletLimit: 1 },
-  hell: { commitBlocks: 633_600, revealBlocks: 316_800, claimBlocks: 950_400, epochCapacity: 333, walletLimit: 1 },
+  hard: { commitBlocks: 316_800, revealBlocks: 158_400, claimBlocks: 237_600, epochCapacity: 666, walletLimit: 1 },
+  hell: { commitBlocks: 633_600, revealBlocks: 316_800, claimBlocks: 237_600, epochCapacity: 333, walletLimit: 1 },
 });
 
 async function inspectQuoteAsset(provider, asset) {
@@ -91,9 +93,17 @@ async function main() {
     epochCapacity: preset.epochCapacity,
     walletLimit: preset.walletLimit,
   }]));
-  warnings.push(
-    `The target block's 256-block entropy-hash window is currently about ${(256 * secondsPerBlock).toFixed(1)} seconds. If nobody finalizes inside it, epochs requiring a lottery expire without minting; late claims remain possible only when all revealers fit within available supply.`,
-  );
+  let entropyHistoryAttestation = null;
+  try {
+    loadBuild(["FairMintController", "StockWorldConfigValidator", "StockWorldFactory"]);
+    entropyHistoryAttestation = await attestBlockHistory(provider, latestBlock, true);
+    for (const preset of Object.values(MINT_PRESETS)) {
+      if (preset.claimBlocks > MAX_CLAIM_BLOCKS) throw new Error("Mint preset Claim window exceeds the historical-entropy limit");
+    }
+  } catch (error) {
+    blockers.push(`Mint entropy readiness: ${error.message}`);
+  }
+  warnings.push("Historical block hashes remove the short settlement race, not sequencer influence. Mint randomness is not VRF-grade; Claim must still occur before the epoch-fixed deadline.");
 
   const market = config.permanentMarket || {};
   if (market.poolFee !== 0) blockers.push("permanentMarket.poolFee must remain zero");
@@ -233,6 +243,7 @@ async function main() {
     latestBlock,
     sampledBlockCadence: { sampleBlocks, sampledSeconds, secondsPerBlock },
     mintPresetHours,
+    entropyHistoryAttestation,
     deployerBalanceEth: deployerBalance === null ? null : ethers.formatEther(deployerBalance),
     deploymentCost,
     quoteAssets,

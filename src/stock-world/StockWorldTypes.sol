@@ -68,18 +68,20 @@ library StockWorldConstants {
 
     uint32 internal constant HARD_COMMIT_BLOCKS = 316_800;
     uint32 internal constant HARD_REVEAL_BLOCKS = 158_400;
-    uint32 internal constant HARD_CLAIM_BLOCKS = 475_200;
+    uint32 internal constant HARD_CLAIM_BLOCKS = 237_600;
     uint32 internal constant HARD_EPOCH_CAPACITY = 666;
 
     uint32 internal constant HELL_COMMIT_BLOCKS = 633_600;
     uint32 internal constant HELL_REVEAL_BLOCKS = 316_800;
-    uint32 internal constant HELL_CLAIM_BLOCKS = 950_400;
+    uint32 internal constant HELL_CLAIM_BLOCKS = 237_600;
     uint32 internal constant HELL_EPOCH_CAPACITY = 333;
 
     uint16 internal constant PRESET_NFT_WALLET_LIMIT = 1;
     uint32 internal constant MIN_CUSTOM_PHASE_BLOCKS = 300;
     uint32 internal constant MAX_CUSTOM_PHASE_BLOCKS = 1_000_000;
     uint32 internal constant MIN_CUSTOM_CLAIM_BLOCKS = 1_200;
+    // Leave ample margin inside ArbOS's 393,168-block history buffer.
+    uint32 internal constant MAX_CUSTOM_CLAIM_BLOCKS = 237_600;
     uint16 internal constant MAX_CUSTOM_WALLET_LIMIT = 10;
 
     uint16 internal constant BPS_DENOMINATOR = 10_000;

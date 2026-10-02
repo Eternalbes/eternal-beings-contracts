@@ -81,6 +81,7 @@ async function main() {
 
     await server.listen(rpcPort, "127.0.0.1");
     serverListening = true;
+    await require("./stock-world-block-history").installLocalBlockClock(server.provider, false);
     const args = [
       "scripts/stock-world-production-deploy.js",
       "--config", configPath,
@@ -89,6 +90,7 @@ async function main() {
       "--site-config", siteConfigPath,
       "--broadcast",
       "--confirm", "DEPLOY-STOCK-WORLD-4663",
+      "--max-total-gas-eth", "1",
     ];
     await run(process.execPath, args);
     provider = new ethers.JsonRpcProvider(rpcUrl);

@@ -94,6 +94,7 @@ async function main() {
   if (network.chainId !== BigInt(config.chainId)) {
     throw new Error(`wrong chain: expected ${config.chainId}, received ${network.chainId}`);
   }
+  await require("./stock-world-block-history").attestBlockHistory(provider, await provider.getBlockNumber());
   const signer = new ethers.NonceManager(rawWallet.connect(provider));
   const build = loadBuild([
     "MockV4PoolManager", "MockV4Permit2", "MockV4PositionManager", "MockQuoteAsset",

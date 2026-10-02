@@ -179,12 +179,17 @@ async function main() {
 
   const zeroSchedule = config.mintConfig.customSchedule;
   const hard = await factory.mintScheduleFor({ ...config, nftMaxSupply: 9_999, mintConfig: { difficulty: 1, customSchedule: zeroSchedule } });
-  assert.deepEqual([...hard], [316_800n, 158_400n, 475_200n, 666n, 1n], "Hard preset is immutable");
+  assert.deepEqual([...hard], [316_800n, 158_400n, 237_600n, 666n, 1n], "Hard preset is immutable");
   const hell = await factory.mintScheduleFor({ ...config, nftMaxSupply: 9_999, mintConfig: { difficulty: 2, customSchedule: zeroSchedule } });
-  assert.deepEqual([...hell], [633_600n, 316_800n, 950_400n, 333n, 1n], "Hell preset is immutable");
+  assert.deepEqual([...hell], [633_600n, 316_800n, 237_600n, 333n, 1n], "Hell preset is immutable");
   const customSchedule = { commitBlocks: 300, revealBlocks: 450, claimBlocks: 1_200, epochCapacity: 75, walletLimit: 3 };
   const custom = await factory.mintScheduleFor({ ...config, mintConfig: { difficulty: 3, customSchedule } });
   assert.deepEqual([...custom], [300n, 450n, 1_200n, 75n, 3n], "Custom schedule is preserved exactly");
+  const customConfig = { ...config, mintConfig: { difficulty: 3, customSchedule: { ...customSchedule, claimBlocks: 237_600 } } };
+  await validator.validateConfig(customConfig);
+  await rejects(() => validator.validateConfig({
+    ...customConfig, mintConfig: { ...customConfig.mintConfig, customSchedule: { ...customConfig.mintConfig.customSchedule, claimBlocks: 237_601 } },
+  }), "Custom Claim cannot exceed the full historical-entropy coverage policy");
 
   await rejects(() => factory.getWorld(1), "unknown World id rejected");
   await rejects(() => factory.prepareGraduation(0), "live curve cannot be swept early");

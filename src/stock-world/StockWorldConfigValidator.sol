@@ -125,7 +125,7 @@ contract StockWorldConfigValidator {
                 || schedule.revealBlocks < StockWorldConstants.MIN_CUSTOM_PHASE_BLOCKS
                 || schedule.revealBlocks > StockWorldConstants.MAX_CUSTOM_PHASE_BLOCKS
                 || schedule.claimBlocks < StockWorldConstants.MIN_CUSTOM_CLAIM_BLOCKS
-                || schedule.claimBlocks > StockWorldConstants.MAX_CUSTOM_PHASE_BLOCKS
+                || schedule.claimBlocks > StockWorldConstants.MAX_CUSTOM_CLAIM_BLOCKS
                 || schedule.epochCapacity == 0 || schedule.epochCapacity > nftMaxSupply
                 || schedule.walletLimit == 0
                 || schedule.walletLimit > StockWorldConstants.MAX_CUSTOM_WALLET_LIMIT

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+import {StockWorldBlockHistory} from "./StockWorldBlockHistory.sol";
+import {StockWorldConstants} from "./StockWorldTypes.sol";
+
 interface IWorldNftMinter {
     function maxSupply() external view returns (uint32);
     function mintFromController(address to, bytes32 genome) external returns (uint256 tokenId);
@@ -56,6 +59,7 @@ contract FairMintController {
     error ZeroAddress();
     error NotContract();
     error InvalidParameters();
+    error UnsupportedBlockHistory();
     error WrongCommitPhase();
     error WrongRevealPhase();
     error ZeroCommitment();
@@ -101,10 +105,13 @@ contract FairMintController {
         if (address(worldNft_).code.length == 0) revert NotContract();
         if (
             maxSupply_ == 0 || worldNft_.maxSupply() != maxSupply_ || commitBlocks_ == 0 || revealBlocks_ == 0
-                || claimBlocks_ == 0
+                || claimBlocks_ == 0 || claimBlocks_ > StockWorldConstants.MAX_CUSTOM_CLAIM_BLOCKS
                 || epochCapacity_ == 0 || epochCapacity_ > maxSupply_ || walletLimit_ == 0
                 || walletLimit_ > maxSupply_
         ) revert InvalidParameters();
+        if ((block.chainid == 4663 || block.chainid == 46630) && !StockWorldBlockHistory.available()) {
+            revert UnsupportedBlockHistory();
+        }
 
         worldNft = worldNft_;
         maxSupply = maxSupply_;
@@ -306,10 +313,18 @@ contract FairMintController {
     }
 
     function _protocolBlockHash(uint256 blockNumber) internal view returns (bytes32 blockHash) {
+        blockHash = StockWorldBlockHistory.blockHash(blockNumber);
+        if (blockHash != bytes32(0)) return blockHash;
         (bool success, bytes memory result) = ARB_SYS.staticcall(
             abi.encodeCall(IArbSysBlockClock.arbBlockHash, (blockNumber))
         );
         if (success && result.length >= 32) return abi.decode(result, (bytes32));
+        // L2 block numbers cannot be passed to the parent-clock BLOCKHASH
+        // opcode. Only use the native fallback when ArbSys is absent.
+        (success, result) = ARB_SYS.staticcall(
+            abi.encodeCall(IArbSysBlockClock.arbBlockNumber, ())
+        );
+        if (success && result.length >= 32) return bytes32(0);
         return blockhash(blockNumber);
     }
 }

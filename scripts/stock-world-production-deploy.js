@@ -3,6 +3,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const { ethers } = require("ethers");
 const { loadBuild, assertBuild, verifyDeployment } = require("./deployment-build");
+const { installGasGuard } = require("./stock-world-mainnet-gas-guard");
 
 const DEFAULT_CONFIG = "config/stock-world.production.json";
 const DEFAULT_SECRET = "reports/secrets/deployer.secrets.json";
@@ -18,6 +19,7 @@ function parseArgs(argv) {
     siteConfigPath: "",
     broadcast: false,
     confirm: "",
+    maxTotalGasEth: "",
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -27,6 +29,7 @@ function parseArgs(argv) {
     else if (arg === "--site-config") args.siteConfigPath = argv[++i];
     else if (arg === "--confirm") args.confirm = argv[++i];
     else if (arg === "--broadcast") args.broadcast = true;
+    else if (arg === "--max-total-gas-eth") args.maxTotalGasEth = argv[++i];
     else throw new Error(`unknown argument: ${arg}`);
   }
   return args;
@@ -123,7 +126,7 @@ async function main() {
   if (!args.broadcast) {
     console.log(JSON.stringify({
       status: "plan-only-ready",
-      next: `npm run stock-world:production-deploy -- --broadcast --confirm DEPLOY-STOCK-WORLD-${readiness.chainId}`,
+      next: `npm run stock-world:production-deploy -- --broadcast --confirm DEPLOY-STOCK-WORLD-${readiness.chainId} --max-total-gas-eth <approved-ETH-budget>`,
     }, null, 2));
     return;
   }
@@ -132,6 +135,11 @@ async function main() {
   if (args.confirm !== expectedConfirmation) {
     throw new Error(`broadcast requires --confirm ${expectedConfirmation}`);
   }
+  if (!args.maxTotalGasEth || !/^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(args.maxTotalGasEth)) {
+    throw new Error("broadcast requires --max-total-gas-eth with the explicitly approved Gas budget");
+  }
+  const gasBudgetWei = ethers.parseEther(args.maxTotalGasEth);
+  if (gasBudgetWei <= 0n) throw new Error("deployment Gas budget must be positive");
   if (!isIgnored(args.secretPath)) {
     throw new Error(`secret path is not ignored by git: ${args.secretPath}`);
   }
@@ -193,6 +201,8 @@ async function main() {
     fs.mkdirSync(path.dirname(args.outputPath), { recursive: true });
     fs.writeFileSync(args.outputPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 });
   }
+  let currentActionLabel = "";
+  installGasGuard(provider, config, report, checkpoint, gasBudgetWei, () => currentActionLabel);
 
   async function codeExists(address) {
     return address && await provider.getCode(address) !== "0x";
@@ -202,7 +212,16 @@ async function main() {
     const item = build.artifacts[name];
     const factory = new ethers.ContractFactory(item.abi, item.bytecode, signer);
     const initCode = (await factory.getDeployTransaction(...constructorArgs)).data;
-    const saved = report.contracts[key];
+    let saved = report.contracts[key];
+    if (!saved) {
+      const guarded = report.gasGuardTransactions.find((entry) => entry.label === `deploy:${key}`);
+      if (guarded) {
+        if (guarded.to !== null || guarded.dataHash !== ethers.keccak256(initCode)) throw new Error("guarded deployment build mismatch");
+        saved = report.contracts[key] = { contractName: name, address: guarded.predictedAddress,
+          transactionHash: guarded.hash, initCodeHash: guarded.dataHash, status: "pending" };
+        checkpoint();
+      }
+    }
     if (saved?.address) {
       const { receipt, runtimeCodeHash } = await verifyDeployment(provider, saved, initCode, rawWallet.address);
       saved.status = "mined";
@@ -217,6 +236,7 @@ async function main() {
       return new ethers.Contract(saved.address, item.abi, signer);
     }
 
+    currentActionLabel = `deploy:${key}`;
     const contract = await factory.deploy(...constructorArgs);
     const transaction = contract.deploymentTransaction();
     report.contracts[key] = {
@@ -248,7 +268,14 @@ async function main() {
   }
 
   async function transact(label, action) {
-    const existing = report.transactions.find((entry) => entry.label === label && entry.status !== "failed");
+    let existing = report.transactions.find((entry) => entry.label === label && entry.status !== "failed");
+    if (!existing) {
+      const guarded = report.gasGuardTransactions.find((entry) => entry.label === label && entry.status !== "failed");
+      if (guarded) {
+        existing = { label, hash: guarded.hash, status: "pending" };
+        report.transactions.push(existing); checkpoint();
+      }
+    }
     if (existing) {
       const receipt = await provider.waitForTransaction(existing.hash, 1, 120_000);
       if (!receipt || receipt.status !== 1) throw new Error(`${label} checkpoint did not confirm`);
@@ -258,6 +285,7 @@ async function main() {
       checkpoint();
       return;
     }
+    currentActionLabel = label;
     const tx = await action();
     const entry = { label, hash: tx.hash, status: "pending" };
     report.transactions.push(entry);

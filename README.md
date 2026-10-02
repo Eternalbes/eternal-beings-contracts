@@ -12,10 +12,12 @@ The current combat, evolution, hybrid, and ORE feedback are clearly labeled loca
 
 ## Stock World protocol architecture
 
-The proposed V2 architecture targets Robinhood Chain. It extends the world-launching model with a fixed-supply World Token, a fair World NFT launch, Fusion, quote-denominated fee rewards, a graduation path into permanently locked liquidity, and public interfaces for independent games and applications.
+Stock World V2 is deployed on Robinhood Chain mainnet (4663). It extends the world-launching model with a fixed-supply World Token, a fair World NFT launch, Fusion, quote-denominated fee rewards, a graduation path into permanently locked liquidity, and public interfaces for independent games and applications. Full graduation against the live mainnet DEX remains untested.
 
 - [Read the Stock World Protocol V2 architecture](docs/stock-world/Stock-World-Protocol-V2-Architecture.md)
 - [Track the Stock World Protocol V2 implementation](docs/stock-world/IMPLEMENTATION_STATUS.md)
+- [View the V8 mainnet deployment and contract addresses](docs/stock-world/MAINNET_DEPLOYMENT_V8.md)
+- [Read source verification status and instructions](docs/stock-world/SOURCE_VERIFICATION_V8.md)
 - [Review the canonical Robinhood Chain network configuration](config/robinhood-chain.json)
 
 ## EB-ZEC Zcash protocol draft
