@@ -1,0 +1,19 @@
+{
+  "name": "@eternal-beings/eb-zec-reference",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local EB-ZEC V0 memo, replay indexer and deterministic renderer reference",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "demo": "node bin/demo.js",
+    "vectors": "node bin/vectors.js",
+    "replay": "node bin/replay.js",
+    "serve": "node bin/serve.js"
+  },
+  "dependencies": {
+    "@noble/hashes": "1.8.0",
+    "ajv": "8.20.0",
+    "canonicalize": "2.1.0"
+  }
+}

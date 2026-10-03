@@ -28,6 +28,7 @@ This repository also publishes an independent research track for bringing Eterna
 - [Download the whitepaper PDF](docs/zcash/EB-ZEC-Protocol-Whitepaper-v1.0.pdf)
 - [Read the normative memo inscription protocol](docs/zcash/EB-ZEC-Memo-Inscription-Protocol-v1.md)
 - [Download the machine-readable JSON Schema](docs/zcash/eb-zec-v1.schema.json)
+- [Run the EB-ZEC V0 local memo/indexer/renderer reference](protocols/eb-zec/README.md)
 - [Download from the official website](https://eternalbeings.space/EB-ZEC-Protocol-Whitepaper-v1.0.pdf)
 
 EB-ZEC uses signed canonical JSON messages in encrypted Zcash memos. The draft defines `mint-commit`, `mint-reveal`, `transfer`, `hunt-start`, `hunt-resolve`, `mutate`, `consume-permit`, `devour`, `fuse`, `list`, `cancel`, `buy`, and `payment-ack`. Independent indexers apply the same deterministic rules, while a reproducible renderer derives artwork and metadata from canonical Being state.
