@@ -2,7 +2,9 @@
 
 Version 0.1.0. Experimental, local-only reference implementation of the published [memo protocol](../../docs/zcash/EB-ZEC-Memo-Inscription-Protocol-v1.md). This package does not change the Ethereum or Robinhood deployments.
 
-**This is not a running Zcash network integration, mainnet release, native NFT, native token, bridge, or marketplace.** The input is an explicitly labeled local chain fixture containing already-decrypted memo records. No Zcash node, Orchard scanner, wallet RPC, spending key, or transaction broadcaster is included. Fake mailbox/viewing-key placeholders cannot be used to send ZEC. Network 0/1 manifests are rejected.
+**This is not a running Zcash network integration, mainnet release, native NFT, native token, bridge, or marketplace.** The V0.1 Indexer input is an explicitly labeled local chain fixture containing already-decrypted memo records. That fixture path does not use a Zcash node, Orchard scanner or wallet RPC, and includes no spending key or transaction broadcaster. Fake mailbox/viewing-key placeholders cannot be used to send ZEC. Network 0/1 manifests are rejected.
+
+A separate [read-only regtest RPC observation adapter](REGTEST_ADAPTER.md) is now available. It queries an operator-provided local node/wallet and checks chain/transaction context, but does not independently decrypt Orchard notes or feed observations into the V0.1 Indexer. Its tests use an HTTP RPC mock, not an actual Zcash node. The signed rules and checked-in V0.1 golden fixture are unchanged.
 
 ## Run
 

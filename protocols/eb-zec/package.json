@@ -9,7 +9,8 @@
     "demo": "node bin/demo.js",
     "vectors": "node bin/vectors.js",
     "replay": "node bin/replay.js",
-    "serve": "node bin/serve.js"
+    "serve": "node bin/serve.js",
+    "scan:regtest": "node bin/scan-regtest.js"
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
