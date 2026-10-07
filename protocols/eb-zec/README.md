@@ -6,6 +6,8 @@ Version 0.1.0. Experimental, local-only reference implementation of the publishe
 
 A separate [read-only regtest RPC observation adapter](REGTEST_ADAPTER.md) is now available. It queries an operator-provided local node/wallet and checks chain/transaction context, but does not independently decrypt Orchard notes or feed observations into the V0.1 Indexer. Its tests use an HTTP RPC mock, not an actual Zcash node. The signed rules and checked-in V0.1 golden fixture are unchanged.
 
+Next live integration targets [Zebra/Zallet with a read-only environment doctor](regtest/README.md). `npm run doctor:regtest` checks prerequisites; it never installs a runtime or initializes a wallet. JSON-RPC 2.0 support is explicit and does not silently downgrade to a legacy response format.
+
 ## Run
 
 From this directory, with Node.js 22 or newer:

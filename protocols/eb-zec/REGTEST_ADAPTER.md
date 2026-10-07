@@ -8,7 +8,7 @@ The adapter was tested against an HTTP RPC mock using the documented response sh
 
 An operator must separately provide a running regtest node, an existing Unified Address with an Orchard receiver known to its wallet, and a wallet scan covering the whole relevant history. Do not use a wallet containing production funds. Provisioning the node, activating NU5, generating blocks, sending carriers, creating controller keys and importing a viewing key are outside this read-only tool. It never asks for a spending key or mnemonic.
 
-The declared RPC compatibility target is the [Zcash 6.12.2 RPC documentation](https://zcash.github.io/rpc/). This is a bounded integration prototype, not a recommendation to run an old or deprecated wallet in production. A future Zebra/Zaino/librustzcash scanner can replace this boundary without changing the published V0.1 fixture rules.
+The declared RPC compatibility target is the [Zcash 6.12.2 RPC documentation](https://zcash.github.io/rpc/). This is a bounded integration prototype, not a recommendation to run an old or deprecated wallet in production. [zcashd has reached end of life](https://github.com/zcash/zcash); new live setup should follow the [Zebra/Zallet integration plan](regtest/README.md), not install this old compatibility target. A future Zebra/Zaino/librustzcash scanner can replace this boundary without changing the published V0.1 fixture rules.
 
 ## Run
 
@@ -33,7 +33,7 @@ The filename is a basename, not a path. A successful capture is saved exclusivel
 ## Checks and Limits
 
 - Only numeric IPv4/IPv6 loopback endpoints are allowed. No redirects, remote hostnames, URL credentials, arbitrary methods or TLS verification bypass.
-- A six-method read-only allowlist: `getblockchaininfo`, `getblockhash`, `getblock`, `getrawtransaction`, `z_listunifiedreceivers`, `z_listreceivedbyaddress`.
+- The transport allows seven read-only methods: `getblockchaininfo`, `getblockhash`, `getblock`, `getrawtransaction`, `z_listunifiedreceivers`, `z_listreceivedbyaddress`, and `rpc.discover`. The legacy scanner uses the first six; discovery is used by the separate modern preflight only. Existing scanner calls stay in JSON-RPC 1.0 mode, while the preflight explicitly uses 2.0.
 - Abort immediately unless the node reports `regtest`; check the pinned chain hash and the canonical tip before and after reading. A new tip is acceptable only when the original anchor remains canonical. A detected reorg produces no capture; rerun from the reviewed common ancestor. There is no automatic cursor database or rollback service yet.
 - Scan only application-confirmed heights. Preserve every transaction ID and its original position, including unrelated transactions. Verify parent links, note height/transaction index and transaction inclusion.
 - Read wallet **received history**, not the unspent-note set, so spending a carrier does not silently erase its memo. Query as of the bounded scan end and reject unconfirmed/out-of-snapshot records.

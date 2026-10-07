@@ -1,0 +1,13 @@
+{
+  "format": "eb-zec-regtest-upstream-review-v1",
+  "repository": "https://github.com/ZcashFoundation/z3",
+  "reviewed_commit": "e84ce9fd8e864ff0b2a8a62f6ce14392145db0fb",
+  "review_date": "2026-10-08",
+  "compose_minimum": "2.24.4",
+  "preferred_stack": ["Zebra", "Zallet", "Z3 RPC router"],
+  "image_digests_pinned": false,
+  "runtime_started": false,
+  "real_memo_integration_test_complete": false,
+  "automatic_setup_supported": false,
+  "purpose": "Reviewed upstream reference only; not permission to execute upstream wallet or volume scripts"
+}

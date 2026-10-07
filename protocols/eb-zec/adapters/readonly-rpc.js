@@ -6,6 +6,7 @@ const HEX32 = /^[0-9a-f]{64}$/;
 const address = (value) => typeof value === "string" && /^[A-Za-z0-9]{1,512}$/.test(value);
 const height = (value) => Number.isInteger(value) && value >= 0 && value <= 0xffffffff;
 const PARAMS = Object.freeze({
+  "rpc.discover": (p) => p.length === 0,
   getblockchaininfo: (p) => p.length === 0,
   getblockhash: (p) => p.length === 1 && height(p[0]),
   getblock: (p) => p.length === 2 && typeof p[0] === "string" && HEX32.test(p[0]) && p[1] === 1,
@@ -21,8 +22,10 @@ class ReadonlyRpc {
   #sequence = 0;
   #timeout;
   #maximum;
+  #version;
 
-  constructor({ url, username = "", password = "", timeoutMs = 10000, maxResponseBytes = 32 * 1024 * 1024 }) {
+  constructor({ url, username = "", password = "", timeoutMs = 10000, maxResponseBytes = 32 * 1024 * 1024,
+    jsonrpcVersion = "1.0" }) {
     try { this.#url = new URL(url); } catch { throw new ProtocolError("INVALID_RPC_URL"); }
     ensure(["http:", "https:"].includes(this.#url.protocol) &&
       ["127.0.0.1", "[::1]"].includes(this.#url.hostname) &&
@@ -37,13 +40,15 @@ class ReadonlyRpc {
     this.#authorization = username ? `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}` : null;
     this.#timeout = timeoutMs;
     this.#maximum = maxResponseBytes;
+    ensure(["1.0", "2.0"].includes(jsonrpcVersion), "INVALID_RPC_VERSION");
+    this.#version = jsonrpcVersion;
   }
 
   async call(method, params = []) {
     ensure(Object.hasOwn(PARAMS, method), "RPC_METHOD_FORBIDDEN");
     ensure(Array.isArray(params) && PARAMS[method](params), "INVALID_RPC_PARAMS");
     const id = ++this.#sequence;
-    const body = JSON.stringify({ jsonrpc: "1.0", id, method, params });
+    const body = JSON.stringify({ jsonrpc: this.#version, id, method, params });
     return new Promise((resolve, reject) => {
       let done = false;
       const finish = (error, value) => {
@@ -78,11 +83,17 @@ class ReadonlyRpc {
           try {
             const text = new TextDecoder("utf-8", { fatal: true }).decode(Buffer.concat(chunks));
             const message = JSON.parse(text);
-            ensure(message && !Array.isArray(message) && message.id === id &&
-              Object.hasOwn(message, "result") && Object.hasOwn(message, "error"), "INVALID_RPC_RESPONSE");
-            if (message.error !== null) {
+            ensure(message && !Array.isArray(message) && message.id === id, "INVALID_RPC_RESPONSE");
+            const hasResult = Object.hasOwn(message, "result"), hasError = Object.hasOwn(message, "error");
+            if (this.#version === "2.0") {
+              ensure(message.jsonrpc === "2.0" && hasResult !== hasError, "INVALID_RPC_RESPONSE");
+            } else ensure(hasResult && hasError, "INVALID_RPC_RESPONSE");
+            if (hasError && (this.#version === "2.0" || message.error !== null)) {
+              ensure(message.error && typeof message.error === "object" && !Array.isArray(message.error) &&
+                Number.isSafeInteger(message.error.code) && typeof message.error.message === "string",
+              "INVALID_RPC_RESPONSE");
               const error = new ProtocolError("RPC_REMOTE_ERROR");
-              if (Number.isSafeInteger(message.error?.code)) error.rpcCode = message.error.code;
+              error.rpcCode = message.error.code;
               throw error;
             }
             finish(null, message.result);

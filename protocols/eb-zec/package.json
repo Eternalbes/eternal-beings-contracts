@@ -10,7 +10,8 @@
     "vectors": "node bin/vectors.js",
     "replay": "node bin/replay.js",
     "serve": "node bin/serve.js",
-    "scan:regtest": "node bin/scan-regtest.js"
+    "scan:regtest": "node bin/scan-regtest.js",
+    "doctor:regtest": "node bin/doctor-regtest.js"
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
