@@ -8,9 +8,11 @@ A separate [read-only regtest RPC observation adapter](REGTEST_ADAPTER.md) is no
 
 Next live integration targets [Zebra/Zallet with a read-only environment doctor](regtest/README.md). `npm run doctor:regtest` checks prerequisites; it never installs a runtime or initializes a wallet. JSON-RPC 2.0 support is explicit and does not silently downgrade to a legacy response format.
 
+A [bounded SQLite journal](PERSISTENCE.md) now persists local block records, replays state on restart, atomically replaces fork suffixes and rejects stale writers. `npm run journal:demo` exercises recovery; `npm run serve:journal -- local/journal-demo.sqlite` exposes a recovered startup snapshot through the existing read-only API. This is not a live chain listener or production persistence system.
+
 ## Run
 
-From this directory, with Node.js 22 or newer:
+From this directory, with Node.js 22.13.0 or newer:
 
 ```sh
 npm ci --ignore-scripts
@@ -101,7 +103,7 @@ There is no raw transaction submission, key recovery, attribute editing, signing
 
 Fixtures explicitly set `source_kind: "local-fixture"`. Their `blocks` contain hashes, parent hashes, ordered transactions and decoded output records: `index`, `recipient`, `value_zat`, `memo_hex`. The mailbox must match the manifest. Multiple candidate protocol carriers in one transaction fail closed. This conservative local policy is not yet a chain-wide scanner proving there were no EB-ZEC operations in other mailboxes.
 
-The reference retains the supplied block journal and rebuilds state from its canonical prefix. A parent mismatch is rejected; callers must use `replaceFrom(commonAncestor + 1, replacementBlocks)` to perform explicit rollback/replay. Rebuilding the demo from the saved fixture restores the same state. This is bounded to 10,000 blocks, 256 transactions/block and 8 outputs/transaction and is not a production database/scanner.
+The reference retains the supplied block journal and rebuilds state from its canonical prefix. A parent mismatch is rejected; callers must use `replaceFrom(commonAncestor + 1, replacementBlocks)` to perform explicit rollback/replay. Rebuilding the demo from the saved fixture restores the same state. The optional SQLite journal durably stores that local input with revisions and recovery checks, bounded to 10,000 blocks, 256 transactions/block, 8 outputs/transaction and 32 MiB of canonical input. It is not a production database/scanner; see [persistence boundaries](PERSISTENCE.md).
 
 ## Required Before a Live Release
 

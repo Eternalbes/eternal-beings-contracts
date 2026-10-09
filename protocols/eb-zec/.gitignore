@@ -4,3 +4,7 @@ local/
 *.secrets.json
 .env
 .env.*
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

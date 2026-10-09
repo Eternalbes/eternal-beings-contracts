@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Local EB-ZEC V0 memo, replay indexer and deterministic renderer reference",
-  "engines": { "node": ">=22" },
+  "engines": { "node": ">=22.13.0" },
   "scripts": {
     "test": "node --test test/*.test.js",
     "demo": "node bin/demo.js",
@@ -11,7 +11,10 @@
     "replay": "node bin/replay.js",
     "serve": "node bin/serve.js",
     "scan:regtest": "node bin/scan-regtest.js",
-    "doctor:regtest": "node bin/doctor-regtest.js"
+    "doctor:regtest": "node bin/doctor-regtest.js",
+    "journal:demo": "node bin/journal-demo.js",
+    "journal:inspect": "node bin/journal-inspect.js",
+    "serve:journal": "node bin/serve.js --journal"
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
