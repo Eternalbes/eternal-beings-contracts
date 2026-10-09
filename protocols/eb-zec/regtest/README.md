@@ -20,6 +20,8 @@ We require the RPC chain label to be exactly `regtest`. Some upstream examples s
 
 ## Operator Setup Boundary
 
+An [offline resolved-Compose checker](CONFIG_REVIEW.md) is available through `npm run review:regtest-config -- local/regtest.compose.resolved.json`. It checks dedicated project/volume/network scope, pinned image references, explicit loopback port bindings and reviewed mount/hardening policies without invoking Docker. Input configuration stays private, and diagnostics omit its environment values. A passing static report does not verify TOML contents, image provenance, wallet volume freshness or permit runtime startup.
+
 The [official Z3 regtest guide](https://github.com/ZcashFoundation/z3/blob/e84ce9fd8e864ff0b2a8a62f6ce14392145db0fb/docs/regtest.md) requires Docker Compose 2.24.4+. It provides a per-network regtest stack and RPC router. Zebra and Zallet need matching upgrade schedules, including Orchard activation. Use a **new, isolated regtest project** with no production wallets, no real ZEC and no externally published RPC ports. Review resolved Compose bindings, image digests and the local activation schedule before starting it; a pinned source commit does not pin mutable image tags.
 
 Do not blindly run upstream `scripts/regtest-init.sh`: the reviewed script can stop/remove existing regtest containers, modify wallet volumes and initialize mnemonic/encryption material. We have not executed it. A project-specific wrapper must first scope its project/volumes, ensure loopback-only RPC bindings and obtain explicit approval for wallet initialization. Existing wallet data must not be reset for convenience.
@@ -33,4 +35,4 @@ After runtime setup, the actual acceptance sequence remains:
 5. Review and sign a separate real-chain genesis/profile before connecting observations to the state machine. Never rewrite real records into the V0.1 synthetic fixture format.
 6. Run real commit/reveal, Hunt and Fusion end-to-end. Only then consider V0.5 transfer and atomic payment verification.
 
-Current status: transport/preflight and mock tests are implemented. A real runtime, live carrier test, independent decryption, durable indexing, wallet broadcaster, V0.5 and mainnet activation are **not complete**. The V0.1 golden vectors and signed rule identifiers remain unchanged.
+Current status: transport/preflight, offline configuration policy checks and mock tests are implemented. The local fixture also has a bounded [durable SQLite journal](../PERSISTENCE.md). A real runtime, live carrier test, independent decryption, real-chain durable indexing, wallet broadcaster, V0.5 and mainnet activation are **not complete**. The V0.1 golden vectors and signed rule identifiers remain unchanged.

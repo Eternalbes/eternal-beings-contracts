@@ -8,3 +8,4 @@ local/
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
+*.compose.resolved.json

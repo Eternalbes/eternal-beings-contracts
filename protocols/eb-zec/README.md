@@ -8,6 +8,8 @@ A separate [read-only regtest RPC observation adapter](REGTEST_ADAPTER.md) is no
 
 Next live integration targets [Zebra/Zallet with a read-only environment doctor](regtest/README.md). `npm run doctor:regtest` checks prerequisites; it never installs a runtime or initializes a wallet. JSON-RPC 2.0 support is explicit and does not silently downgrade to a legacy response format.
 
+The [offline regtest configuration checker](regtest/CONFIG_REVIEW.md) reviews resolved Compose JSON before any future startup, rejecting mainnet defaults, exposed ports, mutable images and unisolated storage. It does not run Docker or authorize a wallet operation. Real image provenance, config contents and volume freshness still need review.
+
 A [bounded SQLite journal](PERSISTENCE.md) now persists local block records, replays state on restart, atomically replaces fork suffixes and rejects stale writers. `npm run journal:demo` exercises recovery; `npm run serve:journal -- local/journal-demo.sqlite` exposes a recovered startup snapshot through the existing read-only API. This is not a live chain listener or production persistence system.
 
 ## Run

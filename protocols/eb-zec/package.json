@@ -14,7 +14,8 @@
     "doctor:regtest": "node bin/doctor-regtest.js",
     "journal:demo": "node bin/journal-demo.js",
     "journal:inspect": "node bin/journal-inspect.js",
-    "serve:journal": "node bin/serve.js --journal"
+    "serve:journal": "node bin/serve.js --journal",
+    "review:regtest-config": "node bin/review-regtest-config.js"
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
